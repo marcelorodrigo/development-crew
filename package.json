@@ -1,0 +1,41 @@
+{
+  "name": "@marcelorodrigo/opencode-development-crew",
+  "version": "0.0.1",
+  "description": "Development agents for opencode: Orchestrator, Rubber Duck, Architect, Implementer and Code Reviewer",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup && tsc --emitDeclarationOnly",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "development",
+    "clean-architecture"
+  ],
+  "author": "Marcelo Rodrigo",
+  "contributors": [
+    "Lucas Germani"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/marcelorodrigo/development-crew",
+  "devDependencies": {
+    "@opencode-ai/plugin": "1.14.20",
+    "@opencode-ai/sdk": "1.14.20",
+    "tsup": "^8.0.0",
+    "typescript": "6.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcelorodrigo/development-crew.git"
+  }
+}
