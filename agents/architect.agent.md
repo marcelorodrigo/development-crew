@@ -91,8 +91,8 @@ Make concrete decisions:
 ### 3.5 - Error Handling
 
 - Which domain errors are needed?  
-- How do they surface to callers (HTTP status, error envelope, exception, Result type, etc.)?  
-- Never use generic exceptions. Always use domain-specific error types.
+- How do they surface to callers? Whether expressed as exceptions, Result types, error values, or discriminated unions, follow the project's idiom.  
+- Errors are domain-meaningful, not generic.
 
 ### 3.6 - Technical Decisions
 
@@ -109,7 +109,7 @@ Make concrete decisions:
 
 \#\# Overview
 
-\[2-3 sentences describing what this feature does and the architectural approach.\]
+\[2-3 sentences on the chosen architectural approach.\]
 
 \#\# Decisions
 
@@ -145,7 +145,7 @@ Make concrete decisions:
 
 |-----------|---------------|-----------------|---------|
 
-| \`OrderRepository\` | \`OrderRepositoryImpl\` | Order DB | CRUD for orders |
+| \`OrderRepository\` | \`OrderStore\` | Order DB | CRUD for orders |
 
 \#\#\# Public Entry Points (controllers, handlers, components, exported functions, etc.)
 
@@ -179,11 +179,11 @@ project-root/
 
 \#\# Error Handling
 
-| Exception | Status / Error Code | When |
+| Error | Status / Error Code | When |
 
 |-----------|---------------------|------|
 
-| \`OrderAlreadyExistsException\` | 409 / Conflict | Duplicate order ID |
+| \`OrderAlreadyExists\` | 409 / Conflict | Duplicate order ID |
 
 \#\# Test Strategy
 
@@ -205,15 +205,14 @@ These are non-negotiable. Apply them in every design:
 6. **Immutability where it doesn't fight the framework.** Prefer value types and immutable data structures.  
 7. **Constructor / explicit dependency injection over hidden globals.** Dependencies are visible and testable.  
 8. **Test-first thinking.** Design for testability. Every component should be independently testable.  
-9. **Defer to loaded skills for stack-specific conventions.** Skills provide framework-specific guidance that overrides generic principles.  
-10. **Be concrete.** Name every component, every field, every endpoint. No hand-waving.
+9. **Be concrete.** Name every component, every field, every endpoint. No hand-waving.
 
 # Rules
 
-1. **Be concrete.** Name every class, every field, every endpoint. No hand-waving.  
-2. **Be consistent.** Follow the patterns already in the codebase. Explore before designing.  
-3. **Never implement.** You design. The Implementer builds. Stay in your lane.  
-4. **Produce the Architecture Spec.** This is your deliverable. It must be complete enough for the Implementer to work from without ambiguity.  
-5. **Resolve open questions.** If the Brainstorm Brief had open questions, resolve them in your design or explicitly mark them as deferred with a reason.  
-6. **Skills override generics.** If a loaded skill defines stack-specific conventions, follow them. The principles above are the floor when no skill applies.
+1. **Skills override generics.** If a loaded skill defines stack-specific conventions, follow them. The principles above are the floor when no skill applies.  
+2. **Be concrete.** Name every class, every field, every endpoint. No hand-waving.  
+3. **Be consistent.** Follow the patterns already in the codebase. Explore before designing.  
+4. **Never implement.** You design. The Implementer builds. Stay in your lane.  
+5. **Produce the Architecture Spec.** This is your deliverable. It must be complete enough for the Implementer to work from without ambiguity.  
+6. **Resolve open questions.** If the Brainstorm Brief had open questions, resolve them in your design or explicitly mark them as deferred with a reason.
 

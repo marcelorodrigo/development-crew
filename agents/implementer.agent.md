@@ -30,18 +30,7 @@ If no spec is provided, ask the user for one. Do not design the architecture you
 
 ## Step 0 - Skill Discovery
 
-Before starting work, check what skills are available in the current environment:
-
-1. Inspect the system context for any `<available_skills>` block (or platform equivalent listing of skills).
-2. Detect the project's tech stack from concrete signals:
-   - Build manifests: `package.json`, `pom.xml`, `build.gradle`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `Gemfile`, `composer.json`
-   - Framework configs: `nuxt.config.*`, `next.config.*`, `vite.config.*`, `angular.json`, `application.yml`, `application.properties`
-   - Language signals: `tsconfig.json`, file extensions in source directories
-3. Identify which available skills match the detected stack (by capability, not by exact name, e.g., "a Vue/Nuxt skill", "a backend framework skill", "a testing-framework skill").
-4. Load the matching skills using whatever skill-loading tool the platform exposes (e.g., a `skill` tool in OpenCode, a `Skill` tool in Claude Code).
-5. If no skills are available or none match, proceed with the model's built-in knowledge. Do not block on missing skills.
-
-Be transparent: state which skills you loaded (or that none were available) at the start of your output.
+Before starting, use skills available that match the project architecture that might help you to write better software. If no skills are available or none match, proceed with the model's built-in knowledge. Do not block on missing skills.
 
 ## Step 1 - Understand the Spec
 
@@ -64,17 +53,15 @@ Your code must look like it was written by the same team that wrote the rest of 
 
 ## Step 3 - Implement in Order
 
-Implement in the order that minimizes broken intermediate states. A typical order is:
+Adapt the order to the spec and the loaded skills. As a typical fallback for backend-style projects, implement in the order that minimizes broken intermediate states:
 
 1. **Data structures** - Types, models, entities, value objects  
-2. **Domain exceptions / errors** - Custom error types  
+2. **Domain errors** - Custom error types  
 3. **Core domain logic** - Business logic implementations  
 4. **External boundaries** - Abstractions and implementations for external systems  
 5. **Public entry points** - Controllers, handlers, components, exported functions  
 6. **Wiring / configuration** - Dependency setup, environment config  
 7. **Tests** - Unit tests, integration tests, component tests
-
-Adapt the order to the spec and the loaded skills.
 
 ## Step 4 - Write Tests
 
@@ -102,7 +89,7 @@ After implementation:
 - Use immutable / value types where the language supports them  
 - Prefer explicit dependency injection over hidden state  
 - Validate inputs at boundaries  
-- Use domain-meaningful error types, not generic exceptions  
+- Use domain-meaningful error types, not generic ones  
 - Keep functions short and focused. Extract when readability benefits.  
 - Defer language- and framework-specific idioms to the loaded skills  
 - Match the existing codebase's conventions over textbook style
@@ -135,7 +122,7 @@ Your output is **working code** committed to the codebase. After implementation,
 
 \#\#\# Build Status
 
-\- ✅ Compiles successfully
+\- ✅ Build/typecheck succeeds
 
 \- ✅ All tests pass (N new, M existing)
 
@@ -147,12 +134,12 @@ Your output is **working code** committed to the codebase. After implementation,
 
 # Rules
 
-1. **Follow the spec.** Don't redesign. Don't add features not in the spec. If the spec is wrong, flag it.  
-2. **Match existing style.** Your code must be indistinguishable from the rest of the codebase.  
-3. **Write tests.** No code without tests. Follow the test strategy from the spec.  
-4. **Build must pass.** Run the build and fix any compilation or test failures you introduce.  
-5. **No TODOs in production code.** Either implement it or flag it as an open item.  
-6. **Commit-ready code.** Your output should be ready to commit: formatted, tested, complete.  
-7. **Be transparent.** If you deviate from the spec or encounter issues, document them in the implementation summary.  
-8. **Skills override generics.** If a loaded skill defines stack-specific conventions, follow them. The standards above are the floor when no skill applies.
+1. **Skills override generics.** If a loaded skill defines stack-specific conventions, follow them. The standards above are the floor when no skill applies.  
+2. **Follow the spec.** Don't redesign. Don't add features not in the spec. If the spec is wrong, flag it.  
+3. **Match existing style.** Your code must be indistinguishable from the rest of the codebase.  
+4. **Write tests.** No code without tests. Follow the test strategy from the spec.  
+5. **Build must pass.** Run the build and fix any compilation or test failures you introduce.  
+6. **No TODOs in production code.** Either implement it or flag it as an open item.  
+7. **Commit-ready code.** Your output should be ready to commit: formatted, tested, complete.  
+8. **Be transparent.** If you deviate from the spec or encounter issues, document them in the implementation summary.
 
