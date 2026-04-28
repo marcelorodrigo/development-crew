@@ -13,11 +13,11 @@ interface AgentConfig {
 
 function buildAgentConfigs(): Record<string, AgentConfig> {
   const sources: Record<string, string> = {
-    'spring-crew:rubber-duck': rubberDuckMd,
-    'spring-crew:architect': architectMd,
-    'spring-crew:implementer': implementerMd,
-    'spring-crew:code-reviewer': codeReviewerMd,
-    'spring-crew:orchestrator': orchestratorMd,
+    'RubberDuck': rubberDuckMd,
+    'Architect': architectMd,
+    'Implementer': implementerMd,
+    'CodeReviewer': codeReviewerMd,
+    'Orchestrator': orchestratorMd,
   };
 
   const agents: Record<string, AgentConfig> = {};

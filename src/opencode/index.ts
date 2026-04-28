@@ -1,9 +1,9 @@
 import type { Plugin } from '@opencode-ai/plugin';
 import { agents } from './agents';
 
-const SpringCrewPlugin: Plugin = async (_ctx) => {
+const DevelopmentCrewPlugin: Plugin = async (_ctx) => {
   return {
-    name: 'spring-crew-plugin',
+    name: 'development-crew-plugin',
     agent: agents,
     config: async (opencodeConfig: Record<string, unknown>) => {
       // Shallow per-agent merge: plugin provides defaults, user overrides win
@@ -27,4 +27,4 @@ const SpringCrewPlugin: Plugin = async (_ctx) => {
   };
 };
 
-export default SpringCrewPlugin;
+export default DevelopmentCrewPlugin;
