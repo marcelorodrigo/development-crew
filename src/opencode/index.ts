@@ -3,7 +3,7 @@ import { agents } from './agents';
 
 const DevelopmentCrewPlugin: Plugin = async (_ctx) => {
   return {
-    name: 'development-crew-plugin',
+    name: 'development-crew',
     agent: agents,
     config: async (opencodeConfig: Record<string, unknown>) => {
       // Shallow per-agent merge: plugin provides defaults, user overrides win
