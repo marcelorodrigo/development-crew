@@ -1,0 +1,311 @@
+name: Validate Plugin Manifests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  validate:
+    name: Validate plugin.json and marketplace.json
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Validate plugin.json exists and is valid JSON
+        run: |
+          if [ ! -f ".github/plugin/plugin.json" ]; then
+            echo "ERROR: .github/plugin/plugin.json not found"
+            exit 1
+          fi
+          python3 -m json.tool .github/plugin/plugin.json > /dev/null
+          echo "plugin.json is valid JSON"
+
+      - name: Validate marketplace.json exists and is valid JSON
+        run: |
+          if [ ! -f ".github/plugin/marketplace.json" ]; then
+            echo "ERROR: .github/plugin/marketplace.json not found"
+            exit 1
+          fi
+          python3 -m json.tool .github/plugin/marketplace.json > /dev/null
+          echo "marketplace.json is valid JSON"
+
+      - name: Validate plugin.json required fields
+        run: |
+          python3 - <<'EOF'
+          import json, sys, re
+
+          with open(".github/plugin/plugin.json") as f:
+              plugin = json.load(f)
+
+          errors = []
+
+          if not plugin.get("name"):
+              errors.append("plugin.json: 'name' field is missing or empty")
+          elif not re.match(r'^[a-zA-Z0-9-]+$', plugin["name"]):
+              errors.append(f"plugin.json: 'name' field '{plugin['name']}' contains invalid characters (only A-Z, a-z, 0-9, and '-' are allowed)")
+
+          if not plugin.get("description"):
+              errors.append("plugin.json: 'description' field is missing or empty")
+
+          if not plugin.get("version"):
+              errors.append("plugin.json: 'version' field is missing or empty")
+          elif not re.match(r'^\d+\.\d+\.\d+$', plugin["version"]):
+              errors.append(f"plugin.json: 'version' field '{plugin['version']}' is not a valid semantic version (expected major.minor.patch)")
+
+          if errors:
+              for e in errors:
+                  print(f"ERROR: {e}")
+              sys.exit(1)
+
+          print(f"plugin.json valid: name='{plugin['name']}', version='{plugin['version']}'")
+          EOF
+
+      - name: Validate marketplace.json required fields
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+
+          with open(".github/plugin/plugin.json") as f:
+              plugin = json.load(f)
+          with open(".github/plugin/marketplace.json") as f:
+              market = json.load(f)
+
+          plugin_name = plugin.get("name", "")
+          errors = []
+
+          if not market.get("name"):
+              errors.append("marketplace.json: 'name' field is missing or empty")
+          if not market.get("owner"):
+              errors.append("marketplace.json: 'owner' field is missing")
+          if not market.get("plugins") or not isinstance(market["plugins"], list) or len(market["plugins"]) == 0:
+              errors.append("marketplace.json: 'plugins' array is missing or empty")
+          else:
+              for i, entry in enumerate(market["plugins"]):
+                  for field in ("name", "version", "source"):
+                      if not entry.get(field):
+                          errors.append(f"marketplace.json: plugins[{i}].'{field}' is missing or empty")
+                  if entry.get("name") and entry["name"] != plugin_name:
+                      errors.append(f"marketplace.json: plugins[{i}].name '{entry['name']}' does not match plugin.json name '{plugin_name}'")
+
+          if errors:
+              for e in errors:
+                  print(f"ERROR: {e}")
+              sys.exit(1)
+
+          print(f"marketplace.json valid: name='{market['name']}', plugins={len(market['plugins'])}")
+          EOF
+
+      - name: Validate version consistency between plugin.json and marketplace.json
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+
+          with open(".github/plugin/plugin.json") as f:
+              plugin = json.load(f)
+          with open(".github/plugin/marketplace.json") as f:
+              market = json.load(f)
+
+          plugin_version = plugin.get("version", "")
+
+          mismatches = []
+          for i, entry in enumerate(market.get("plugins", [])):
+              entry_version = entry.get("version", "")
+              if plugin_version != entry_version:
+                  mismatches.append(f"plugins[{i}] has '{entry_version}'")
+
+          if mismatches:
+              print(f"ERROR: Version mismatch — plugin.json has '{plugin_version}', but: {', '.join(mismatches)}")
+              sys.exit(1)
+
+          print(f"Version consistency OK: all entries at '{plugin_version}'")
+          EOF
+
+      - name: Validate .claude-plugin/plugin.json exists and is valid JSON
+        run: |
+          if [ ! -f ".claude-plugin/plugin.json" ]; then
+            echo "ERROR: .claude-plugin/plugin.json not found"
+            exit 1
+          fi
+          python3 -m json.tool .claude-plugin/plugin.json > /dev/null
+          echo ".claude-plugin/plugin.json is valid JSON"
+
+      - name: Validate .claude-plugin/plugin.json required fields
+        run: |
+          python3 - <<'EOF'
+          import json, sys, re
+
+          with open(".claude-plugin/plugin.json") as f:
+              plugin = json.load(f)
+
+          errors = []
+
+          if not plugin.get("name"):
+              errors.append(".claude-plugin/plugin.json: 'name' field is missing or empty")
+          elif not re.match(r'^[a-zA-Z0-9-]+$', plugin["name"]):
+              errors.append(f".claude-plugin/plugin.json: 'name' field '{plugin['name']}' contains invalid characters (only A-Z, a-z, 0-9, and '-' are allowed)")
+
+          if not plugin.get("description"):
+              errors.append(".claude-plugin/plugin.json: 'description' field is missing or empty")
+
+          if not plugin.get("version"):
+              errors.append(".claude-plugin/plugin.json: 'version' field is missing or empty")
+          elif not re.match(r'^\d+\.\d+\.\d+$', plugin["version"]):
+              errors.append(f".claude-plugin/plugin.json: 'version' field '{plugin['version']}' is not a valid semantic version (expected major.minor.patch)")
+
+          if errors:
+              for e in errors:
+                  print(f"ERROR: {e}")
+              sys.exit(1)
+
+          print(f".claude-plugin/plugin.json valid: name='{plugin['name']}', version='{plugin['version']}'")
+          EOF
+
+      - name: Validate .claude-plugin/marketplace.json exists and is valid JSON
+        run: |
+          if [ ! -f ".claude-plugin/marketplace.json" ]; then
+            echo "ERROR: .claude-plugin/marketplace.json not found"
+            exit 1
+          fi
+          python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
+          echo ".claude-plugin/marketplace.json is valid JSON"
+
+      - name: Validate .claude-plugin/marketplace.json required fields
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+
+          with open(".claude-plugin/plugin.json") as f:
+              plugin = json.load(f)
+          with open(".claude-plugin/marketplace.json") as f:
+              market = json.load(f)
+
+          plugin_name = plugin.get("name", "")
+          errors = []
+
+          if not market.get("name"):
+              errors.append(".claude-plugin/marketplace.json: 'name' field is missing or empty")
+          if not market.get("owner"):
+              errors.append(".claude-plugin/marketplace.json: 'owner' field is missing")
+          if not market.get("plugins") or not isinstance(market["plugins"], list) or len(market["plugins"]) == 0:
+              errors.append(".claude-plugin/marketplace.json: 'plugins' array is missing or empty")
+          else:
+              for i, entry in enumerate(market["plugins"]):
+                  for field in ("name", "version", "source"):
+                      if not entry.get(field):
+                          errors.append(f".claude-plugin/marketplace.json: plugins[{i}].'{field}' is missing or empty")
+                  if entry.get("name") and entry["name"] != plugin_name:
+                      errors.append(f".claude-plugin/marketplace.json: plugins[{i}].name '{entry['name']}' does not match plugin.json name '{plugin_name}'")
+
+          if errors:
+              for e in errors:
+                  print(f"ERROR: {e}")
+              sys.exit(1)
+
+          print(f".claude-plugin/marketplace.json valid: name='{market['name']}', plugins={len(market['plugins'])}")
+          EOF
+
+      - name: Validate cross-file version consistency
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+
+          with open("package.json") as f:
+              pkg_version = json.load(f).get("version", "")
+
+          version_sources = {
+              "package.json $.version": pkg_version,
+          }
+
+          # Check package-lock.json versions
+          with open("package-lock.json") as f:
+              lock = json.load(f)
+              version_sources["package-lock.json $.version"] = lock.get("version", "")
+              if "packages" in lock and "" in lock["packages"]:
+                  version_sources["package-lock.json $.packages[\"\"].version"] = lock["packages"][""].get("version", "")
+
+          with open(".github/plugin/plugin.json") as f:
+              version_sources[".github/plugin/plugin.json $.version"] = json.load(f).get("version", "")
+
+          with open(".github/plugin/marketplace.json") as f:
+              market = json.load(f)
+              version_sources[".github/plugin/marketplace.json $.metadata.version"] = market.get("metadata", {}).get("version", "")
+              plugins = market.get("plugins", [])
+              for i, plugin in enumerate(plugins):
+                  version_sources[f".github/plugin/marketplace.json $.plugins[{i}].version"] = plugin.get("version", "")
+
+          with open(".claude-plugin/plugin.json") as f:
+              version_sources[".claude-plugin/plugin.json $.version"] = json.load(f).get("version", "")
+
+          with open(".claude-plugin/marketplace.json") as f:
+              market = json.load(f)
+              plugins = market.get("plugins", [])
+              for i, plugin in enumerate(plugins):
+                  version_sources[f".claude-plugin/marketplace.json $.plugins[{i}].version"] = plugin.get("version", "")
+              version_sources[".claude-plugin/marketplace.json $.metadata.version"] = market.get("metadata", {}).get("version", "")
+
+          mismatches = []
+          for source, version in version_sources.items():
+              if version != pkg_version:
+                  mismatches.append(f"  {source}: '{version}'")
+
+          if mismatches:
+              print(f"ERROR: Version mismatch — package.json has '{pkg_version}', but:")
+              for m in mismatches:
+                  print(m)
+              sys.exit(1)
+
+          print(f"Cross-file version consistency OK: all {len(version_sources)} version fields at '{pkg_version}'")
+          EOF
+
+      - name: Validate agent files have required frontmatter
+        run: |
+          python3 - <<'EOF'
+          import os, sys, re
+
+          agents_dir = "agents"
+          errors = []
+
+          if not os.path.isdir(agents_dir):
+              print(f"ERROR: '{agents_dir}' directory not found")
+              sys.exit(1)
+
+          agent_files = [f for f in os.listdir(agents_dir) if f.endswith(".agent.md")]
+
+          if not agent_files:
+              print("ERROR: No .agent.md files found in agents/")
+              sys.exit(1)
+
+          for filename in sorted(agent_files):
+              path = os.path.join(agents_dir, filename)
+              with open(path) as f:
+                  content = f.read()
+
+              content = content.replace('\r\n', '\n').replace('\r', '\n')
+
+              if not content.startswith("---"):
+                  errors.append(f"{path}: Missing YAML frontmatter (must start with ---)")
+                  continue
+
+              frontmatter_match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
+              if not frontmatter_match:
+                  errors.append(f"{path}: Malformed YAML frontmatter")
+                  continue
+
+              fm = frontmatter_match.group(1)
+
+              if not re.search(r'^name:\s*.+', fm, re.MULTILINE):
+                  errors.append(f"{path}: Missing or empty 'name' field in frontmatter")
+              if not re.search(r'^description:\s*.+', fm, re.MULTILINE):
+                  errors.append(f"{path}: Missing or empty 'description' field in frontmatter")
+
+              print(f"OK: {path}")
+
+          if errors:
+              for e in errors:
+                  print(f"ERROR: {e}")
+              sys.exit(1)
+          EOF

@@ -1,0 +1,10 @@
+# opencode plugin build output
+dist/
+node_modules/
+
+# ide
+.idea/
+*.iml
+
+# temporary files for testing/exploring
+tmp/
