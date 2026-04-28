@@ -2,6 +2,10 @@
 dist/
 node_modules/
 
+# lockfiles (project uses pnpm)
+package-lock.json
+yarn.lock
+
 # ide
 .idea/
 *.iml
