@@ -30,7 +30,7 @@
   "homepage": "https://github.com/marcelorodrigo/development-crew",
   "devDependencies": {
     "@opencode-ai/plugin": "1.14.28",
-    "@opencode-ai/sdk": "1.14.20",
+    "@opencode-ai/sdk": "1.14.28",
     "tsup": "^8.0.0",
     "typescript": "6.0.3"
   },
