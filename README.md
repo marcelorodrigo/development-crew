@@ -5,7 +5,7 @@
 
 _Five specialists that don't just write code: they think about it, they challenge you, they design it, build it, and hold it accountable._
 
-**A five-agent AI development pipeline** · Clean Architecture · UseCase pattern · Production-ready · Automated workflow orchestration
+**A five-agent AI development pipeline** · Skill-aware · Process-disciplined · Production-ready · Automated workflow orchestration
 
 ---
 
@@ -90,7 +90,7 @@ You don't switch context. You switch agents.
 
 3. The _Implementer_ reads the spec, matches your codebase's conventions, writes production code with tests, runs the build, and produces an **Implementation Summary** with everything the reviewer needs to know. Take that to the Code Reviewer.
 
-4. The _Code Reviewer_ diffs against `master`, validates the implementation against the spec and Clean Architecture principles, and delivers a categorized review. Nothing ships past it without earning it.
+4. The _Code Reviewer_ diffs against the default branch, validates the implementation against the spec and project conventions, and delivers a categorized review. Nothing ships past it without earning it.
 
 **You can also enter at any stage.**
 
@@ -234,7 +234,7 @@ _It was born in the silence before the first commit, in the moment when every de
 
 ### Architect: The Blueprint Master
 
-_The Architect has seen every pattern that ever emerged from a codebase — the elegant ones and the ones that haunt teams for years. It does not offer menus of architectural styles or ask what you prefer. It applies Clean Architecture because it works. It names every class, places every file, and defines every boundary before the Implementer writes the first line. Vagueness is its enemy. Precision is its craft._
+_The Architect has seen every pattern that ever emerged from a codebase — the elegant ones and the ones that haunt teams for years. It does not offer menus of architectural styles or ask what you prefer. It applies the style appropriate to the project's tech stack and any loaded skills. It names every class, places every file, and defines every boundary before the Implementer writes the first line. Vagueness is its enemy. Precision is its craft._
 
 **Role:** `Architecture design · Package structure · API contracts · Error handling strategy`
 
@@ -244,21 +244,21 @@ _The Architect has seen every pattern that ever emerged from a codebase — the 
 - When you need to formalize a feature or component design before coding
 - When you want exact class names, package paths, and API contracts decided upfront
 
-**Produces:** A precise, buildable **Architecture Spec** with component design, package structure, data flow, error handling, and test strategy.
+**Produces:** A precise, buildable **Architecture Spec** with component design, project structure, data flow, error handling, and test strategy.
 
-**Architectural principles enforced:**
+**Pipeline values enforced:**
 
-- Clean Architecture (Controller → UseCase → Gateway → External)
-- UseCase pattern: one class, one business operation
-- Gateway abstraction: external systems are infrastructure details
-- Constructor injection: no field injection, ever
-- Domain exceptions: no generic exceptions, ever
+- No implementation without a spec
+- Validated handoffs between phases
+- No merge without review
+- Skills override generics — stack-specific conventions come from loaded skills, not from the agents themselves
+- Be concrete — name every component, every contract
 
 ---
 
 ### Implementer: The Builder
 
-_The Implementer is what happens when discipline becomes instinct. It has read the spec. It has explored the codebase. It knows how the existing team writes code — the annotations, the test naming conventions, the assertion libraries. It does not add features that weren't asked for. It does not cut corners on tests. It writes code that looks like it was written by the same human who wrote the rest of the project. Then it runs the build, and it does not stop until it passes._
+_The Implementer is what happens when discipline becomes instinct. It has read the spec. It has explored the codebase. It knows how the existing team writes code — the language idioms, the test naming conventions, the assertion libraries. It does not add features that weren't asked for. It does not cut corners on tests. It writes code that looks like it was written by the same human who wrote the rest of the project. Then it runs the build, and it does not stop until it passes._
 
 **Role:** `Production code · Tests · Build verification · Convention matching`
 
@@ -273,7 +273,7 @@ _The Implementer is what happens when discipline becomes instinct. It has read t
 
 ### Code Reviewer: The Last Gate
 
-_Nothing ships past the Code Reviewer without earning it. It diffs against master first — always. It validates against the Architecture Spec, Clean Architecture principles, and best practices. It is not here to comment on formatting. It is here to find the bugs, the missed edge cases, the architectural violations, the tests that don't actually test anything. It is also the first to acknowledge clean, well-built code. It has seen enough bad code to recognize — and respect — the good._
+_Nothing ships past the Code Reviewer without earning it. It diffs against the default branch first — always. It validates against the Architecture Spec, project conventions, and any loaded skills. It is not here to comment on formatting. It is here to find the bugs, the missed edge cases, the architectural violations, the tests that don't actually test anything. It is also the first to acknowledge clean, well-built code. It has seen enough bad code to recognize — and respect — the good._
 
 **Role:** `Architecture compliance · Bug detection · Security · Test quality · Read-only`
 
@@ -290,6 +290,14 @@ _Nothing ships past the Code Reviewer without earning it. It diffs against maste
 - **Suggestion**: Nice to have. Non-blocking improvements.
 
 **Produces:** A **Code Review** report with findings categorized by severity, a "What's Done Well" section, and a final verdict: Approve · Approve with comments · Request changes.
+
+---
+
+## Skill Awareness
+
+Development Crew agents are **skill-aware**. When skills are available in the user's environment (e.g., via an `<available_skills>` block or a platform skill-loading tool), the Architect, Implementer, Code Reviewer, and Rubber Duck will detect the project's tech stack and load matching skills before starting work. This means the agents adapt their guidance, conventions, and review checklists to the specific frameworks and languages in use — without any manual configuration.
+
+When no skills are available, agents fall back to the model's built-in knowledge and the project's own conventions. A curated list of recommended skills per tech stack is planned as a follow-up.
 
 ---
 
