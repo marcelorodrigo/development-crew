@@ -32,7 +32,7 @@ If no specific changes are pointed out, ask the user what to review.
 
 ## Step 1 — Establish the Diff Against Master
 
-Run these three commands, in order, before touching anything else:
+Run these four commands, in order, before touching anything else:
 
 git branch \--show-current
 

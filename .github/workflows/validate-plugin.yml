@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [master]
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     name: Validate plugin.json and marketplace.json
@@ -221,11 +224,14 @@ jobs:
           }
 
           # Check package-lock.json versions
-          with open("package-lock.json") as f:
-              lock = json.load(f)
-              version_sources["package-lock.json $.version"] = lock.get("version", "")
-              if "packages" in lock and "" in lock["packages"]:
-                  version_sources["package-lock.json $.packages[\"\"].version"] = lock["packages"][""].get("version", "")
+          try:
+              with open("package-lock.json") as f:
+                  lock = json.load(f)
+                  version_sources["package-lock.json $.version"] = lock.get("version", "")
+                  if "packages" in lock and "" in lock["packages"]:
+                      version_sources["package-lock.json $.packages[\"\"].version"] = lock["packages"][""].get("version", "")
+          except FileNotFoundError:
+              pass
 
           with open(".github/plugin/plugin.json") as f:
               version_sources[".github/plugin/plugin.json $.version"] = json.load(f).get("version", "")
@@ -297,9 +303,9 @@ jobs:
 
               fm = frontmatter_match.group(1)
 
-              if not re.search(r'^name:\s*.+', fm, re.MULTILINE):
+              if not re.search(r'^name:\s*\S', fm, re.MULTILINE):
                   errors.append(f"{path}: Missing or empty 'name' field in frontmatter")
-              if not re.search(r'^description:\s*.+', fm, re.MULTILINE):
+              if not re.search(r'^description:\s*\S', fm, re.MULTILINE):
                   errors.append(f"{path}: Missing or empty 'description' field in frontmatter")
 
               print(f"OK: {path}")

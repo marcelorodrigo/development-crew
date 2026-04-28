@@ -1,7 +1,7 @@
 {
   "name": "development-crew",
   "description": "Five-agent AI crew for software development with Clean Architecture. Includes Orchestrator (workflow management), Rubber Duck (brainstorming), Architect (design), Implementer (coding), and Code Reviewer: a full development pipeline in one plugin.",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": {
     "name": "Marcelo Rodrigo",
     "url": "https://github.com/marcelorodrigo"
@@ -11,8 +11,8 @@
       "name": "Lucas Germani"
     }
   ],
-  "homepage": "https://github.com/marcelorodrigo/development-crew-plugin",
-  "repository": "https://github.com/marcelorodrigo/development-crew-plugin",
+  "homepage": "https://github.com/marcelorodrigo/development-crew",
+  "repository": "https://github.com/marcelorodrigo/development-crew",
   "license": "MIT",
   "category": "development",
   "keywords": [

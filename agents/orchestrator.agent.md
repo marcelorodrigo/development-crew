@@ -76,7 +76,7 @@ Correct response (do this): "I don't read or display code files. If you need cod
    - Generate workflow ID: `workflow-{timestamp}`
 
 2. **Set up state tracking**
-   ```
+   ```text
    [Workflow State]
    ID: workflow-1713254400
    Mode: human-in-loop
@@ -89,7 +89,7 @@ Correct response (do this): "I don't read or display code files. If you need cod
    ```
 
 3. **Announce workflow start**
-   ```
+   ```text
    Starting Development Crew Pipeline
    Mode: Human-in-the-Loop
    Starting phase: RubberDuck
@@ -111,7 +111,7 @@ For each agent in sequence: **RubberDuck → Architect → Implementer → CodeR
 - Pass: Previous agent's output artifact + handoff context
 
 Create a handoff note (internal, not shown to user):
-```
+```text
 Handoff Context:
 - From: {previous_agent}
 - To: {current_agent}
@@ -123,7 +123,7 @@ Handoff Context:
 
 **In the current session, switch to the target agent:**
 
-```
+```text
 Now switching to: {agent_name}
 
 Your input:
@@ -146,7 +146,7 @@ Expected output format: {artifact type}
 | **CodeReviewer** | `## Findings` OR `## What's Done Well`, `## Verdict` |
 
 **Validation logic:**
-```
+```text
 If artifact is missing required sections:
   - Log validation failure
   - Count retry attempts
@@ -166,23 +166,22 @@ If artifact is missing required sections:
    **CRITICAL — two-step output pattern (do NOT skip step A):**
 
    **Step A — Output the full artifact as plain text FIRST**, before calling any tool:
-   ```
+   ```text
    APPROVAL REQUIRED: {AGENT_NAME}
 
    {Full artifact content from the agent}
    ```
 
    **Step B — After the artifact is fully visible to the user, call `ask_user`** with only the decision question and choices (do NOT embed artifact content inside the question string):
-   ```
+   ```text
 Use the ask_user tool to present interactive options and capture the user's selection. Example call:
 
 ask_user({
   "question": "Review the {AGENT_NAME} output above. What is your decision?",
   "choices": [
-    "Approve: Proceed to next agent",
-    "Approve with comments: Proceed and attach comments",
-    "Request changes: Abort workflow",
-    "Provide custom input: Provide feedback to re-run agent"
+    "approve",
+    "reject",
+    "modify"
   ],
   "allow_freeform": true
 })
@@ -228,7 +227,7 @@ Repeat steps 1.1–1.5 for the next agent in the pipeline.
 
 1. **Count retry attempts** (max 3 per agent per workflow)
 2. **Provide specific feedback:**
-   ```
+   ```text
    Retry #{attempt}/3: Your output is missing required sections:
    - {missing_section_1}
    - {missing_section_2}
@@ -246,7 +245,7 @@ Repeat steps 1.1–1.5 for the next agent in the pipeline.
         ],
         "allow_freeform": true
       })
-   - **Autonomous:** Abort workflow, generate error report
+    - **Autonomous:** Abort workflow, generate error report
 
 ### If Agent Execution Fails (Exception/Timeout)
 
@@ -544,16 +543,15 @@ Users currently have no authentication mechanism...
 ```
 
 **Step B — After the artifact is visible, call ask_user with only the decision question:**
-```
+```text
 Use the ask_user tool to capture the user's selection. Example:
 
 ask_user({
   "question": "Review the RubberDuck output above. What is your decision?",
   "choices": [
-    "Approve: Proceed to next agent",
-    "Approve with comments: Proceed and attach comments",
-    "Request changes: Abort workflow",
-    "Provide custom input: Provide feedback to re-run agent"
+    "approve",
+    "reject",
+    "modify"
   ],
   "allow_freeform": true
 })
