@@ -4,7 +4,7 @@
     "name": "Marcelo Rodrigo"
   },
   "metadata": {
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Marketplace for the Development Crew AI development pipeline: five-agent development crew with workflow orchestration"
   },
   "plugins": [
@@ -15,7 +15,7 @@
         "repo": "marcelorodrigo/development-crew"
       },
       "description": "Five-agent AI crew for software development with Clean Architecture. Includes Orchestrator (workflow management), Rubber Duck (brainstorming), Architect (design), Implementer (coding), and Code Reviewer: a full development pipeline in one plugin.",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "author": {
         "name": "Marcelo Rodrigo"
       },
@@ -27,13 +27,13 @@
       "homepage": "https://github.com/marcelorodrigo/development-crew",
       "repository": "https://github.com/marcelorodrigo/development-crew",
       "license": "MIT",
-       "keywords": [
+      "keywords": [
         "development",
         "clean-architecture",
         "agents",
         "code-review",
         "architecture"
-       ],
+      ],
       "category": "development"
     }
   ]
