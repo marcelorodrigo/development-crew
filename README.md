@@ -144,6 +144,27 @@ claude plugin install development-crew@development-crew-plugin
 # Orchestrator, Rubber Duck, Architect, Implementer, Code Reviewer should appear
 ```
 
+### GitHub Copilot
+
+**Step 1** — Add the Development Crew marketplace:
+
+```bash
+copilot plugin marketplace add marcelorodrigo/development-crew
+```
+
+**Step 2** — Install the plugin:
+
+```bash
+copilot plugin install development-crew@development-crew-plugin
+```
+
+**Step 3** — Verify:
+
+```bash
+copilot plugin list
+# development-crew should appear
+```
+
 ---
 
 ## Meet the Crew
@@ -302,6 +323,8 @@ _Nothing ships past the Code Reviewer without earning it. It diffs against maste
 
 ## Updating
 
+### opencode
+
 Re-run the install command to get the latest version:
 
 ```bash
@@ -309,6 +332,52 @@ opencode plugin @marcelorodrigo/opencode-development-crew --global
 ```
 
 Or update the package version in your `opencode.json` manually.
+
+### Claude Code
+
+```bash
+claude plugin update development-crew@development-crew-plugin
+```
+
+### GitHub Copilot
+
+```bash
+copilot plugin update development-crew
+```
+
+---
+
+## Uninstalling
+
+### opencode
+
+Remove the plugin entry from your `opencode.json`:
+
+```json
+{
+  "plugin": []
+}
+```
+
+Or if installed globally, remove `@marcelorodrigo/opencode-development-crew` from `~/.config/opencode/opencode.json`.
+
+### Claude Code
+
+```bash
+claude plugin uninstall development-crew@development-crew-plugin
+```
+
+### GitHub Copilot
+
+```bash
+copilot plugin uninstall development-crew
+```
+
+To also remove the marketplace:
+
+```bash
+copilot plugin marketplace remove development-crew-plugin
+```
 
 ---
 
