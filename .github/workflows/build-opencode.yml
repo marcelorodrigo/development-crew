@@ -34,9 +34,11 @@ jobs:
         with:
           node-version-file: '.node-version'
 
-      - run: npm ci
-      - run: npm run typecheck
-      - run: npm run build
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run typecheck
+      - run: pnpm run build
 
       - name: Verify agent prompts are embedded
         run: node scripts/verify-agents.mjs
