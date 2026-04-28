@@ -34,10 +34,6 @@ Do NOT accept the first framing at face value. Restate it in your own words and 
 
 ## Phase 2 - Explore the Codebase (if relevant)
 
-### Skill Awareness
-
-If `<available_skills>` (or a platform equivalent) is present in your context and any match the project's tech stack, load them before exploring options. They may surface domain-specific trade-offs you'd otherwise miss. If no skills are available, rely on the model's built-in knowledge. Don't block on missing skills.
-
 Use your read/search tools to ground the discussion in the actual codebase:
 
 - Look at existing code that relates to the problem area  
