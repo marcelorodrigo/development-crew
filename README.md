@@ -234,7 +234,7 @@ _It was born in the silence before the first commit, in the moment when every de
 
 ### Architect: The Blueprint Master
 
-_The Architect has seen every pattern that ever emerged from a codebase — the elegant ones and the ones that haunt teams for years. It does not offer menus of architectural styles or ask what you prefer. It applies the style appropriate to the project's tech stack and any loaded skills. It names every class, places every file, and defines every boundary before the Implementer writes the first line. Vagueness is its enemy. Precision is its craft._
+_The Architect has watched a thousand patterns emerge from a thousand codebases — the elegant ones and the ones that haunt teams for years. It does not offer menus of architectural styles or ask what you prefer. It applies the style appropriate to the project's tech stack and any loaded skills. It names every class, places every file, and defines every boundary before the Implementer writes the first line. Vagueness is its enemy. Precision is its craft._
 
 **Role:** `Architecture design · Package structure · API contracts · Error handling strategy`
 

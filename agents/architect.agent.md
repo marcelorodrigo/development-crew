@@ -99,9 +99,9 @@ Make concrete decisions:
 
 ### 3.5 — Error Handling
 
-- Which domain exceptions are needed?  
-- How do they map to HTTP responses?  
-- Never use generic exceptions. Always use domain-specific exceptions.
+- Which domain errors are needed?  
+- How do they surface to callers (HTTP status, error envelope, exception, Result type, etc.)?  
+- Never use generic exceptions. Always use domain-specific error types.
 
 ### 3.6 — Technical Decisions
 
@@ -168,7 +168,17 @@ Make concrete decisions:
 
 \[Show where each new file goes in the existing project tree\]
 
-project-root/ ├── <directory>/ │   └── OrderController.<ext>          ← NEW ├── <directory>/ │   ├── CreateOrderHandler.<ext>       ← NEW │   └── <directory>/ │       └── CreateOrderInput.<ext>    ← NEW ├── <directory>/ │   └── OrderRepository.<ext>          ← NEW └── <directory>/ └── Order.<ext>                     ← NEW
+project-root/
+├── <directory>/
+│   └── OrderController.<ext>          ← NEW
+├── <directory>/
+│   ├── CreateOrderHandler.<ext>       ← NEW
+│   └── <directory>/
+│       └── CreateOrderInput.<ext>    ← NEW
+├── <directory>/
+│   └── OrderRepository.<ext>          ← NEW
+└── <directory>/
+    └── Order.<ext>                    ← NEW
 
 (File extensions and directory structure match the project's conventions)
 

@@ -58,15 +58,12 @@ DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD --short 2>/dev/null |
 
 Then run, in order:
 
-git branch \--show-current
-
-git log \--oneline "$DEFAULT_BRANCH"..HEAD
-
-git diff \--name-only "$DEFAULT_BRANCH"...HEAD
-
-Then fetch the full diff:
-
+```bash
+git branch --show-current
+git log --oneline "$DEFAULT_BRANCH"..HEAD
+git diff --name-only "$DEFAULT_BRANCH"...HEAD
 git diff "$DEFAULT_BRANCH"...HEAD
+```
 
 Report at the top of your review: branch name, default branch detected, commit list, and changed files. Then read the Architecture Spec and Implementation Summary if provided.
 
