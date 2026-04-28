@@ -3,9 +3,14 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+
+  - package-ecosystem: "npm"
+    directory: "/.opencode"
+    schedule:
+      interval: "daily"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"

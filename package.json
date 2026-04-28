@@ -1,7 +1,7 @@
 {
   "name": "@marcelorodrigo/opencode-development-crew",
-  "version": "0.3.2",
-  "description": "Spring Boot development agents for opencode: Orchestrator, Rubber Duck, Architect, Implementer, Code Reviewer",
+  "version": "0.0.0",
+  "description": "Development agents for opencode: Orchestrator, Rubber Duck, Architect, Implementer and Code Reviewer",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,7 +19,7 @@
   "keywords": [
     "opencode",
     "opencode-plugin",
-    "spring-boot",
+    "development",
     "clean-architecture"
   ],
   "author": "Marcelo Rodrigo",
