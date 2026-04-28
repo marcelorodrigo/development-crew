@@ -235,17 +235,17 @@ Repeat steps 1.1–1.5 for the next agent in the pipeline.
    Please regenerate your output with ALL required sections.
    ```
 3. **If max retries exceeded:**
-    - **Human-in-loop:** Present error to user using the ask_user tool with these choices and capture the user's selection:
-      ask_user({
-        "question": "An error occurred in {agent_name}: {error_summary}\nWhat would you like to do?",
-        "choices": [
-          "Skip this agent (dangerous, requires confirmation)",
-          "Retry manually with different input",
-          "Abort workflow"
-        ],
-        "allow_freeform": true
-      })
-    - **Autonomous:** Abort workflow, generate error report
+   - **Human-in-loop:** Present error to user using the ask_user tool with these choices and capture the user's selection:
+     ask_user({
+       "question": "An error occurred in {agent_name}: {error_summary}\nWhat would you like to do?",
+       "choices": [
+         "Skip this agent (dangerous, requires confirmation)",
+         "Retry manually with different input",
+         "Abort workflow"
+       ],
+       "allow_freeform": true
+     })
+   - **Autonomous:** Abort workflow, generate error report
 
 ### If Agent Execution Fails (Exception/Timeout)
 
