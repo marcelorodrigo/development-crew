@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.0.2...opencode-development-crew-v0.1.0) (2026-04-29)
+
+
+### Features
+
+* **agents:** Migrate to domain-agnostic, skill-aware pipeline prompts ([#10](https://github.com/marcelorodrigo/development-crew/issues/10)) ([18ab419](https://github.com/marcelorodrigo/development-crew/commit/18ab4190da76127f2fd13f4ac1bbe1b4aa570662))
+
 ## [0.0.2](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.0.1...opencode-development-crew-v0.0.2) (2026-04-28)
 
 
