@@ -12,8 +12,8 @@ importers:
         specifier: 1.14.28
         version: 1.14.28
       '@opencode-ai/sdk':
-        specifier: 1.14.28
-        version: 1.14.28
+        specifier: 1.14.29
+        version: 1.14.29
       tsup:
         specifier: ^8.0.0
         version: 8.5.1(typescript@6.0.3)(yaml@2.8.3)
@@ -235,6 +235,9 @@ packages:
 
   '@opencode-ai/sdk@1.14.28':
     resolution: {integrity: sha512-qRFJfD+Zdz3jHHSupW4F6Io1ZFrQ6gCRFlG50O6kEU9xRxrBpK0wGvP+Y5VwwvD/gH9WKMHYinlQpDVI9/lgJQ==}
+
+  '@opencode-ai/sdk@1.14.29':
+    resolution: {integrity: sha512-y6wNTlHhgfwLdp01EwdnMFVxUS1FLgz7MZh7H3+jROG2v02GqGDy/gPH3ME0kI+sqQ4qSlk/9AJ+YbKAruPaZw==}
 
   '@rollup/rollup-android-arm-eabi@4.60.2':
     resolution: {integrity: sha512-dnlp69efPPg6Uaw2dVqzWRfAWRnYVb1XJ8CyyhIbZeaq4CA5/mLeZ1IEt9QqQxmbdvagjLIm2ZL8BxXv5lH4Yw==}
@@ -777,6 +780,10 @@ snapshots:
       zod: 4.1.8
 
   '@opencode-ai/sdk@1.14.28':
+    dependencies:
+      cross-spawn: 7.0.6
+
+  '@opencode-ai/sdk@1.14.29':
     dependencies:
       cross-spawn: 7.0.6
 
