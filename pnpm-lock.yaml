@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@opencode-ai/plugin':
-        specifier: 1.14.28
-        version: 1.14.28
+        specifier: 1.14.30
+        version: 1.14.30
       '@opencode-ai/sdk':
         specifier: 1.14.30
         version: 1.14.30
@@ -222,8 +222,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@opencode-ai/plugin@1.14.28':
-    resolution: {integrity: sha512-cHJo7t1jwrzbkIVmNgggdWh4cyOVGw5fnbSpuYeL6qwfmH3g/6YLWtw5ZYEP6detUkEebT08mHXDGmsMUpQa+A==}
+  '@opencode-ai/plugin@1.14.30':
+    resolution: {integrity: sha512-O1y6qR349R5XJtB76Vx4TO/uvLkqNvdsgxtj2ZpWoygb3rtrkuVMiBsrcL2WfuyyaLJnPmbnkeigcdm42r09Hg==}
     peerDependencies:
       '@opentui/core': '>=0.1.105'
       '@opentui/solid': '>=0.1.105'
@@ -232,9 +232,6 @@ packages:
         optional: true
       '@opentui/solid':
         optional: true
-
-  '@opencode-ai/sdk@1.14.28':
-    resolution: {integrity: sha512-qRFJfD+Zdz3jHHSupW4F6Io1ZFrQ6gCRFlG50O6kEU9xRxrBpK0wGvP+Y5VwwvD/gH9WKMHYinlQpDVI9/lgJQ==}
 
   '@opencode-ai/sdk@1.14.30':
     resolution: {integrity: sha512-OgPEDvALekHZIjByo/okJ699aLPn+XtsVxgZxUqE8TlzAG7TtskMGFl0fro8O0T2p+nkOT/LstnKGbECvc0+YA==}
@@ -433,8 +430,8 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  effect@4.0.0-beta.48:
-    resolution: {integrity: sha512-MMAM/ZabuNdNmgXiin+BAanQXK7qM8mlt7nfXDoJ/Gn9V8i89JlCq+2N0AiWmqFLXjGLA0u3FjiOjSOYQk5uMw==}
+  effect@4.0.0-beta.57:
+    resolution: {integrity: sha512-rg32VgXnLKaPRs9tbRDaZ5jxmzNY7ojXt85gSHGUTwdlbWH5Ik+OCUY2q14TXliygPGoHwCAvNWS4bQJOqf00g==}
 
   esbuild@0.27.7:
     resolution: {integrity: sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w==}
@@ -644,8 +641,8 @@ packages:
   ufo@1.6.3:
     resolution: {integrity: sha512-yDJTmhydvl5lJzBmy/hyOAA0d+aqCBuwl818haVdYCRrWV84o7YyeVm4QlVHStqNrrJSTb6jKuFAVqAFsr+K3Q==}
 
-  uuid@13.0.0:
-    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
+  uuid@13.0.1:
+    resolution: {integrity: sha512-9ezox2roIft6ExBVTVqibSd5dc5/47Sw/uY6b4SjQUT2TzQ0tltNquWA46y4xPQmdZYqvnio22SgWd41M86+jw==}
     hasBin: true
 
   which@2.0.2:
@@ -773,15 +770,11 @@ snapshots:
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
     optional: true
 
-  '@opencode-ai/plugin@1.14.28':
+  '@opencode-ai/plugin@1.14.30':
     dependencies:
-      '@opencode-ai/sdk': 1.14.28
-      effect: 4.0.0-beta.48
+      '@opencode-ai/sdk': 1.14.30
+      effect: 4.0.0-beta.57
       zod: 4.1.8
-
-  '@opencode-ai/sdk@1.14.28':
-    dependencies:
-      cross-spawn: 7.0.6
 
   '@opencode-ai/sdk@1.14.30':
     dependencies:
@@ -900,7 +893,7 @@ snapshots:
   detect-libc@2.1.2:
     optional: true
 
-  effect@4.0.0-beta.48:
+  effect@4.0.0-beta.57:
     dependencies:
       '@standard-schema/spec': 1.1.0
       fast-check: 4.7.0
@@ -910,7 +903,7 @@ snapshots:
       msgpackr: 1.11.10
       multipasta: 0.2.7
       toml: 4.1.1
-      uuid: 13.0.0
+      uuid: 13.0.1
       yaml: 2.8.3
 
   esbuild@0.27.7:
@@ -1148,7 +1141,7 @@ snapshots:
 
   ufo@1.6.3: {}
 
-  uuid@13.0.0: {}
+  uuid@13.0.1: {}
 
   which@2.0.2:
     dependencies:
