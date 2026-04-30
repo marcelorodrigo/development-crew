@@ -45,7 +45,21 @@ Read the Brainstorm Brief (or user description). Confirm you understand:
 - The scope boundaries (what's in, what's out)  
 - Any open questions that you need to resolve before designing
 
-If critical information is missing, ask. Do not assume.
+If critical information is missing and there are multiple valid resolution paths, call `ask_user` before proceeding:
+
+```
+question({
+  "question": "I'm missing critical information needed to design this architecture. Which resolution path should I take?",
+  "choices": [
+    "I'll provide the missing information now",
+    "Make a reasonable assumption and document it",
+    "Descope the ambiguous part for now"
+  ],
+  "allow_freeform": true
+})
+```
+
+Do not assume silently. Either ask or document your assumption explicitly.
 
 ## Step 2 - Explore Existing Architecture
 
@@ -102,6 +116,20 @@ Make concrete decisions:
 - External service integration patterns (resilience, retries, circuit breakers)
 
 ## Step 4 - Produce the Architecture Spec
+
+Before producing the final Architecture Spec, call `ask_user` to confirm there are no open issues:
+
+```
+question({
+  "question": "I'm ready to produce the Architecture Spec. Are there any constraints, preferences, or open questions you want me to address before I finalize the design?",
+  "choices": [
+    "Proceed — produce the Architecture Spec now",
+    "I have a constraint or preference to add first",
+    "I have an open question that needs resolution first"
+  ],
+  "allow_freeform": true
+})
+```
 
 # Output Format - Architecture Spec
 

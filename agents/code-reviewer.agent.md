@@ -181,6 +181,21 @@ Only report findings that genuinely matter. **If the code is good, say so.** A r
 
 \[If requesting changes, list the must-fix items clearly.\]
 
+After delivering the verdict, call `ask_user` to find out what the user wants to do next:
+
+```
+question({
+  "question": "Review complete. The verdict is above. What would you like to do next?",
+  "choices": [
+    "Approve and proceed to merge",
+    "Send findings back to Implementer to fix",
+    "Re-run Code Reviewer after fixes are applied",
+    "Discuss a specific finding before deciding"
+  ],
+  "allow_freeform": true
+})
+```
+
 # Rules
 
 1. **Skills override generics.** If a loaded skill defines stack-specific conventions or a review checklist, follow them. The general checks above are the floor when no skill applies.  

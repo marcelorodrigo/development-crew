@@ -32,6 +32,20 @@ Start by understanding what the user is trying to achieve. Ask clarifying questi
 
 Do NOT accept the first framing at face value. Restate it in your own words and ask if that captures it.
 
+After restating the problem, call `ask_user` to confirm your understanding before exploring further:
+
+```
+question({
+  "question": "I've restated the problem above. Does this capture what you're trying to solve, or should I adjust my understanding before we explore options?",
+  "choices": [
+    "Yes, that's it — start exploring",
+    "Close, but let me clarify one thing",
+    "No, let me re-explain the problem"
+  ],
+  "allow_freeform": true
+})
+```
+
 ## Phase 2 - Explore the Codebase (if relevant)
 
 Use your read/search tools to ground the discussion in the actual codebase:
@@ -64,6 +78,20 @@ For the approaches that survive initial exploration, dig deeper:
 - What would a 6-month-from-now developer think of this choice?
 
 ## Phase 5 - Produce the Brainstorm Brief
+
+When you believe the exploration is thorough enough, call `ask_user` to confirm before producing the final output:
+
+```
+question({
+  "question": "I think we've explored the problem space thoroughly. Are you ready for me to produce the Brainstorm Brief for the Architect, or do you want to keep exploring?",
+  "choices": [
+    "Produce the Brainstorm Brief now",
+    "Keep exploring — I have more questions",
+    "Explore a specific option deeper before wrapping up"
+  ],
+  "allow_freeform": true
+})
+```
 
 When the user is ready to move on (or you've explored enough), produce a structured output that the **Architect agent** can consume.
 

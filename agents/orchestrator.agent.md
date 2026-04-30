@@ -173,15 +173,15 @@ If artifact is missing required sections:
    ```
 
    **Step B - After the artifact is fully visible to the user, call `ask_user`** with only the decision question and choices (do NOT embed artifact content inside the question string):
-   ```text
-Use the ask_user tool to present interactive options and capture the user's selection. Example call:
 
-ask_user({
+```
+question({
   "question": "Review the {AGENT_NAME} output above. What is your decision?",
   "choices": [
-    "approve",
-    "reject",
-    "modify"
+    "Approve: Proceed to next agent",
+    "Approve with comments: Proceed and attach comments to the next agent",
+    "Request changes: Abort workflow and provide feedback",
+    "Provide custom input: Provide feedback to re-run this agent"
   ],
   "allow_freeform": true
 })
@@ -235,16 +235,18 @@ Repeat steps 1.1–1.5 for the next agent in the pipeline.
    Please regenerate your output with ALL required sections.
    ```
 3. **If max retries exceeded:**
-   - **Human-in-loop:** Present error to user using the ask_user tool with these choices and capture the user's selection:
-     ask_user({
-       "question": "An error occurred in {agent_name}: {error_summary}\nWhat would you like to do?",
+   - **Human-in-loop:** Call `ask_user` with these choices:
+     ```
+     question({
+       "question": "Agent {agent_name} has failed {N} times and cannot produce a valid artifact. What would you like to do?",
        "choices": [
-         "Skip this agent (dangerous, requires confirmation)",
-         "Retry manually with different input",
+         "Retry manually: I will provide refined input",
+         "Skip this agent (dangerous — requires confirmation)",
          "Abort workflow"
        ],
        "allow_freeform": true
      })
+     ```
    - **Autonomous:** Abort workflow, generate error report
 
 ### If Agent Execution Fails (Exception/Timeout)
@@ -543,15 +545,14 @@ Users currently have no authentication mechanism...
 ```
 
 **Step B - After the artifact is visible, call ask_user with only the decision question:**
-```text
-Use the ask_user tool to capture the user's selection. Example:
-
-ask_user({
+```
+question({
   "question": "Review the Rubber Duck output above. What is your decision?",
   "choices": [
-    "approve",
-    "reject",
-    "modify"
+    "Approve: Proceed to Architect",
+    "Approve with comments: Proceed and attach comments to Architect",
+    "Request changes: Abort workflow and provide feedback",
+    "Provide custom input: Provide feedback to re-run Rubber Duck"
   ],
   "allow_freeform": true
 })
@@ -669,20 +670,18 @@ Errors:
 - Attempt 1: Missing "## Package Structure"
 - Attempt 2: Missing "## Data Flow"
 - Attempt 3: Missing both sections
+```
 
-Use the ask_user tool to present these choices and capture the user's selection. Example:
-
-ask_user({
-  "question": "One of the Architect retries has failed repeatedly. How should we proceed?",
+```
+question({
+  "question": "Architect has failed 3 times to produce a valid Architecture Spec. What would you like to do?",
   "choices": [
-    "Retry manually with refined input",
-    "Skip Architect (dangerous - not recommended)",
+    "Retry manually: I will provide refined input",
+    "Skip Architect (dangerous — not recommended)",
     "Abort workflow"
   ],
   "allow_freeform": true
 })
-
-What would you like to do?
 ```
 
 **Orchestrator (Autonomous):**
@@ -769,9 +768,11 @@ Orchestrator: "Now switching to: Architect"
 ### Correct Pattern 2: Delegation Response
 **User asks technical question:**
 ```text
-Orchestrator: "I'm the workflow orchestrator. I don't provide technical answers myself.
-Use the ask_user tool to present interactive choices to the user. Example:
-ask_user({
+Orchestrator: "I'm the workflow orchestrator. I don't provide technical answers myself."
+```
+
+```
+question({
   "question": "What would you like to do?",
   "choices": [
     "Start full pipeline (Rubber Duck → Architect → Implementer → Code Reviewer)",
@@ -780,8 +781,6 @@ ask_user({
   ],
   "allow_freeform": true
 })
-
-What would you like?"
 ```
 
 ### Correct Pattern 3: Pure Validation (Not Content Judgment)
