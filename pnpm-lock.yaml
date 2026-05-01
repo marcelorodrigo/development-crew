@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@opencode-ai/plugin':
-        specifier: 1.14.30
-        version: 1.14.30
+        specifier: 1.14.31
+        version: 1.14.31
       '@opencode-ai/sdk':
         specifier: 1.14.30
         version: 1.14.30
@@ -222,11 +222,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@opencode-ai/plugin@1.14.30':
-    resolution: {integrity: sha512-O1y6qR349R5XJtB76Vx4TO/uvLkqNvdsgxtj2ZpWoygb3rtrkuVMiBsrcL2WfuyyaLJnPmbnkeigcdm42r09Hg==}
+  '@opencode-ai/plugin@1.14.31':
+    resolution: {integrity: sha512-ZF7UoNKtZDtgW/2KrcFw5I7R2HRj/NigBuRwKPonvSZS36LnghZ7PYcXYZFGCjEgBmLUMMrLVgxccKLyxsgB0g==}
     peerDependencies:
-      '@opentui/core': '>=0.1.105'
-      '@opentui/solid': '>=0.1.105'
+      '@opentui/core': '>=0.2.0'
+      '@opentui/solid': '>=0.2.0'
     peerDependenciesMeta:
       '@opentui/core':
         optional: true
@@ -235,6 +235,9 @@ packages:
 
   '@opencode-ai/sdk@1.14.30':
     resolution: {integrity: sha512-OgPEDvALekHZIjByo/okJ699aLPn+XtsVxgZxUqE8TlzAG7TtskMGFl0fro8O0T2p+nkOT/LstnKGbECvc0+YA==}
+
+  '@opencode-ai/sdk@1.14.31':
+    resolution: {integrity: sha512-QaV+ti3NYUITmgIDqtNMqGIYBXJOx2zheN1g+7w4HC8QQsbaW1c7glxXExQHRbdUzcQPP2vUQhnXOcEsTw5CcQ==}
 
   '@rollup/rollup-android-arm-eabi@4.60.2':
     resolution: {integrity: sha512-dnlp69efPPg6Uaw2dVqzWRfAWRnYVb1XJ8CyyhIbZeaq4CA5/mLeZ1IEt9QqQxmbdvagjLIm2ZL8BxXv5lH4Yw==}
@@ -770,13 +773,17 @@ snapshots:
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
     optional: true
 
-  '@opencode-ai/plugin@1.14.30':
+  '@opencode-ai/plugin@1.14.31':
     dependencies:
-      '@opencode-ai/sdk': 1.14.30
+      '@opencode-ai/sdk': 1.14.31
       effect: 4.0.0-beta.57
       zod: 4.1.8
 
   '@opencode-ai/sdk@1.14.30':
+    dependencies:
+      cross-spawn: 7.0.6
+
+  '@opencode-ai/sdk@1.14.31':
     dependencies:
       cross-spawn: 7.0.6
 
