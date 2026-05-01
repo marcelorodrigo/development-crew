@@ -181,7 +181,7 @@ Only report findings that genuinely matter. **If the code is good, say so.** A r
 
 \[If requesting changes, list the must-fix items clearly.\]
 
-After delivering the verdict, call `ask_user` to find out what the user wants to do next:
+After delivering the verdict, call `question` to find out what the user wants to do next:
 
 ```
 question({

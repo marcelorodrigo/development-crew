@@ -32,7 +32,7 @@ Start by understanding what the user is trying to achieve. Ask clarifying questi
 
 Do NOT accept the first framing at face value. Restate it in your own words and ask if that captures it.
 
-After restating the problem, call `ask_user` to confirm your understanding before exploring further:
+After restating the problem, call `question` to confirm your understanding before exploring further:
 
 ```
 question({
@@ -79,7 +79,7 @@ For the approaches that survive initial exploration, dig deeper:
 
 ## Phase 5 - Produce the Brainstorm Brief
 
-When you believe the exploration is thorough enough, call `ask_user` to confirm before producing the final output:
+When you believe the exploration is thorough enough, call `question` to confirm before producing the final output:
 
 ```
 question({

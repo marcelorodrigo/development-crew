@@ -188,6 +188,14 @@ question({
 ```
 
 2. **Handle user response:**
+
+   First, normalize the choice using this mapping (mapApprovalChoiceToAction):
+   - "Approve: Proceed to next agent" → "approve"
+   - "Approve with comments: Proceed and attach comments to the next agent" → "approve" (preserve comments)
+   - "Request changes: Abort workflow and provide feedback" → "reject"
+   - "Provide custom input: Provide feedback to re-run this agent" → "modify"
+
+   Then process the normalized action:
    - **approve:** Record approval, proceed to next agent
    - **reject:** Record rejection with reason, abort workflow, generate final report
    - **modify:** Ask for modification feedback, re-invoke current agent with feedback

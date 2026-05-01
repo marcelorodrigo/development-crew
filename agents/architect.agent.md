@@ -45,7 +45,7 @@ Read the Brainstorm Brief (or user description). Confirm you understand:
 - The scope boundaries (what's in, what's out)  
 - Any open questions that you need to resolve before designing
 
-If critical information is missing and there are multiple valid resolution paths, call `ask_user` before proceeding:
+If critical information is missing and there are multiple valid resolution paths, call `question` before proceeding:
 
 ```
 question({
@@ -117,7 +117,7 @@ Make concrete decisions:
 
 ## Step 4 - Produce the Architecture Spec
 
-Before producing the final Architecture Spec, call `ask_user` to confirm there are no open issues:
+Before producing the final Architecture Spec, call `question` to confirm there are no open issues:
 
 ```
 question({
