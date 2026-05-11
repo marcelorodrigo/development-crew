@@ -9,14 +9,14 @@ importers:
   .:
     devDependencies:
       '@opencode-ai/plugin':
-        specifier: 1.14.41
-        version: 1.14.41
+        specifier: 1.14.48
+        version: 1.14.48
       '@opencode-ai/sdk':
         specifier: 1.14.48
         version: 1.14.48
       tsup:
         specifier: ^8.0.0
-        version: 8.5.1(typescript@6.0.3)(yaml@2.8.4)
+        version: 8.5.1(typescript@6.0.3)(yaml@2.9.0)
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -222,19 +222,19 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@opencode-ai/plugin@1.14.41':
-    resolution: {integrity: sha512-Q/QdDKSfHyYX+Xqd79o4XgyZKqF8h5qgqgfmOQbKVLhbduc9zMYdpV2yvWT6gaJPrpOftpka/kpr56PCqzetYQ==}
+  '@opencode-ai/plugin@1.14.48':
+    resolution: {integrity: sha512-pb2ywByzn4i35WWJquEYyb8lDC/ph1PLXT+heucJN6Y9U/oeSw98JQV93IG7M6BUBks6MKD3DGDJdQfyD6x0rA==}
     peerDependencies:
-      '@opentui/core': '>=0.2.2'
-      '@opentui/solid': '>=0.2.2'
+      '@opentui/core': '>=0.2.6'
+      '@opentui/keymap': '>=0.2.6'
+      '@opentui/solid': '>=0.2.6'
     peerDependenciesMeta:
       '@opentui/core':
         optional: true
+      '@opentui/keymap':
+        optional: true
       '@opentui/solid':
         optional: true
-
-  '@opencode-ai/sdk@1.14.41':
-    resolution: {integrity: sha512-RYb2dCUv0TWIvBNnnO6ANbAPYri6rKuWizSoVFw/Pw+SCDj9ASHM5gAZ+jkskp8gYMfLLHe/Fpkun/9mr8m0IQ==}
 
   '@opencode-ai/sdk@1.14.48':
     resolution: {integrity: sha512-wKM86jCzV/ZApyWrdm3uP8XdWcS0LMbu3FV+OWz1ChiGGg1wiIWNGMJs5CY8/QX2/rUuZrd1Q1DqvdamZ0zLeg==}
@@ -441,8 +441,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  fast-check@4.7.0:
-    resolution: {integrity: sha512-NsZRtqvSSoCP0HbNjUD+r1JH8zqZalyp6gLY9e7OYs7NK9b6AHOs2baBFeBG7bVNsuoukh89x2Yg3rPsul8ziQ==}
+  fast-check@4.8.0:
+    resolution: {integrity: sha512-GOJ158CUMnN6cSahsv4+ExARvIDuzzinFjkp0E9WtiBa5zcVeLozVkWaE4IzFcc+Y48Wp1EDlUZsXRyAztQcSg==}
     engines: {node: '>=12.17.0'}
 
   fdir@6.5.0:
@@ -653,8 +653,8 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
-  yaml@2.8.4:
-    resolution: {integrity: sha512-ml/JPOj9fOQK8RNnWojA67GbZ0ApXAUlN2UQclwv2eVgTgn7O9gg9o7paZWKMp4g0H3nTLtS9LVzhkpOFIKzog==}
+  yaml@2.9.0:
+    resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
     engines: {node: '>= 14.6'}
     hasBin: true
 
@@ -773,15 +773,11 @@ snapshots:
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
     optional: true
 
-  '@opencode-ai/plugin@1.14.41':
+  '@opencode-ai/plugin@1.14.48':
     dependencies:
-      '@opencode-ai/sdk': 1.14.41
+      '@opencode-ai/sdk': 1.14.48
       effect: 4.0.0-beta.59
       zod: 4.1.8
-
-  '@opencode-ai/sdk@1.14.41':
-    dependencies:
-      cross-spawn: 7.0.6
 
   '@opencode-ai/sdk@1.14.48':
     dependencies:
@@ -903,7 +899,7 @@ snapshots:
   effect@4.0.0-beta.59:
     dependencies:
       '@standard-schema/spec': 1.1.0
-      fast-check: 4.7.0
+      fast-check: 4.8.0
       find-my-way-ts: 0.1.6
       ini: 6.0.0
       kubernetes-types: 1.30.0
@@ -911,7 +907,7 @@ snapshots:
       multipasta: 0.2.7
       toml: 4.1.1
       uuid: 13.0.2
-      yaml: 2.8.4
+      yaml: 2.9.0
 
   esbuild@0.27.7:
     optionalDependencies:
@@ -942,7 +938,7 @@ snapshots:
       '@esbuild/win32-ia32': 0.27.7
       '@esbuild/win32-x64': 0.27.7
 
-  fast-check@4.7.0:
+  fast-check@4.8.0:
     dependencies:
       pure-rand: 8.4.0
 
@@ -1035,11 +1031,11 @@ snapshots:
       mlly: 1.8.2
       pathe: 2.0.3
 
-  postcss-load-config@6.0.1(yaml@2.8.4):
+  postcss-load-config@6.0.1(yaml@2.9.0):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
-      yaml: 2.8.4
+      yaml: 2.9.0
 
   pure-rand@8.4.0: {}
 
@@ -1117,7 +1113,7 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
-  tsup@8.5.1(typescript@6.0.3)(yaml@2.8.4):
+  tsup@8.5.1(typescript@6.0.3)(yaml@2.9.0):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.27.7)
       cac: 6.7.14
@@ -1128,7 +1124,7 @@ snapshots:
       fix-dts-default-cjs-exports: 1.0.1
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(yaml@2.8.4)
+      postcss-load-config: 6.0.1(yaml@2.9.0)
       resolve-from: 5.0.0
       rollup: 4.60.2
       source-map: 0.7.6
@@ -1154,6 +1150,6 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
-  yaml@2.8.4: {}
+  yaml@2.9.0: {}
 
   zod@4.1.8: {}
