@@ -3,6 +3,7 @@ import architectMd from '../../agents/architect.agent.md';
 import implementerMd from '../../agents/implementer.agent.md';
 import codeReviewerMd from '../../agents/code-reviewer.agent.md';
 import orchestratorMd from '../../agents/orchestrator.agent.md';
+import repoScoutMd from '../../agents/repo-scout.agent.md';
 
 import { parseAgentMd } from './parse-agent-md';
 
@@ -18,6 +19,7 @@ function buildAgentConfigs(): Record<string, AgentConfig> {
     'Implementer': implementerMd,
     'CodeReviewer': codeReviewerMd,
     'Orchestrator': orchestratorMd,
+    'RepoScout': repoScoutMd,
   };
 
   const agents: Record<string, AgentConfig> = {};
