@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.1.0...opencode-development-crew-v0.1.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* **agents:** Add question tool calls for user interaction at decision points ([#17](https://github.com/marcelorodrigo/development-crew/issues/17)) ([6c14856](https://github.com/marcelorodrigo/development-crew/commit/6c14856cd287374d8981dd9162cd56348290a5f3))
+
 ## [0.1.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.0.2...opencode-development-crew-v0.1.0) (2026-04-29)
 
 
