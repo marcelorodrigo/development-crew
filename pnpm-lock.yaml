@@ -12,8 +12,8 @@ importers:
         specifier: 1.14.41
         version: 1.14.41
       '@opencode-ai/sdk':
-        specifier: 1.14.39
-        version: 1.14.39
+        specifier: 1.14.48
+        version: 1.14.48
       tsup:
         specifier: ^8.0.0
         version: 8.5.1(typescript@6.0.3)(yaml@2.8.4)
@@ -233,11 +233,11 @@ packages:
       '@opentui/solid':
         optional: true
 
-  '@opencode-ai/sdk@1.14.39':
-    resolution: {integrity: sha512-hguOA5huhys7zwCR3ESbSHyQNuJBNtfrxUxYZF/s/6trRW+imqGmDtC/RsOSNuk7GE06ZnvOTwb4T2WhXYIBxw==}
-
   '@opencode-ai/sdk@1.14.41':
     resolution: {integrity: sha512-RYb2dCUv0TWIvBNnnO6ANbAPYri6rKuWizSoVFw/Pw+SCDj9ASHM5gAZ+jkskp8gYMfLLHe/Fpkun/9mr8m0IQ==}
+
+  '@opencode-ai/sdk@1.14.48':
+    resolution: {integrity: sha512-wKM86jCzV/ZApyWrdm3uP8XdWcS0LMbu3FV+OWz1ChiGGg1wiIWNGMJs5CY8/QX2/rUuZrd1Q1DqvdamZ0zLeg==}
 
   '@rollup/rollup-android-arm-eabi@4.60.2':
     resolution: {integrity: sha512-dnlp69efPPg6Uaw2dVqzWRfAWRnYVb1XJ8CyyhIbZeaq4CA5/mLeZ1IEt9QqQxmbdvagjLIm2ZL8BxXv5lH4Yw==}
@@ -779,11 +779,11 @@ snapshots:
       effect: 4.0.0-beta.59
       zod: 4.1.8
 
-  '@opencode-ai/sdk@1.14.39':
+  '@opencode-ai/sdk@1.14.41':
     dependencies:
       cross-spawn: 7.0.6
 
-  '@opencode-ai/sdk@1.14.41':
+  '@opencode-ai/sdk@1.14.48':
     dependencies:
       cross-spawn: 7.0.6
 
