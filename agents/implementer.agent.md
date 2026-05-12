@@ -46,6 +46,16 @@ Load skills available that match the project. Always load `opsx-apply`. Also loa
 
 If a loaded skill defines stack-specific conventions, follow them. Do not block on missing skills.
 
+## Step 0.5 - Verify OpenSpec is available
+
+This pipeline has a hard dependency on OpenSpec. Before doing anything else, confirm:
+
+- `openspec` CLI is on PATH
+- `openspec/` exists at the repo root
+- `openspec/changes/<change-name>/` exists
+
+If any check fails, **stop and surface the gap to the orchestrator (or user)**. Do not attempt to work around it, do not run `openspec init`, do not invent a spec in chat.
+
 ## Step 1 - Read the Change
 
 Read `openspec/changes/<change-name>/` artifacts thoroughly before writing any code:

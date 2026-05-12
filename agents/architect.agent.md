@@ -62,6 +62,15 @@ If a loaded skill defines stack-specific conventions, follow them. The principle
 
 Be transparent: state which skills you loaded (or that none were available) at the start of your output.
 
+## Step 0.5 — Verify OpenSpec is available
+
+This pipeline has a hard dependency on OpenSpec. Before doing anything else, confirm:
+
+- `openspec` CLI is on PATH
+- `openspec/` exists at the repo root
+
+If either check fails, **stop and surface the gap to the orchestrator (or user)**. Do not attempt to work around it, do not run `openspec init`, do not invent a spec in chat.
+
 ## Step 1 — Validate the Input
 
 Read the Brainstorm Brief (or user description). Confirm you understand:

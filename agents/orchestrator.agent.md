@@ -116,6 +116,7 @@ You **NEVER**:
 
 You **MAY** run workflow-lifecycle commands when triggered by a specialist's judgment or a user's explicit choice. These are mechanical workflow operations, not technical contributions:
 
+- `openspec --version` — to verify the OpenSpec dependency at Phase 0
 - `openspec status --change <name> --json` — to validate Architect's `applyRequires` (optional)
 - `opsx-archive` skill (invoked via the Skill tool with argument `<change_name>`) — to archive a change on confirmed signal (Architect SHIP in autonomous mode; user choice in HITL or semi-auto). **Never run this as a shell command.**
 
@@ -180,9 +181,18 @@ Correct response (do this): "I don't read or display code files. If you need cod
    Expected path: Rubber Duck → Architect → Implementer → Code Reviewer
    ```
 
-4. **If `refresh_context: true`** was passed, invoke `@repo-scout` before the first pipeline phase begins. Wait for it to complete and update workflow state with `Project context: regenerated this run`. Otherwise leave `Project context: fresh`.
+4. **Pre-flight OpenSpec.** Before any agent runs, verify the OpenSpec dependency is satisfied:
+   - `openspec` CLI is on PATH (e.g., `openspec --version` exits 0)
+   - `openspec/` directory exists at the repo root
 
-5. **Pre-flight `PROJECT_CONTEXT.md`.** If `PROJECT_CONTEXT.md` does not exist at the repo root (and step 4 did not just regenerate it), invoke `@repo-scout` now, before Phase 1 begins. Update workflow state with `Project context: regenerated this run`. After this step, every downstream agent — including Rubber Duck — may assume `PROJECT_CONTEXT.md` exists.
+   If either check fails, **halt the workflow immediately** with status `failed_precondition` and surface this exact message:
+   > _Development Crew requires OpenSpec. Install the `openspec` CLI and run `openspec init` in this repo, then re-run the workflow._
+
+   Do not invoke `openspec init` yourself — initialization is a user-owned step.
+
+5. **If `refresh_context: true`** was passed, invoke `@repo-scout` before the first pipeline phase begins. Wait for it to complete and update workflow state with `Project context: regenerated this run`. Otherwise leave `Project context: fresh`.
+
+6. **Pre-flight `PROJECT_CONTEXT.md`.** If `PROJECT_CONTEXT.md` does not exist at the repo root (and step 4 did not just regenerate it), invoke `@repo-scout` now, before Phase 1 begins. Update workflow state with `Project context: regenerated this run`. After this step, every downstream agent — including Rubber Duck — may assume `PROJECT_CONTEXT.md` exists.
 
 ---
 
@@ -235,7 +245,7 @@ Expected output format: {artifact type}
 | **Architect** (Initial run / Re-entry edit) | Handoff Note containing `## Change location` (referencing `openspec/changes/<name>/`) and `## Package Structure Preview`. The change directory must exist and `applyRequires` artifacts must be present. |
 | **Architect** (Autonomous Sign-off) | `## Decision` (must be `SHIP`, `RELOOP`, or `FAIL`), `## Rationale`. Plus `## Consolidated Feedback for Implementer` if RELOOP; `## Unresolved Findings` if FAIL. Archive (on SHIP) is handled by orchestrator, not Architect — do not expect `## Archive Status` in Architect's output. |
 | **Implementer** | `### Files Created` OR `### Files Modified`, `### Build Status` |
-| **Code Reviewer** | `## Findings` OR `## What's Done Well`, `## Verdict` |
+| **Code Reviewer** | `## Findings` OR `## Residual Observations`, `## Verdict` |
 
 For Architect specifically, you may optionally run `openspec status --change <name> --json` to confirm `applyRequires` artifacts are all `done`. Otherwise trust the Handoff Note's `## Change location` claim.
 
@@ -497,7 +507,7 @@ Same loop as autonomous (iteration cap, Architect sign-off authority) with one d
      })
      ```
      - **Archive the change:** orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>`. The skill prompts the user about sync (Sync now / Archive without syncing); let it. Capture the three-state sync result and surface it in the final report's Archive line per the "Archive sync result" table. Status is `completed` regardless of sync state. Done.
-     - **Send feedback to Architect:** collect feedback verbatim, hand off to Architect re-entry triage (same as HITL post-Reviewer feedback). If triage produces a design or requirement edit, fire an **HITL approval gate** on the revised Handoff Note before resuming the autonomous build loop (preserves the mode contract: every spec change gets human approval). Then loop back to step 1 of this list. If triage produces code-only feedback, dispatch Implementer → Reviewer → Architect-signoff (no gate). If too-divergent, route as in HITL (orchestrator invokes `opsx-archive` skill on confirmation; restart at Rubber Duck).
+     - **Send feedback to Architect:** collect feedback verbatim, hand off to Architect re-entry triage (same as HITL post-Reviewer feedback). If triage produces a design or requirement edit, fire an **HITL approval gate** on the revised Handoff Note before resuming the autonomous build loop (preserves the mode contract: every spec change gets human approval). Then loop back to step 1 of this list. If triage produces code-only feedback, dispatch Implementer → Reviewer → Architect-signoff (no gate). If too-divergent, route as in HITL (orchestrator invokes `opsx-archive` skill on confirmation; restart at Rubber Duck). Close-prompt re-entries are **not** counted against `iteration_cap`. The cap guards the unattended Reviewer→Architect sign-off loop; close-prompt feedback is user-driven and bounded by the user's own choice to stop sending it.
      - **Leave open:** record `archive: kept open — user will archive manually` in final report. Done.
 4. **Record** every sign-off decision in `signoff_history`.
 
@@ -811,7 +821,7 @@ Durable artifacts on disk: `openspec/changes/{change_name}/`
 ## Code Review (Code Reviewer Output)
 
 **Must contain:**
-- `## Findings` OR `## What's Done Well` (at least one)
+- `## Findings` OR `## Residual Observations` (at least one)
 - `## Verdict` (one of: Approve | Approve with comments | Request changes)
 
 **Optional but recommended:**
