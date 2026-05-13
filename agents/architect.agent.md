@@ -159,18 +159,23 @@ Apply Step 3 thinking as **content**, not as structure:
 
 The skill will loop until all `applyRequires` artifacts are `done`. If it asks you mid-loop for clarification, answer using Step 3 decisions.
 
-### Step 5.1 — Normalize delta spec headers
+### Step 5.1 — Normalize delta spec headers (conditional)
 
-After `opsx-propose` finishes, inspect every `openspec/changes/<change-name>/specs/<cap>/spec.md` it created. If any file contains a `## MODIFIED Requirements` section, **collapse it into `## ADDED Requirements`**:
+After `opsx-propose` finishes, inspect every `openspec/changes/<change-name>/specs/<cap>/spec.md` it created. If any file contains a `## MODIFIED Requirements` section, **conditionally collapse it into `## ADDED Requirements` based on baseline state**:
 
-1. Move every `### Requirement:` block from `## MODIFIED Requirements` into `## ADDED Requirements` (appended after any already-added requirements).
-2. Delete the now-empty `## MODIFIED Requirements` section.
+For each `### Requirement: <name>` block under `## MODIFIED Requirements`:
 
-**Why this matters:** the upstream `openspec-sync-specs` sub-skill (invoked by `opsx-archive`) does not currently parse `## MODIFIED Requirements`. The sync step fails on that section, leaving the main spec stale relative to the implemented change. A stale baseline is a silent bug — every subsequent change reads it as truth. Normalizing to `## ADDED Requirements` keeps the sync working: requirement names act as merge keys, so an "added" requirement that already exists in the main spec is treated as an upsert.
+1. Read the corresponding baseline at `openspec/specs/<cap>/spec.md` (if it exists).
+2. If a Requirement with the same name **does not exist in the baseline** → move the block into `## ADDED Requirements` (appended after any already-added requirements). The workaround applies — upstream sync will clean-insert it.
+3. If a Requirement with the same name **already exists in the baseline** → **leave the block under `## MODIFIED Requirements` unchanged**. Sync will fail at parse-time on this block (see [Fission-AI/OpenSpec#416](https://github.com/Fission-AI/OpenSpec/issues/416)) and report `sync skipped` — that's the honest upstream failure, with the issue as the actionable signal. Relabeling to ADDED in this case would silently corrupt the baseline anchor and produce a misleading "Failed to find expected lines" error instead.
+
+After processing, delete the `## MODIFIED Requirements` section if it is now empty.
+
+**Why conditional:** upstream `openspec-sync-specs` does not parse `## MODIFIED Requirements` today (#416 is open). The workaround helps **only** when the Requirement is genuinely new to the baseline — there it converts a parse error into a clean insert. When the Requirement already exists in the baseline (the common case for predecessor follow-ups), relabeling to ADDED makes sync attempt an upsert anchored on the modified body. That body doesn't match the baseline's pre-modification body, so verification fails with the confusing anchor-mismatch error. Conditional collapse preserves the win for fresh adds while letting true modifications surface upstream's parse failure cleanly.
 
 If a spec has neither `## ADDED Requirements` nor `## MODIFIED Requirements` and uses a bare `## Requirements` section instead, leave it as-is — that format is valid for pure-new-spec changes.
 
-> **Temporary workaround — remove when no longer needed.** This step exists only because `openspec-sync-specs` cannot handle `## MODIFIED Requirements` today. **Removal test:** take a change that contains a real `## MODIFIED Requirements` section (e.g., revise an existing Requirement's body or add a Scenario to one), skip Step 5.1, run `opsx-archive`, and observe the sync state the skill reports. If it reports `synced` without our normalization, delete this whole step. If it still reports `sync skipped` with a structural-validation reason, keep the step.
+> **Temporary workaround — remove when #416 lands.** When `openspec-sync-specs` learns to parse `## MODIFIED Requirements`, delete this entire step (and stop reading the baseline). **Removal test:** restore a real `## MODIFIED Requirements` section in a change that targets a Requirement already in the baseline, skip Step 5.1 entirely, run `opsx-archive`. If sync reports `synced`, upstream is fixed — remove this step. If sync reports `sync skipped` with a parse-time reason citing the section header, the issue is still open — keep this step.
 
 ## Step 6 — Produce the Handoff Note
 

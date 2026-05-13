@@ -163,6 +163,8 @@ The only place positive or neutral content belongs is the **Residual Observation
 
 \- \*\*Branch:\*\* \[branch name\]
 
+\- \*\*Default branch:\*\* \[detected name\]
+
 \- \*\*Commits:\*\* \[commit range or SHA list\]
 
 \- \*\*Changed files:\*\* \[list of files in the diff\]
