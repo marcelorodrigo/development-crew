@@ -207,7 +207,7 @@ Each finding uses this exact format. Keep `Why` to **1–2 sentences max**. `Whe
 
 \#\# Verdict
 
-\[One of: ✅ Approve | 🔴 Request changes\]
+\[One of: Approve | Request changes\]
 
 \[If requesting changes, list the must-fix items by title.\]
 
