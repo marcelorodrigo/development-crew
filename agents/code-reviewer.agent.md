@@ -121,6 +121,7 @@ Scan for these specifically. Abstract "are there any bugs?" produces abstract "n
 - [ ] **Retries / timeouts**: missing timeouts on network calls, retries without backoff, retries on non-idempotent operations.
 - [ ] **Boundary behavior**: null / empty / invalid inputs handled correctly; partial failures don't leave inconsistent state.
 - [ ] **Error handling**: no swallowed exceptions, no empty catch blocks, errors carry enough context for the caller to act.
+- [ ] **Residual dead code from the change**: parameters whose value no longer varies across call sites; conditional branches that became unreachable; helpers/tests that the change orphaned; callers passing arguments that the function no longer reads meaningfully. The change should leave a clean end state, not a minimal text-diff.
 
 ### Test Quality — high ROI only
 

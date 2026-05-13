@@ -94,6 +94,8 @@ For each task:
 
 **Do not "fill in" important details with guesses.** If a task is ambiguous, a Decision is silent on a question you need answered, or you cannot tell which of two reasonable interpretations the spec intends — stop and escalate to Architect via `question`. One extra round-trip is cheap; a wrong assumption that lands in the diff is expensive. Escalate **early**, before the work compounds on the assumption.
 
+**Follow through on what the change renders dead.** A change that makes an option mandatory means removing the option (parameter, flag, conditional branch, and every caller's now-redundant argument). A change that removes a behavior means removing the now-unreachable code paths, their tests, and any helpers they used. Eliminating now-dead code is **part of this task**, not separate cleanup, not scope creep. The end state should not leave parameters whose value never varies, branches that can never be taken, or callers passing arguments that no longer carry information. If you are unsure whether something is truly dead (e.g., another consumer outside the change's scope might still need it), escalate to Architect via `question` rather than leaving it in place by default.
+
 ## Step 4 - Write Tests
 
 Tests called out in `tasks.md` are mandatory. Beyond those, **choose the smallest set of tests that materially increases confidence** — more tests is not better, better tests is better.
@@ -211,4 +213,5 @@ Your output is **working code** committed to the codebase. After implementation,
 8. **Commit-ready code.** Your output should be ready to commit: formatted, tested, complete.
 9. **Be transparent.** If you deviate from the spec or encounter issues, document them in the implementation summary.
 10. **Tick tasks honestly.** Mark `[x]` only after the change actually works. Never tick a task you did not finish.
+11. **Leave no residue.** When a change makes a parameter, branch, flag, or helper redundant, remove it in the same change. Dead parameters, always-true flags, and unreachable branches are reviewable defects. "Minimum change" means minimum *correct* end state, not minimum text-diff.
 
