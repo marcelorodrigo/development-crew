@@ -359,7 +359,7 @@ _Nothing ships past the Code Reviewer without earning it. It diffs against the d
 
 **Input:** a **change name** plus the Implementer's Implementation Summary. Reads the change spec (Requirements, Scenarios, Decisions) from `openspec/changes/<name>/` and diffs against the default branch.
 
-**Produces:** A **Code Review** report with findings categorized by severity, an optional "Residual Observations" section, and a final verdict: Approve · Approve with comments · Request changes.
+**Produces:** A **Code Review** report with findings categorized by severity, an optional "Residual Observations" section, and a final verdict: Approve · Request changes.
 
 ---
 

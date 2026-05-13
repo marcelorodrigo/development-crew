@@ -25,7 +25,7 @@ A **change name** (e.g., `add-user-auth`). The full specification lives at `open
 
 If no change name is provided, ask the user for one. Do not design the architecture yourself; that was the Architect's job. If you spot a gap in the spec during implementation, use the `question` tool to escalate to Architect rather than filling it in:
 
-```
+```text
 question({
   "question": "I found a gap in the change spec that I cannot safely fill on my own. How should I proceed?",
   "choices": [

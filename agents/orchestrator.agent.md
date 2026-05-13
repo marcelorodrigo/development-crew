@@ -189,7 +189,7 @@ Map the user input to one of:
   - An active `change_name` (kebab-case, e.g. `add-user-auth`) → resumes mid-flow
   - A predecessor — type `predecessor: <archived-change-name>` (e.g. `predecessor: 2026-05-09-add-healthz-endpoint`) followed by the new work description → starts a follow-up
   ```
-  ```
+  ```text
   question({
     "question": "How would you like to start?",
     "choices": [
@@ -204,7 +204,7 @@ Map the user input to one of:
 
 If classification is ambiguous (e.g., "resume add-user-auth — also make it support OAuth"), call `question` to disambiguate:
 
-```
+```text
 question({
   "question": "I have a change_name plus what looks like new requirements. Which is this?",
   "choices": [
@@ -231,7 +231,7 @@ For `resume` and `re_entry_feedback` entries, read on-disk state to determine wh
    |---|---|
    | `tasks.md` has remaining `[ ]` items, no Implementation Summary captured | Implementer |
    | All `tasks.md` items `[x]`, no Code Review captured | Code Reviewer |
-   | Code Review captured with verdict `Request changes` / `Approve with comments` | Architect re-entry triage |
+   | Code Review captured with verdict `Request changes` | Architect re-entry triage |
    | Code Review captured with verdict `Approve`, no archive recorded | Phase 1B HITL post-Reviewer routing (archive question) |
    | Semi-auto SHIP recorded, archive deferred | Phase 1B semi-auto close prompt; `iteration = 0` |
    | Re-entry feedback supplied with any disk state | Architect re-entry triage (overrides the table) |
@@ -295,7 +295,7 @@ Check that the output contains the required sections:
 | **Architect** (Initial run / Re-entry edit) | Handoff Note containing `## Change location` (referencing `openspec/changes/<name>/`) and `## Package Structure Preview` | The change directory must exist and `applyRequires` artifacts must be present. Optionally verify via `openspec status --change <name> --json`. |
 | **Architect** (Autonomous Sign-off) | `## Decision` (must be `SHIP`, `RELOOP`, or `FAIL`), `## Rationale`. Plus `## Consolidated Feedback for Implementer` if RELOOP; `## Unresolved Findings` if FAIL. | Archive on SHIP is orchestrator's responsibility — do not expect `## Archive Status` in Architect's output. |
 | **Implementer** | `### Files Created` OR `### Files Modified`, `### Build Status` | — |
-| **Code Reviewer** | `## Findings` OR `## Residual Observations`, `## Verdict` (one of: Approve / Approve with comments / Request changes) | — |
+| **Code Reviewer** | `## Findings` OR `## Residual Observations`, `## Verdict` (one of: Approve / Request changes) | — |
 
 Validation is **structural only** — confirm the section headers exist. Do not judge content quality; that is Architect's job in autonomous sign-off and the user's job at HITL gates.
 
@@ -340,7 +340,7 @@ Gate behavior per mode:
 
    This procedure is **mandatory** when the gate is firing after Architect (initial run or re-entry edit). The graduation choice must appear. Skipping it strands the user with no in-band way to switch to semi-auto.
 
-   ```
+   ```text
    question({
      "question": "Review the Architect output above. What is your decision?",
      "choices": [
@@ -363,7 +363,7 @@ Gate behavior per mode:
 
    **Procedure 1.4-B: Non-Architect gate (current agent is Rubber Duck or Implementer, mode is human-in-loop)**
 
-   ```
+   ```text
    question({
      "question": "Review the {AGENT_NAME} output above. What is your decision?",
      "choices": [
@@ -383,8 +383,6 @@ Gate behavior per mode:
    - "Request changes: ..." → `reject`
 
    ---
-
-   `Approve with comments` is **not** offered at any gate, in either procedure. Spec-relevant feedback at the Architect gate flows through Architect's triage via "Send feedback to Architect." The OpenSpec model treats the on-disk spec as the only durable channel for spec-relevant content.
 
 2. **Process the normalized action:**
 
@@ -437,7 +435,7 @@ Behavior branches on `mode`.
 
 After Code Reviewer renders its verdict, ask the user how to proceed:
 
-```
+```text
 question({
   "question": "Reviewer has finished. What would you like to do?",
   "choices": [
@@ -452,7 +450,7 @@ question({
 **Handle responses:**
 
 - **Approve:** Record approval. Ask the user about archive directly (no Architect round-trip):
-  ```
+  ```text
   question({
     "question": "Archive the change now? Archiving moves openspec/changes/<name>/ to openspec/changes/archive/YYYY-MM-DD-<name>/ and syncs delta specs into openspec/specs/.",
     "choices": [
@@ -495,7 +493,7 @@ No `question` calls inside the loop body. Architect is the sign-off authority.
    Autonomous sign-off handoff to Architect
    - change_name: {change_name}
    - mode: {autonomous | semi-autonomous}
-   - verdict: {Approve | Approve with comments | Request changes}
+   - verdict: {Approve | Request changes}
    - reviewer_findings: {full text}
    - implementer_summary: {full text}
    - iteration: {N}
@@ -519,7 +517,7 @@ No `question` calls inside the loop body. Architect is the sign-off authority.
      - **Autonomous SHIP:** Reset `iteration = 0`. Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>` immediately (no question — mode contract). The orchestrator answers the skill's sync prompt non-interactively: **choose "Sync now"**. Capture the skill's three-state sync result. Status is `completed` regardless of sync state (a `sync skipped` result is surfaced as a warning in the final report's Archive line, never as `failed_quality_gate`). Done.
 
      - **Semi-auto SHIP:** Reset `iteration = 0`. Do **not** auto-archive. Generate the final report (status `completed`, archive: pending user decision). Then present the close prompt:
-       ```
+       ```text
        question({
          "question": "Implementation complete and Architect signed off. What would you like to do?",
          "choices": [
@@ -553,7 +551,7 @@ No `question` calls inside the loop body. Architect is the sign-off authority.
    ```
 3. **If max retries exceeded:**
    - **Human-in-loop:** Call `question` with these choices:
-     ```
+     ```text
      question({
        "question": "Agent {agent_name} has failed {N} times and cannot produce a valid artifact. What would you like to do?",
        "choices": [
@@ -775,7 +773,7 @@ Errors:
 - Attempt 3: ...
 ```
 
-```
+```text
 question({
   "question": "{Agent} has failed 3 times. What would you like to do?",
   "choices": [

@@ -81,7 +81,7 @@ Read the Brainstorm Brief (or user description). Confirm you understand:
 
 If the input is still ambiguous after restating, invoke `opsx-explore` for last-mile clarification before proposing. If critical information is missing and there are multiple valid resolution paths, call `question`:
 
-```
+```text
 question({
   "question": "I'm missing critical information needed to design this change. Which resolution path should I take?",
   "choices": [
@@ -125,7 +125,7 @@ Decide:
 
 Before invoking `opsx-propose`, call `question` to confirm there are no open issues:
 
-```
+```text
 question({
   "question": "I'm ready to create the OpenSpec change. Are there any constraints, preferences, or open questions you want me to address before I finalize the design?",
   "choices": [
@@ -151,7 +151,7 @@ Apply Step 3 thinking as **content**, not as structure:
 - Tradeoffs / risks → `design.md` Risks
 - Open questions → `design.md` Open Questions
 - **Predecessor reference (if provided)** → `proposal.md` Why/Context section, in this exact form:
-  ```
+  ```text
   **Predecessor:** `openspec/changes/archive/<predecessor>/`
   **Reason for follow-up:** {one or two sentences describing what surfaced — PR-review feedback, post-merge bug, production issue, etc.}
   ```
@@ -219,7 +219,7 @@ Decide exactly one of:
 
 ## Output Format — Sign-off Decision
 
-```
+```text
 # Sign-off: <change-name> (iteration N)
 
 ## Decision
@@ -254,7 +254,7 @@ Classify the feedback into **exactly one** of:
 - **Requirement edit** — a Requirement or Scenario in `specs/<cap>/spec.md` changes (behavior shift, new mode, removed mode). Edit `spec.md`. Often update `proposal.md` if scope shifted. Un-tick affected `tasks.md` items or append new tasks. Produce updated Handoff Note. New HITL gate.
 - **Too divergent** — the feedback implies a fundamentally different approach. Do **not** mutate the change. Call `question` to recommend archiving and restarting at Rubber Duck:
 
-  ```
+  ```text
   question({
     "question": "This feedback implies a fundamentally different approach than the current change. Recommend archiving the current change and restarting at Rubber Duck. Confirm?",
     "choices": [
@@ -280,7 +280,7 @@ State the classification explicitly in the Handoff Note so the user can override
 
 # Output Format — Handoff Note
 
-```
+```text
 # Handoff: <change-name>
 
 ## Skills loaded

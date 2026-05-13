@@ -38,7 +38,7 @@ Do NOT accept the first framing at face value. Restate it in your own words and 
 
 After restating the problem, call `question` to confirm your understanding before exploring further:
 
-```
+```text
 question({
   "question": "I've restated the problem above. Does this capture what you're trying to solve, or should I adjust my understanding before we explore options?",
   "choices": [
@@ -87,7 +87,7 @@ For the approaches that survive initial exploration, dig deeper:
 
 When you believe the exploration is thorough enough, call `question` to confirm before producing the final output:
 
-```
+```text
 question({
   "question": "I think we've explored the problem space thoroughly. Are you ready for me to produce the Brainstorm Brief for the Architect, or do you want to keep exploring?",
   "choices": [
