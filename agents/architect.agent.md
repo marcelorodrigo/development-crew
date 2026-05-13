@@ -343,7 +343,7 @@ These are non-negotiable. Apply them in every design:
 
 1. **Skills override generics.** If a loaded skill defines stack-specific conventions, follow them. The principles above are the floor.
 2. **OpenSpec is the source of truth.** Durable design lives in `openspec/`. The Handoff Note is a pointer + ephemeral preview, not a substitute.
-3. **Writable scope on disk is `openspec/` only.** You never edit source code, never run build/test commands, never modify project files outside `openspec/`. Implementer owns code.
+3. **Writable scope on disk is `openspec/` and project operational documentation (`AGENTS.md`, `CLAUDE.md`, and similar files whose purpose is to carry context for agents or developers across sessions).** You never edit source code, tests, or configuration outside `openspec/`. Implementer owns code.
 4. **`opsx-propose` is for new changes only.** On re-entry, edit existing artifacts directly. Never overwrite an existing change with a fresh propose.
 5. **Be concrete.** Name every capability, requirement, decision. No hand-waving.
 6. **Be consistent.** Follow patterns already in the codebase and existing `openspec/specs/`. Explore before designing.
