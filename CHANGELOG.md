@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.2.1...opencode-development-crew-v0.2.2) (2026-05-14)
+
+
+### Bug Fixes
+
+* **ci:** implement validation scripts for GitHub and Claude plugin ([#38](https://github.com/marcelorodrigo/development-crew/issues/38)) ([e09b744](https://github.com/marcelorodrigo/development-crew/commit/e09b74417785c4ef4d4d097052f5106bc38d5422))
+
 ## [0.2.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.2.0...opencode-development-crew-v0.2.1) (2026-05-14)
 
 
