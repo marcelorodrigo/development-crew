@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@opencode-ai/plugin':
-        specifier: 1.14.48
-        version: 1.14.48
+        specifier: 1.14.50
+        version: 1.14.50
       '@opencode-ai/sdk':
         specifier: 1.14.50
         version: 1.14.50
@@ -222,12 +222,12 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@opencode-ai/plugin@1.14.48':
-    resolution: {integrity: sha512-pb2ywByzn4i35WWJquEYyb8lDC/ph1PLXT+heucJN6Y9U/oeSw98JQV93IG7M6BUBks6MKD3DGDJdQfyD6x0rA==}
+  '@opencode-ai/plugin@1.14.50':
+    resolution: {integrity: sha512-2D4k6r8IFaAajEmezOZ3UKmRRGqEw2YzqotH5zLGT434yKtabduEsQgXa0fWlASut4FVT3JURhq5LqeBUV/k4g==}
     peerDependencies:
-      '@opentui/core': '>=0.2.6'
-      '@opentui/keymap': '>=0.2.6'
-      '@opentui/solid': '>=0.2.6'
+      '@opentui/core': '>=0.2.9'
+      '@opentui/keymap': '>=0.2.9'
+      '@opentui/solid': '>=0.2.9'
     peerDependenciesMeta:
       '@opentui/core':
         optional: true
@@ -235,9 +235,6 @@ packages:
         optional: true
       '@opentui/solid':
         optional: true
-
-  '@opencode-ai/sdk@1.14.48':
-    resolution: {integrity: sha512-wKM86jCzV/ZApyWrdm3uP8XdWcS0LMbu3FV+OWz1ChiGGg1wiIWNGMJs5CY8/QX2/rUuZrd1Q1DqvdamZ0zLeg==}
 
   '@opencode-ai/sdk@1.14.50':
     resolution: {integrity: sha512-IrTKTFviR4Tj+u0BI8h8XgXIvEpxwkkHqBj6E0aEc4DBErpS3qh2Lkp1xt0OdtCYiLE3wZ1bAIiHOiO66H/7TA==}
@@ -436,8 +433,8 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  effect@4.0.0-beta.59:
-    resolution: {integrity: sha512-xyUDLeHSe8d6lWGOvR6Fgn2HL6gYeTZ/S4Jzk9uc4ZUxMPPsNZlNXrvk0C7/utQFzeX7uAWcVnG2BjbA0SRoAA==}
+  effect@4.0.0-beta.65:
+    resolution: {integrity: sha512-QYKvQPAj3CmtsvWkHQww15wX4KG2gNsszDWEcOO5sZCMknp66u6Si/Opmt3wwWCwsyvRmDAdIg+JIz5qzbbFIw==}
 
   esbuild@0.27.7:
     resolution: {integrity: sha512-IxpibTjyVnmrIQo5aqNpCgoACA/dTKLTlhMHihVHhdkxKyPO1uBBthumT0rdHmcsk9uMonIWS0m4FljWzILh3w==}
@@ -776,15 +773,11 @@ snapshots:
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
     optional: true
 
-  '@opencode-ai/plugin@1.14.48':
+  '@opencode-ai/plugin@1.14.50':
     dependencies:
-      '@opencode-ai/sdk': 1.14.48
-      effect: 4.0.0-beta.59
+      '@opencode-ai/sdk': 1.14.50
+      effect: 4.0.0-beta.65
       zod: 4.1.8
-
-  '@opencode-ai/sdk@1.14.48':
-    dependencies:
-      cross-spawn: 7.0.6
 
   '@opencode-ai/sdk@1.14.50':
     dependencies:
@@ -903,7 +896,7 @@ snapshots:
   detect-libc@2.1.2:
     optional: true
 
-  effect@4.0.0-beta.59:
+  effect@4.0.0-beta.65:
     dependencies:
       '@standard-schema/spec': 1.1.0
       fast-check: 4.8.0
