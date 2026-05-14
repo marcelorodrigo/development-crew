@@ -10,11 +10,11 @@ target-issue: https://github.com/marcelorodrigo/development-crew/issues/9
 
 ## Overview
 
-Migrate Development Crew's five agents from Spring-Boot-specific prompts to **domain-agnostic, skill-aware** prompts. The plugin keeps owning the **pipeline process** (brainstorm → architect → implement → review) and **pipeline values** (handoff discipline, validated artifacts, no implementation without a spec, no merge without review). It stops owning the **technical opinions** (Clean Architecture, UseCase pattern, Spring Boot conventions). Those move to user-installed skills.
+Migrate Development Crew's agent prompts from Spring-Boot-specific guidance to **domain-agnostic, skill-aware** guidance. This scope covers Rubber Duck, Architect, Implementer, Code Reviewer, and Orchestrator (5 of the 6 agents; Repo Scout remains read-only and unchanged). The plugin keeps owning the **pipeline process** (brainstorm → architect → implement → review) and **pipeline values** (handoff discipline, validated artifacts, no implementation without a spec, no merge without review). It stops owning the **technical opinions** (Clean Architecture, UseCase pattern, Spring Boot conventions). Those move to user-installed skills.
 
 When relevant skills are present in the user's environment, agents discover and load them; otherwise they fall back to the model's built-in knowledge.
 
-This work covers all five agent prompts and the README. There is no code change — this is a prompt-engineering migration. No ADR is created in this work; if one is needed later it can be a follow-up.
+This work covers the 5 agent prompts included in scope (Rubber Duck, Architect, Implementer, Code Reviewer, Orchestrator) and the README. There is no code change — this is a prompt-engineering migration. No ADR is created in this work; if one is needed later it can be a follow-up.
 
 ## Decisions
 
