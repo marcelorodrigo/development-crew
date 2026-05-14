@@ -213,20 +213,17 @@ Each finding uses this exact format. Keep `Why` to **1–2 sentences max**. `Whe
 
 \[If requesting changes, list the must-fix items by title.\]
 
-After delivering the verdict, call `question` to find out what the user wants to do next:
+After delivering the verdict, **invoke the `question` tool** to find out what the user wants to do next:
 
-```text
-question({
-  "question": "Review complete. The verdict is above. What would you like to do next?",
-  "choices": [
-    "Approve — proceed to archive (commit & merge remain yours)",
-    "Send findings back to Implementer to fix",
-    "Re-run Code Reviewer after fixes are applied",
-    "Discuss a specific finding before deciding"
-  ],
-  "allow_freeform": true
-})
-```
+- **question:** "Review complete. The verdict is above. What would you like to do next?"
+- **choices:**
+  - "Approve — proceed to archive (commit & merge remain yours)"
+  - "Send findings back to Implementer to fix"
+  - "Re-run Code Reviewer after fixes are applied"
+  - "Discuss a specific finding before deciding"
+- **allow_freeform:** true
+
+Route the user's response accordingly.
 
 # Rules
 
