@@ -179,7 +179,9 @@ Map the user input to one of:
 - **Follow-up** — input contains an explicit `predecessor: <archived-change-name>` line, or the `predecessor:` invocation parameter is set → `Entry type: follow_up`, `Current phase: Rubber Duck` with `predecessor` set. Incidental prose mentions of an archived change without the explicit `predecessor:` token do **not** trigger this classification — they fall through to the disambiguation `question` below.
 - **Re-entry feedback** — input names a `change_name` and includes new user feedback against it → `Entry type: re_entry_feedback`, `Current phase: Architect` (re-entry triage)
 
-- **Help / unclassifiable** — input is a greeting, the literal word `help`, or does not map to any entry type above → emit the help block and present the starter question; after the user responds, re-enter Step 0.5.1 with the clarified input:
+- **Help / unclassifiable** — input is a greeting, the literal word `help`, or does not map to any entry type above → emit the help block and present the starter question via the `question` tool; after the user responds, re-enter Step 0.5.1 with the clarified input:
+
+  **Help block:**
   ```text
   Development Crew runs a 4-agent pipeline: Rubber Duck → Architect → Implementer → Code Reviewer.
   Rubber Duck brainstorms, Architect designs and writes the OpenSpec change, Implementer builds it, Code Reviewer validates it.
@@ -189,32 +191,24 @@ Map the user input to one of:
   - An active `change_name` (kebab-case, e.g. `add-user-auth`) → resumes mid-flow
   - A predecessor — type `predecessor: <archived-change-name>` (e.g. `predecessor: 2026-05-09-add-healthz-endpoint`) followed by the new work description → starts a follow-up
   ```
-  ```text
-  question({
-    "question": "How would you like to start?",
-    "choices": [
-      "1. I have a feature idea — start the flow at brainstorming",
-      "2. Resume an in-flight change — I have a change_name",
-      "3. Follow-up to an archived change — I have a predecessor",
-      "4. Something else — let me explain"
-    ],
-    "allow_freeform": true
-  })
-  ```
 
-If classification is ambiguous (e.g., "resume add-user-auth — also make it support OAuth"), call `question` to disambiguate:
+  **Then invoke the `question` tool:**
+  - **question:** "How would you like to start?"
+  - **choices:**
+    - "1. I have a feature idea — start the flow at brainstorming"
+    - "2. Resume an in-flight change — I have a change_name"
+    - "3. Follow-up to an archived change — I have a predecessor"
+    - "4. Something else — let me explain"
+  - **allow_freeform:** true
 
-```text
-question({
-  "question": "I have a change_name plus what looks like new requirements. Which is this?",
-  "choices": [
-    "1. Resume the existing change as-is (no new requirements)",
-    "2. Re-entry feedback: please route this new requirement through Architect triage",
-    "3. Follow-up: treat the existing change as predecessor and start a fresh workflow"
-  ],
-  "allow_freeform": true
-})
-```
+If classification is ambiguous (e.g., "resume add-user-auth — also make it support OAuth"), **invoke the `question` tool** to disambiguate:
+
+- **question:** "I have a change_name plus what looks like new requirements. Which is this?"
+- **choices:**
+  - "1. Resume the existing change as-is (no new requirements)"
+  - "2. Re-entry feedback: please route this new requirement through Architect triage"
+  - "3. Follow-up: treat the existing change as predecessor and start a fresh workflow"
+- **allow_freeform:** true
 
 ### Step 0.5.2 - Rehydrate from disk (Resume change / Re-entry feedback only)
 
@@ -336,51 +330,43 @@ Gate behavior per mode:
 
    ---
 
-   **Procedure 1.4-A: Architect gate (current agent is Architect, mode is human-in-loop)**
+    **Procedure 1.4-A: Architect gate (current agent is Architect, mode is human-in-loop)**
 
-   This procedure is **mandatory** when the gate is firing after Architect (initial run or re-entry edit). The graduation choice must appear. Skipping it strands the user with no in-band way to switch to semi-auto.
+    This procedure is **mandatory** when the gate is firing after Architect (initial run or re-entry edit). The graduation choice must appear. Skipping it strands the user with no in-band way to switch to semi-auto.
 
-   ```text
-   question({
-     "question": "Review the Architect output above. What is your decision?",
-     "choices": [
-       "1. Approve: Proceed to Implementer (continue in HITL — gate at every phase)",
-       "2. Approve and graduate to semi-auto: Proceed to autonomous build loop (Implementer → Code Reviewer → Architect sign-off until SHIP/FAIL/cap)",
-       "3. Send feedback to Architect: Triage and route (code-only / design edit / requirement edit / too-divergent)",
-       "4. Request changes: Abort workflow and provide feedback"
-     ],
-     "allow_freeform": true
-   })
-   ```
+    **Invoke the `question` tool:**
+    - **question:** "Review the Architect output above. What is your decision?"
+    - **choices:**
+      - "1. Approve: Proceed to Implementer (continue in HITL — gate at every phase)"
+      - "2. Approve and graduate to semi-auto: Proceed to autonomous build loop (Implementer → Code Reviewer → Architect sign-off until SHIP/FAIL/cap)"
+      - "3. Send feedback to Architect: Triage and route (code-only / design edit / requirement edit / too-divergent)"
+      - "4. Request changes: Abort workflow and provide feedback"
+    - **allow_freeform:** true
 
-   Normalize the response:
-   - "Approve: Proceed to Implementer ..." → `approve`
-   - "Approve and graduate to semi-auto: ..." → `approve_graduate`
-   - "Send feedback to Architect: ..." → `modify`
-   - "Request changes: ..." → `reject`
+    Normalize the response:
+    - "Approve: Proceed to Implementer ..." → `approve`
+    - "Approve and graduate to semi-auto: ..." → `approve_graduate`
+    - "Send feedback to Architect: ..." → `modify`
+    - "Request changes: ..." → `reject`
 
    ---
 
-   **Procedure 1.4-B: Non-Architect gate (current agent is Rubber Duck or Implementer, mode is human-in-loop)**
+    **Procedure 1.4-B: Non-Architect gate (current agent is Rubber Duck or Implementer, mode is human-in-loop)**
 
-   ```text
-   question({
-     "question": "Review the {AGENT_NAME} output above. What is your decision?",
-     "choices": [
-       "1. Approve: Proceed to {NEXT_AGENT_NAME}",
-       "2. Send feedback to {AGENT_NAME}: Re-run with feedback",
-       "3. Request changes: Abort workflow and provide feedback"
-     ],
-     "allow_freeform": true
-   })
-   ```
+    **Invoke the `question` tool:**
+    - **question:** "Review the {AGENT_NAME} output above. What is your decision?"
+    - **choices:**
+      - "1. Approve: Proceed to {NEXT_AGENT_NAME}"
+      - "2. Send feedback to {AGENT_NAME}: Re-run with feedback"
+      - "3. Request changes: Abort workflow and provide feedback"
+    - **allow_freeform:** true
 
-   Always interpolate the concrete `{NEXT_AGENT_NAME}` into the labels. Never leave it as the literal placeholder.
+    Always interpolate the concrete `{NEXT_AGENT_NAME}` into the labels. Never leave it as the literal placeholder.
 
-   Normalize the response:
-   - "Approve: Proceed to {NEXT_AGENT_NAME}" → `approve`
-   - "Send feedback to {AGENT_NAME}: ..." → `modify`
-   - "Request changes: ..." → `reject`
+    Normalize the response:
+    - "Approve: Proceed to {NEXT_AGENT_NAME}" → `approve`
+    - "Send feedback to {AGENT_NAME}: ..." → `modify`
+    - "Request changes: ..." → `reject`
 
    ---
 
@@ -433,37 +419,28 @@ Behavior branches on `mode`.
 
 ### HITL Mode
 
-After Code Reviewer renders its verdict, ask the user how to proceed:
+After Code Reviewer renders its verdict, **invoke the `question` tool** to ask how to proceed:
 
-```text
-question({
-  "question": "Reviewer has finished. What would you like to do?",
-  "choices": [
-    "1. Approve — proceed to archive (commit & merge remain yours)",
-    "2. Send feedback to Architect to triage and route",
-    "3. Discuss before deciding"
-  ],
-  "allow_freeform": true
-})
-```
+- **question:** "Reviewer has finished. What would you like to do?"
+- **choices:**
+  - "1. Approve — proceed to archive (commit & merge remain yours)"
+  - "2. Send feedback to Architect to triage and route"
+  - "3. Discuss before deciding"
+- **allow_freeform:** true
 
 **Handle responses:**
 
-- **Approve:** Record approval. Ask the user about archive directly (no Architect round-trip):
-  ```text
-  question({
-    "question": "Archive the change now? Archiving moves openspec/changes/<name>/ to openspec/changes/archive/YYYY-MM-DD-<name>/ and syncs delta specs into openspec/specs/.",
-    "choices": [
-      "1. Archive now",
-      "2. Skip archive — I will archive manually later",
-      "3. Keep the change open — more work coming"
-    ],
-    "allow_freeform": true
-  })
-  ```
-  - **Archive now:** orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>`. The skill itself prompts the user about sync (Sync now / Archive without syncing) when delta specs exist — let it. Capture the skill's three-state sync result (`synced` / `sync skipped` / `no delta specs`) and pass it into the final report per the "Archive sync result" table.
-  - **Skip archive:** record `archive: skipped — user will archive manually`.
-  - **Keep open:** record `archive: kept open`.
+- **Approve:** Record approval. **Invoke the `question` tool** to ask about archive (no Architect round-trip):
+  - **question:** "Archive the change now? Archiving moves openspec/changes/<name>/ to openspec/changes/archive/YYYY-MM-DD-<name>/ and syncs delta specs into openspec/specs/."
+  - **choices:**
+    - "1. Archive now"
+    - "2. Skip archive — I will archive manually later"
+    - "3. Keep the change open — more work coming"
+  - **allow_freeform:** true
+
+  **On archive choice:** Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>`. The skill itself prompts the user about sync (Sync now / Archive without syncing) when delta specs exist — let it. Capture the skill's three-state sync result (`synced` / `sync skipped` / `no delta specs`) and pass it into the final report per the "Archive sync result" table.
+  **On skip archive:** record `archive: skipped — user will archive manually`.
+  **On keep open:** record `archive: kept open`.
   Then generate the final report.
 - **Send feedback to Architect:** Collect the user's feedback verbatim. Hand off to Architect with a re-entry payload:
   ```text
@@ -512,25 +489,23 @@ No `question` calls inside the loop body. Architect is the sign-off authority.
 
    - **FAIL** (both modes): Generate final report (status `failed_quality_gate`) with Architect's `## Rationale` and `## Unresolved Findings`. Done.
 
-   - **SHIP — behavior differs by mode:**
+    - **SHIP — behavior differs by mode:**
 
-     - **Autonomous SHIP:** Reset `iteration = 0`. Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>` immediately (no question — mode contract). The orchestrator answers the skill's sync prompt non-interactively: **choose "Sync now"**. Capture the skill's three-state sync result. Status is `completed` regardless of sync state (a `sync skipped` result is surfaced as a warning in the final report's Archive line, never as `failed_quality_gate`). Done.
+      - **Autonomous SHIP:** Reset `iteration = 0`. Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>` immediately (no question — mode contract). The orchestrator answers the skill's sync prompt non-interactively: **choose "Sync now"**. Capture the skill's three-state sync result. Status is `completed` regardless of sync state (a `sync skipped` result is surfaced as a warning in the final report's Archive line, never as `failed_quality_gate`). Done.
 
-     - **Semi-auto SHIP:** Reset `iteration = 0`. Do **not** auto-archive. Generate the final report (status `completed`, archive: pending user decision). Then present the close prompt:
-       ```text
-       question({
-         "question": "Implementation complete and Architect signed off. What would you like to do?",
-         "choices": [
-           "1. Archive the change",
-           "2. Send feedback to Architect to revise",
-           "3. Leave open — I will archive manually later"
-         ],
-         "allow_freeform": true
-       })
-       ```
-       - **Archive the change:** orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>`. The skill prompts the user about sync; let it. Capture the three-state sync result per the "Archive sync result" table. Status is `completed` regardless of sync state. Done.
-       - **Send feedback to Architect:** collect feedback verbatim, hand off to Architect re-entry triage (same as HITL post-Reviewer feedback). If triage produces a design or requirement edit, fire an **HITL approval gate** on the revised Handoff Note before resuming the autonomous build loop (preserves the mode contract: every spec change gets human approval). Then loop back to step 1 of this list. If triage produces code-only feedback, dispatch Implementer → Reviewer → Architect-signoff (no gate). If too-divergent, route as in HITL (orchestrator invokes `opsx-archive` skill on confirmation; restart at Rubber Duck). **SHIP resets `iteration` to 0** — the close-prompt feedback sub-loop runs with a fresh cap; it is not a continuation of the completed loop.
-       - **Leave open:** record `archive: kept open — user will archive manually` in final report. Done.
+      - **Semi-auto SHIP:** Reset `iteration = 0`. Do **not** auto-archive. **Invoke the `question` tool** to present the close prompt:
+        - **question:** "Implementation complete and Architect signed off. What would you like to do?"
+        - **choices:**
+          - "1. Archive the change"
+          - "2. Send feedback to Architect to revise"
+          - "3. Leave open — I will archive manually later"
+        - **allow_freeform:** true
+
+        **On archive:** Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>`. The skill prompts the user about sync; let it. Capture the three-state sync result per the "Archive sync result" table. Generate final report (status `completed`). Done.
+
+        **On feedback:** Collect feedback verbatim, hand off to Architect re-entry triage (same as HITL post-Reviewer feedback). If triage produces a design or requirement edit, fire an **HITL approval gate** on the revised Handoff Note before resuming the autonomous build loop (preserves the mode contract: every spec change gets human approval). Then loop back to step 1. If triage produces code-only feedback, dispatch Implementer → Reviewer → Architect-signoff (no gate). If too-divergent, route as in HITL (orchestrator invokes `opsx-archive` skill on confirmation; restart at Rubber Duck). **SHIP resets `iteration` to 0** — the close-prompt feedback sub-loop runs with a fresh cap; it is not a continuation of the completed loop.
+
+        **On leave open:** Record `archive: kept open — user will archive manually` in final report (do not mark status as `completed`). Done.
 
 5. **Record** every sign-off decision in `signoff_history`.
 
@@ -550,19 +525,15 @@ No `question` calls inside the loop body. Architect is the sign-off authority.
    Please regenerate your output with ALL required sections.
    ```
 3. **If max retries exceeded:**
-   - **Human-in-loop:** Call `question` with these choices:
-     ```text
-     question({
-       "question": "Agent {agent_name} has failed {N} times and cannot produce a valid artifact. What would you like to do?",
-       "choices": [
-         "1. Retry manually: I will provide refined input",
-         "2. Skip this agent (dangerous — requires confirmation)",
-         "3. Abort workflow"
-       ],
-       "allow_freeform": true
-     })
-     ```
-   - **Autonomous / semi-autonomous:** Abort workflow, generate error report.
+    - **Human-in-loop:** **Invoke the `question` tool** with these choices:
+      - **question:** "Agent {agent_name} has failed {N} times and cannot produce a valid artifact. What would you like to do?"
+      - **choices:**
+        - "1. Retry manually: I will provide refined input"
+        - "2. Skip this agent (dangerous — requires confirmation)"
+        - "3. Abort workflow"
+      - **allow_freeform:** true
+
+    - **Autonomous / semi-autonomous:** Abort workflow, generate error report.
 
 ### If Agent Execution Fails (Exception/Timeout)
 
@@ -773,17 +744,13 @@ Errors:
 - Attempt 3: ...
 ```
 
-```text
-question({
-  "question": "{Agent} has failed 3 times. What would you like to do?",
-  "choices": [
-    "1. Retry manually: I will provide refined input",
-    "2. Skip this agent (dangerous — not recommended)",
-    "3. Abort workflow"
-  ],
-  "allow_freeform": true
-})
-```
+**Invoke the `question` tool:**
+- **question:** "{Agent} has failed 3 times. What would you like to do?"
+- **choices:**
+  - "1. Retry manually: I will provide refined input"
+  - "2. Skip this agent (dangerous — not recommended)"
+  - "3. Abort workflow"
+- **allow_freeform:** true
 
 **Autonomous / semi-autonomous:**
 ```text
