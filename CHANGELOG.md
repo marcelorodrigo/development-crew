@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.2.0...opencode-development-crew-v0.2.1) (2026-05-14)
+
+
+### Bug Fixes
+
+* **ci:** Correct YAML indentation in validate-plugin workflow ([#36](https://github.com/marcelorodrigo/development-crew/issues/36)) ([a3f7ac5](https://github.com/marcelorodrigo/development-crew/commit/a3f7ac59524fcf605c6f7311d61dbe6e0de46697))
+
 ## [0.2.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.1.1...opencode-development-crew-v0.2.0) (2026-05-14)
 
 
