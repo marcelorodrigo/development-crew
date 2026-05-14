@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.1.1...opencode-development-crew-v0.2.0) (2026-05-14)
+
+
+### Features
+
+* Development crew openspec ([#30](https://github.com/marcelorodrigo/development-crew/issues/30)) ([3051c6e](https://github.com/marcelorodrigo/development-crew/commit/3051c6e3767f248f38b1a202e4ff86e7eafbfcb1))
+
 ## [0.1.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.1.0...opencode-development-crew-v0.1.1) (2026-05-11)
 
 
