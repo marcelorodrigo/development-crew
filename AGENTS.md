@@ -2,7 +2,7 @@
 
 ## What this repo is
 
-An OpenCode plugin (`@marcelorodrigo/opencode-development-crew`) that ships five AI agents as a pipeline: Rubber Duck, Architect, Implementer, Code Reviewer, and Orchestrator. It is **not** a web app or service -- it builds to a single ESM bundle (`dist/index.js`) that OpenCode loads as a plugin.
+An OpenCode plugin (`@marcelorodrigo/opencode-development-crew`) that ships six AI agents as a pipeline: Orchestrator, Repo Scout, Rubber Duck, Architect, Implementer, and Code Reviewer. It is **not** a web app or service -- it builds to a single ESM bundle (`dist/index.js`) that OpenCode loads as a plugin.
 
 ## Prerequisites
 
