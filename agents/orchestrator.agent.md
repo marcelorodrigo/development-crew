@@ -489,11 +489,11 @@ No `question` calls inside the loop body. Architect is the sign-off authority.
 
    - **FAIL** (both modes): Generate final report (status `failed_quality_gate`) with Architect's `## Rationale` and `## Unresolved Findings`. Done.
 
-   - **SHIP — behavior differs by mode:**
+    - **SHIP — behavior differs by mode:**
 
-     - **Autonomous SHIP:** Reset `iteration = 0`. Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>` immediately (no question — mode contract). The orchestrator answers the skill's sync prompt non-interactively: **choose "Sync now"**. Capture the skill's three-state sync result. Status is `completed` regardless of sync state (a `sync skipped` result is surfaced as a warning in the final report's Archive line, never as `failed_quality_gate`). Done.
+      - **Autonomous SHIP:** Reset `iteration = 0`. Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>` immediately (no question — mode contract). The orchestrator answers the skill's sync prompt non-interactively: **choose "Sync now"**. Capture the skill's three-state sync result. Status is `completed` regardless of sync state (a `sync skipped` result is surfaced as a warning in the final report's Archive line, never as `failed_quality_gate`). Done.
 
-      - **Semi-auto SHIP:** Reset `iteration = 0`. Do **not** auto-archive. Generate the final report (status `completed`, archive: pending user decision). **Invoke the `question` tool** to present the close prompt:
+      - **Semi-auto SHIP:** Reset `iteration = 0`. Do **not** auto-archive. **Invoke the `question` tool** to present the close prompt:
         - **question:** "Implementation complete and Architect signed off. What would you like to do?"
         - **choices:**
           - "1. Archive the change"
@@ -501,11 +501,11 @@ No `question` calls inside the loop body. Architect is the sign-off authority.
           - "3. Leave open — I will archive manually later"
         - **allow_freeform:** true
 
-        **On archive:** Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>`. The skill prompts the user about sync; let it. Capture the three-state sync result per the "Archive sync result" table. Status is `completed` regardless of sync state. Done.
+        **On archive:** Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>`. The skill prompts the user about sync; let it. Capture the three-state sync result per the "Archive sync result" table. Generate final report (status `completed`). Done.
 
         **On feedback:** Collect feedback verbatim, hand off to Architect re-entry triage (same as HITL post-Reviewer feedback). If triage produces a design or requirement edit, fire an **HITL approval gate** on the revised Handoff Note before resuming the autonomous build loop (preserves the mode contract: every spec change gets human approval). Then loop back to step 1. If triage produces code-only feedback, dispatch Implementer → Reviewer → Architect-signoff (no gate). If too-divergent, route as in HITL (orchestrator invokes `opsx-archive` skill on confirmation; restart at Rubber Duck). **SHIP resets `iteration` to 0** — the close-prompt feedback sub-loop runs with a fresh cap; it is not a continuation of the completed loop.
 
-        **On leave open:** Record `archive: kept open — user will archive manually` in final report. Done.
+        **On leave open:** Record `archive: kept open — user will archive manually` in final report (do not mark status as `completed`). Done.
 
 5. **Record** every sign-off decision in `signoff_history`.
 
