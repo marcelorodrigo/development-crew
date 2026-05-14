@@ -226,14 +226,14 @@ jobs:
           # Check pnpm-lock.yaml versions (pnpm uses YAML, not JSON)
           try:
               import subprocess
-              result = subprocess.run(['python3', '-c', '''
-import yaml, json, sys
-with open("pnpm-lock.yaml") as f:
-    lock = yaml.safe_load(f)
-version = lock.get("version")
-if version:
-    print(json.dumps({"version": str(version)}))
-'''], capture_output=True, text=True)
+               result = subprocess.run(['python3', '-c', '''
+             import yaml, json, sys
+             with open("pnpm-lock.yaml") as f:
+                 lock = yaml.safe_load(f)
+             version = lock.get("version")
+             if version:
+                 print(json.dumps({"version": str(version)}))
+             '''], capture_output=True, text=True)
               # pnpm-lock.yaml version field is the lockfile format version, not the package version
               # so we skip version checking for pnpm-lock.yaml
           except Exception:
