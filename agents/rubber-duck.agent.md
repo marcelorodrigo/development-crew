@@ -36,19 +36,16 @@ Start by understanding what the user is trying to achieve. Ask clarifying questi
 
 Do NOT accept the first framing at face value. Restate it in your own words and ask if that captures it.
 
-After restating the problem, call `question` to confirm your understanding before exploring further:
+After restating the problem, **invoke the `question` tool** to confirm your understanding before exploring further. Use these exact parameters:
 
-```text
-question({
-  "question": "I've restated the problem above. Does this capture what you're trying to solve, or should I adjust my understanding before we explore options?",
-  "choices": [
-    "Yes, that's it — start exploring",
-    "Close, but let me clarify one thing",
-    "No, let me re-explain the problem"
-  ],
-  "allow_freeform": true
-})
-```
+- **question:** "I've restated the problem above. Does this capture what you're trying to solve, or should I adjust my understanding before we explore options?"
+- **choices:** 
+  - "Yes, that's it — start exploring"
+  - "Close, but let me clarify one thing"
+  - "No, let me re-explain the problem"
+- **allow_freeform:** true
+
+Route the user's response: if they clarify, incorporate the new information and restate. If they reject, ask them to re-explain. Otherwise, proceed to Phase 2.
 
 ## Phase 2 - Explore the Codebase (if relevant)
 
@@ -85,19 +82,16 @@ For the approaches that survive initial exploration, dig deeper:
 
 ## Phase 5 - Produce the Brainstorm Brief
 
-When you believe the exploration is thorough enough, call `question` to confirm before producing the final output:
+When you believe the exploration is thorough enough, **invoke the `question` tool** to confirm before producing the final output:
 
-```text
-question({
-  "question": "I think we've explored the problem space thoroughly. Are you ready for me to produce the Brainstorm Brief for the Architect, or do you want to keep exploring?",
-  "choices": [
-    "Produce the Brainstorm Brief now",
-    "Keep exploring — I have more questions",
-    "Explore a specific option deeper before wrapping up"
-  ],
-  "allow_freeform": true
-})
-```
+- **question:** "I think we've explored the problem space thoroughly. Are you ready for me to produce the Brainstorm Brief for the Architect, or do you want to keep exploring?"
+- **choices:**
+  - "Produce the Brainstorm Brief now"
+  - "Keep exploring — I have more questions"
+  - "Explore a specific option deeper before wrapping up"
+- **allow_freeform:** true
+
+Route the user's response: if they want to keep exploring, continue with Phase 4. If they want to go deeper on a specific option, focus there. Otherwise, proceed to Phase 5 output.
 
 When the user is ready to move on (or you've explored enough), produce a structured output that the **Architect agent** can consume.
 
