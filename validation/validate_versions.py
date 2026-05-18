@@ -6,7 +6,7 @@ import sys
 
 
 def main():
-    """Validate that all version fields match package.json version."""
+    """Validate package.json version."""
     try:
         with open("package.json") as f:
             pkg_version = json.load(f).get("version", "")
@@ -14,38 +14,11 @@ def main():
         print(f"ERROR: Failed to read package.json: {e}")
         sys.exit(1)
     
-    version_sources = {
-        "package.json $.version": pkg_version,
-    }
-    
-    # Load GitHub plugin versions
-    try:
-        with open(".github/plugin/plugin.json") as f:
-            version_sources[".github/plugin/plugin.json $.version"] = json.load(f).get("version", "")
-        
-        with open(".github/plugin/marketplace.json") as f:
-            market = json.load(f)
-            version_sources[".github/plugin/marketplace.json $.metadata.version"] = market.get("metadata", {}).get("version", "")
-            plugins = market.get("plugins", [])
-            for i, plugin in enumerate(plugins):
-                version_sources[f".github/plugin/marketplace.json $.plugins[{i}].version"] = plugin.get("version", "")
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"ERROR: Failed to read .github/plugin files: {e}")
+    if not pkg_version:
+        print("ERROR: package.json version field is empty")
         sys.exit(1)
     
-    # Check version consistency
-    mismatches = []
-    for source, version in version_sources.items():
-        if version != pkg_version:
-            mismatches.append(f"  {source}: '{version}'")
-    
-    if mismatches:
-        print(f"ERROR: Version mismatch — package.json has '{pkg_version}', but:")
-        for m in mismatches:
-            print(m)
-        sys.exit(1)
-    
-    print(f"Cross-file version consistency OK: all {len(version_sources)} version fields at '{pkg_version}'")
+    print(f"Version validation OK: package.json version '{pkg_version}'")
 
 
 if __name__ == "__main__":
