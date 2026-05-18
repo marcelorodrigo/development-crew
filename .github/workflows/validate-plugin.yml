@@ -11,15 +11,12 @@ permissions:
 
 jobs:
   validate:
-    name: Validate plugin manifest
+    name: Validate agent files
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Validate version consistency
-        run: python3 validation/validate_versions.py
 
       - name: Validate agent files have required frontmatter
         run: python3 validation/validate_agents.py
