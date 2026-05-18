@@ -9,11 +9,11 @@ importers:
   .:
     devDependencies:
       '@opencode-ai/plugin':
-        specifier: 1.14.50
-        version: 1.14.50
+        specifier: 1.15.4
+        version: 1.15.4
       '@opencode-ai/sdk':
-        specifier: 1.14.50
-        version: 1.14.50
+        specifier: 1.15.0
+        version: 1.15.0
       tsup:
         specifier: ^8.0.0
         version: 8.5.1(typescript@6.0.3)(yaml@2.9.0)
@@ -222,12 +222,12 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@opencode-ai/plugin@1.14.50':
-    resolution: {integrity: sha512-2D4k6r8IFaAajEmezOZ3UKmRRGqEw2YzqotH5zLGT434yKtabduEsQgXa0fWlASut4FVT3JURhq5LqeBUV/k4g==}
+  '@opencode-ai/plugin@1.15.4':
+    resolution: {integrity: sha512-5KAhUnks8GNlqRIax+3cs/ZT2UK74/MNdl4w846ysYdivb38fIm+X9R69ljQtRKyQY7rtga4JUQuARJMSExQqQ==}
     peerDependencies:
-      '@opentui/core': '>=0.2.9'
-      '@opentui/keymap': '>=0.2.9'
-      '@opentui/solid': '>=0.2.9'
+      '@opentui/core': '>=0.2.11'
+      '@opentui/keymap': '>=0.2.11'
+      '@opentui/solid': '>=0.2.11'
     peerDependenciesMeta:
       '@opentui/core':
         optional: true
@@ -236,8 +236,11 @@ packages:
       '@opentui/solid':
         optional: true
 
-  '@opencode-ai/sdk@1.14.50':
-    resolution: {integrity: sha512-IrTKTFviR4Tj+u0BI8h8XgXIvEpxwkkHqBj6E0aEc4DBErpS3qh2Lkp1xt0OdtCYiLE3wZ1bAIiHOiO66H/7TA==}
+  '@opencode-ai/sdk@1.15.0':
+    resolution: {integrity: sha512-npmURKwd1HoV/i3CsGl2tdHpGhWSGVqTN1cp0s2gDH5gE6XduAtFmmVXBZ/ovJLh3Evu6sTVZ9n0IkJzFNeveQ==}
+
+  '@opencode-ai/sdk@1.15.4':
+    resolution: {integrity: sha512-55SBChNouj2XY9C4thO0w7SGJS3jD2DRBxzcrDpc5szgmJJ2t2Wu38uZh+TQMBLHA8YrTPDqgfnc7o5tx2qRPw==}
 
   '@rollup/rollup-android-arm-eabi@4.60.2':
     resolution: {integrity: sha512-dnlp69efPPg6Uaw2dVqzWRfAWRnYVb1XJ8CyyhIbZeaq4CA5/mLeZ1IEt9QqQxmbdvagjLIm2ZL8BxXv5lH4Yw==}
@@ -773,13 +776,17 @@ snapshots:
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
     optional: true
 
-  '@opencode-ai/plugin@1.14.50':
+  '@opencode-ai/plugin@1.15.4':
     dependencies:
-      '@opencode-ai/sdk': 1.14.50
+      '@opencode-ai/sdk': 1.15.4
       effect: 4.0.0-beta.65
       zod: 4.1.8
 
-  '@opencode-ai/sdk@1.14.50':
+  '@opencode-ai/sdk@1.15.0':
+    dependencies:
+      cross-spawn: 7.0.6
+
+  '@opencode-ai/sdk@1.15.4':
     dependencies:
       cross-spawn: 7.0.6
 
