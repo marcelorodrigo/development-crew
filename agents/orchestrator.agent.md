@@ -37,6 +37,19 @@ Once Architect has run, the canonical handoff payload between agents is the **ch
 
 Post-initial **user-introduced feedback** is routed uniformly to Architect for triage (Architect classifies code-only / design edit / requirement edit / too-divergent and routes accordingly). The orchestrator never routes user feedback directly to Implementer or Reviewer. Reviewer's *own* findings, by contrast, go to Implementer directly — they are scoped to the existing spec and do not need triage.
 
+## Subagent Session Reuse (Rubber Duck, Architect)
+
+When you invoke Rubber Duck or Architect via the `task` tool, opencode prefixes the tool result with an opaque session identifier — currently emitted in the form `task_id: <id>` near the start of the result envelope. This id can be passed back on a subsequent `task` invocation to **resume the same child session with full prior context**, instead of restarting cold.
+
+**Contract:**
+
+- On the **first** invocation of Rubber Duck or Architect in this workflow: do not pass `task_id`. After the tool returns, look for a `task_id: <id>` token near the start of the result. If found, store it verbatim in `Subagent sessions.<agent>` (see Phase 0 state schema). If absent, log `Subagent sessions.<agent>: capture failed — opencode contract changed?` and continue without resume — this is a graceful degradation, not a workflow failure.
+- On every **subsequent** invocation of the same agent within the same workflow: if `Subagent sessions.<agent>` is set, pass it as the `task` tool's `task_id` parameter so the child session resumes mid-thought. If it is `unset` (e.g., re-entry workflow where this agent never ran in this orchestrator session), invoke without `task_id`.
+- Treat stored ids as orchestrator-internal — never echo them to the user.
+- `task_id`s are valid only within this orchestrator session. Never assume they survive a workflow or session restart, and never persist them to disk.
+
+**Coupling note.** The id-capture step depends on opencode's `task` tool emitting the identifier in the result envelope (current behavior at `packages/opencode/src/tool/task.ts:61-69` in sst/opencode). If a future opencode release changes or removes that emission, this capability silently no-ops — agents fall back to cold restarts, losing unwritten conversational reasoning but otherwise behaving as today. Removal test: invoke any subagent, inspect the raw `task` tool result for a leading `task_id:` token; if absent, this section is dormant (not broken).
+
 ## Invocation Parameters
 
 | Parameter | Required | Default | Meaning |
@@ -130,6 +143,9 @@ For concrete examples of correct vs incorrect behavior, see **Anti-Pattern 1** b
    Predecessor: <archived-change-name if predecessor was passed; otherwise unset>
    Iteration: 0
    Iteration cap: 3 (configurable at workflow start; semi-auto + autonomous only)
+   Subagent sessions:
+     rubber_duck: <unset>
+     architect:   <unset>
    Project context: <fresh | stale-not-refreshed | regenerated this run>
    Artifacts: {}
    Approval history: []
@@ -279,6 +295,8 @@ Expected output format: {artifact type}
 
 Wait for agent to complete and produce output.
 
+**Subagent session handling (Rubber Duck and Architect only):** Before issuing the `task` call, check `Subagent sessions.<agent>` — if set, include `task_id: <stored id>` in the tool call so the child session resumes. After the tool returns, scan the leading lines of the result for a `task_id: <id>` token; if present, write that id to `Subagent sessions.<agent>` (overwrite unconditionally — the contract is "always store what the tool last reported"). See "Subagent Session Reuse" under Workflow Contract for the full contract and graceful-degradation rules.
+
 ### Step 1.3 - Validate Artifact
 
 Check that the output contains the required sections:
@@ -374,7 +392,7 @@ Gate behavior per mode:
 
    - **approve:** Record approval. Proceed to {NEXT_AGENT_NAME}.
    - **approve_graduate** (Architect gate only): Record approval with annotation `graduated from human-in-loop`. **Update workflow state: `mode: semi-autonomous`.** Emit announcement: `Mode changed: human-in-loop → semi-autonomous. Subsequent phases run without approval gates until the close prompt.` Then proceed to Implementer. All downstream behavior follows semi-auto rules (no Implementer/Reviewer gates, Architect sign-off active, close prompt at SHIP).
-   - **modify:** Ask for feedback verbatim. If the current agent is Architect, hand to Architect's re-entry triage (code-only / design edit / requirement edit / too-divergent). Otherwise re-invoke {AGENT_NAME} with feedback.
+   - **modify:** Ask for feedback verbatim. If the current agent is Architect, hand to Architect's re-entry triage (code-only / design edit / requirement edit / too-divergent). Otherwise re-invoke {AGENT_NAME} with feedback. When re-invoking Rubber Duck or Architect, apply the Subagent Session Reuse contract — pass the stored `task_id` so the agent continues its prior reasoning rather than restarting cold.
    - **reject:** Record rejection with reason, abort workflow, generate final report.
 
 3. **Record approval decision:**
@@ -442,7 +460,7 @@ After Code Reviewer renders its verdict, **invoke the `question` tool** to ask h
   **On skip archive:** record `archive: skipped — user will archive manually`.
   **On keep open:** record `archive: kept open`.
   Then generate the final report.
-- **Send feedback to Architect:** Collect the user's feedback verbatim. Hand off to Architect with a re-entry payload:
+- **Send feedback to Architect:** Collect the user's feedback verbatim. Hand off to Architect with a re-entry payload (apply the Subagent Session Reuse contract — pass `task_id: <Subagent sessions.architect>` in the `task` invocation so Architect's prior triage reasoning is preserved):
   ```text
   Re-entry handoff to Architect
   - change_name: {change_name}
@@ -452,7 +470,7 @@ After Code Reviewer renders its verdict, **invoke the `question` tool** to ask h
   Architect triages (code-only / design edit / requirement edit / too-divergent) and routes accordingly:
   - **code-only:** No HITL gate; Architect's classification is the routing decision. Orchestrator dispatches the feedback to Implementer with the change name. Then Code Reviewer.
   - **design edit / requirement edit:** Architect edits artifacts in place, produces an updated Handoff Note, and you fire a fresh HITL gate (same two-step pattern). Then Implementer (`opsx-apply` walks remaining `[ ]` tasks). Then Code Reviewer.
-  - **too-divergent:** Architect surfaces the archive recommendation via `question`. If the user confirmed, Architect returns triage outcome `too-divergent: archive recommended`. **Orchestrator** then invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>` and restarts the workflow at Rubber Duck with the original problem + user's new feedback as context.
+  - **too-divergent:** Architect surfaces the archive recommendation via `question`. If the user confirmed, Architect returns triage outcome `too-divergent: archive recommended`. **Orchestrator** then invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>` and restarts the workflow at Rubber Duck with the original problem + user's new feedback as context. **Clear `Subagent sessions.rubber_duck` and `Subagent sessions.architect` before the restart** — the new exploration is fundamentally different from the abandoned one, and carrying forward prior context would re-anchor it on the wrong direction.
 - **Discuss:** Re-prompt with `allow_freeform` for the user to elaborate. Do not act unilaterally.
 
 Record the Architect classification in approval history. Re-entry does not consume a retry budget. The same routing applies if the user interrupts mid-pipeline with new feedback after Architect has already produced a change: route to Architect for triage, never directly to Implementer or Reviewer.
@@ -465,7 +483,7 @@ No `question` calls inside the loop body. Architect is the sign-off authority.
 
 1. **Increment** `iteration` in workflow state (starts at 0; first Reviewer verdict makes it 1).
 2. **If `iteration >= iteration_cap` AND verdict is not Approve:** force FAIL without invoking Architect. Stop with status `failed_quality_gate`. Final report includes Reviewer's unresolved findings + cap-exhaustion reason.
-3. **Otherwise** route to Architect's Autonomous Sign-off Decision with:
+3. **Otherwise** route to Architect's Autonomous Sign-off Decision (apply the Subagent Session Reuse contract — pass `task_id: <Subagent sessions.architect>` in the `task` invocation so sign-off accumulates context across iterations rather than re-judging from scratch):
    ```text
    Autonomous sign-off handoff to Architect
    - change_name: {change_name}
@@ -589,6 +607,7 @@ For each phase that ran, emit one block:
 - Status: {Completed | Skipped (pre-completed on resume) | Failed | Rejected}
 - Approval: {Approved | Auto-approved | Modified | N/A | Rejected}
 - Feedback: {verbatim if Modified or Rejected; omit otherwise}
+- Subagent session: {task_id with invocation count, e.g. "abc123 (3 invocations)"; only for Rubber Duck and Architect; omit if unset or N/A}
 - Artifact: {artifact name with anchor link to Final Artifacts below}
 ```
 
@@ -831,3 +850,10 @@ No human interaction until the final report is delivered.
 
 - *Wrong:* [dispatches Architect (or Implementer), returns its output to the user, stops — no gate, no next-phase transition, no Phase 1B routing.]
 - *Right:* [Phase 0.5 rehydrates `openspec/changes/add-user-auth/`, infers the next phase, runs validation + gate per mode, continues through all remaining phases to a terminal state.]
+
+## Anti-Pattern 4: Forgetting to reuse a captured `task_id`
+
+**Re-invoking Rubber Duck or Architect after HITL feedback or for autonomous sign-off:**
+
+- *Wrong:* [Re-invokes Rubber Duck via the `task` tool with no `task_id`. Rubber Duck restarts cold and re-asks Phase 1 problem-confirmation questions the user already answered.]
+- *Right:* [Looks up `Subagent sessions.rubber_duck` from workflow state, passes it as `task_id` so Rubber Duck resumes mid-exploration with its prior reasoning intact. Same pattern applies to every Architect re-invocation: re-entry triage, autonomous sign-off iterations.]
