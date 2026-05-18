@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.2.2...opencode-development-crew-v0.3.0) (2026-05-18)
+
+
+### Features
+
+* Add OpenSpec integration with skills and commands ([#45](https://github.com/marcelorodrigo/development-crew/issues/45)) ([06bef4e](https://github.com/marcelorodrigo/development-crew/commit/06bef4eec2d484f0eb06be8a148f4b022ba7c86e))
+
 ## [0.2.2](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.2.1...opencode-development-crew-v0.2.2) (2026-05-14)
 
 
