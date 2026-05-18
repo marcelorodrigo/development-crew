@@ -143,7 +143,7 @@ Without these two steps, the Architect cannot propose, the Implementer cannot ap
 **One-liner install (global):**
 
 ```bash
-opencode plugin @marcelorodrigo/opencode-development-crew --global
+opencode plugin @marcelorodrigo/opencode-development-crew@latest --global
 ```
 
 Or add manually to your `opencode.json`:
@@ -417,10 +417,8 @@ When no skills are available, agents fall back to the model's built-in knowledge
 Re-run the install command to get the latest version:
 
 ```bash
-opencode plugin @marcelorodrigo/opencode-development-crew --global
+opencode plugin @marcelorodrigo/opencode-development-crew@latest --global
 ```
-
-Or update the package version in your `opencode.json` manually.
 
 ### Claude Code
 
