@@ -151,10 +151,12 @@ Or add manually to your `opencode.json`:
 ```json
 {
   "plugin": [
-    "@marcelorodrigo/opencode-development-crew"
+    "@marcelorodrigo/opencode-development-crew@latest"
   ]
 }
 ```
+
+> **Tip:** Using `@latest` ensures you always get the newest version automatically. Pin to a specific version (e.g. `@0.2.2`) if you need reproducible behavior.
 
 ### Claude Code
 
