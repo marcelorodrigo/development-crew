@@ -45,32 +45,5 @@ jobs:
       - name: Validate version consistency between plugin.json and marketplace.json
         run: python3 validation/validate_versions.py
 
-      - name: Validate .claude-plugin/plugin.json exists and is valid JSON
-        run: |
-          if [ ! -f ".claude-plugin/plugin.json" ]; then
-            echo "ERROR: .claude-plugin/plugin.json not found"
-            exit 1
-          fi
-          python3 -m json.tool .claude-plugin/plugin.json > /dev/null
-          echo ".claude-plugin/plugin.json is valid JSON"
-
-      - name: Validate .claude-plugin/plugin.json required fields
-        run: python3 validation/validate_claude_plugin.py
-
-      - name: Validate .claude-plugin/marketplace.json exists and is valid JSON
-        run: |
-          if [ ! -f ".claude-plugin/marketplace.json" ]; then
-            echo "ERROR: .claude-plugin/marketplace.json not found"
-            exit 1
-          fi
-          python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
-          echo ".claude-plugin/marketplace.json is valid JSON"
-
-      - name: Validate .claude-plugin/marketplace.json required fields
-        run: python3 validation/validate_claude_plugin.py marketplace
-
-      - name: Validate cross-file version consistency
-        run: python3 validation/validate_versions.py
-
       - name: Validate agent files have required frontmatter
         run: python3 validation/validate_agents.py

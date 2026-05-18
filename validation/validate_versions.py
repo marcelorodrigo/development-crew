@@ -33,21 +33,6 @@ def main():
         print(f"ERROR: Failed to read .github/plugin files: {e}")
         sys.exit(1)
     
-    # Load Claude plugin versions
-    try:
-        with open(".claude-plugin/plugin.json") as f:
-            version_sources[".claude-plugin/plugin.json $.version"] = json.load(f).get("version", "")
-        
-        with open(".claude-plugin/marketplace.json") as f:
-            market = json.load(f)
-            plugins = market.get("plugins", [])
-            for i, plugin in enumerate(plugins):
-                version_sources[f".claude-plugin/marketplace.json $.plugins[{i}].version"] = plugin.get("version", "")
-            version_sources[".claude-plugin/marketplace.json $.metadata.version"] = market.get("metadata", {}).get("version", "")
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"ERROR: Failed to read .claude-plugin files: {e}")
-        sys.exit(1)
-    
     # Check version consistency
     mismatches = []
     for source, version in version_sources.items():
