@@ -11,38 +11,14 @@ permissions:
 
 jobs:
   validate:
-    name: Validate plugin.json and marketplace.json
+    name: Validate plugin manifest
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Validate plugin.json exists and is valid JSON
-        run: |
-          if [ ! -f ".github/plugin/plugin.json" ]; then
-            echo "ERROR: .github/plugin/plugin.json not found"
-            exit 1
-          fi
-          python3 -m json.tool .github/plugin/plugin.json > /dev/null
-          echo "plugin.json is valid JSON"
-
-      - name: Validate marketplace.json exists and is valid JSON
-        run: |
-          if [ ! -f ".github/plugin/marketplace.json" ]; then
-            echo "ERROR: .github/plugin/marketplace.json not found"
-            exit 1
-          fi
-          python3 -m json.tool .github/plugin/marketplace.json > /dev/null
-          echo "marketplace.json is valid JSON"
-
-      - name: Validate plugin.json required fields
-        run: python3 validation/validate_github_plugin.py
-
-      - name: Validate marketplace.json required fields
-        run: python3 validation/validate_github_plugin.py marketplace
-
-      - name: Validate version consistency between plugin.json and marketplace.json
+      - name: Validate version consistency
         run: python3 validation/validate_versions.py
 
       - name: Validate agent files have required frontmatter
