@@ -43,8 +43,9 @@ When you invoke Rubber Duck or Architect via the `task` tool, opencode prefixes 
 
 **Contract:**
 
-- On the **first** invocation of Rubber Duck or Architect in this workflow: do not pass `task_id`. After the tool returns, look for a `task_id: <id>` token near the start of the result. If found, store it verbatim in `Subagent sessions.<agent>` (see Phase 0 state schema). If absent, log `Subagent sessions.<agent>: capture failed — opencode contract changed?` and continue without resume — this is a graceful degradation, not a workflow failure.
-- On every **subsequent** invocation of the same agent within the same workflow: if `Subagent sessions.<agent>` is set, pass it as the `task` tool's `task_id` parameter so the child session resumes mid-thought. If it is `unset` (e.g., re-entry workflow where this agent never ran in this orchestrator session), invoke without `task_id`.
+- On the **first** invocation of Rubber Duck or Architect in this workflow: do not pass `task_id`. After the tool returns, look for a `task_id: <id>` token near the start of the result. If found, store it verbatim in `Subagent sessions.<agent>.id` (see Phase 0 state schema). If absent, log `Subagent sessions.<agent>: capture failed — opencode contract changed?` and continue without resume — this is a graceful degradation, not a workflow failure.
+- On every **subsequent** invocation of the same agent within the same workflow: if `Subagent sessions.<agent>.id` is set, pass it as the `task` tool's `task_id` parameter so the child session resumes mid-thought. If it is `unset` (e.g., re-entry workflow where this agent never ran in this orchestrator session), invoke without `task_id`.
+- On **every** invocation (first or subsequent, regardless of whether resume succeeded), increment `Subagent sessions.<agent>.invocations` by 1 immediately after the `task` tool returns. This counter feeds the per-step `Subagent session: <id> (N invocations)` line in the final report (see Execution Timeline), so it must be incremented deterministically at the call site — not reconstructed from history at report time.
 - Treat stored ids as orchestrator-internal — never echo them to the user.
 - `task_id`s are valid only within this orchestrator session. Never assume they survive a workflow or session restart, and never persist them to disk.
 
@@ -55,7 +56,7 @@ When you invoke Rubber Duck or Architect via the `task` tool, opencode prefixes 
 | Parameter | Required | Default | Meaning |
 |-----------|----------|---------|---------|
 | `mode` | No | `human-in-loop` | `human-in-loop`, `semi-autonomous` (alias `semi-auto`), or `autonomous`. |
-| `iteration_cap` | No | `3` | Autonomous build-loop safety net (semi-auto + autonomous). |
+| `iteration_cap` | No | `5` | Autonomous build-loop safety net (semi-auto + autonomous). |
 | `task` | Yes (unless mid-pipeline entry) | — | Natural-language description, Jira ticket, etc. |
 | `change` | Conditional | — | Existing OpenSpec change name for mid-pipeline entry. |
 | `start_from` | Conditional | — | Agent to start from when entering mid-pipeline (advisory — Phase 0.5 may infer differently). |
@@ -142,10 +143,10 @@ For concrete examples of correct vs incorrect behavior, see **Anti-Pattern 1** b
    Change name: <set after Architect runs opsx-propose>
    Predecessor: <archived-change-name if predecessor was passed; otherwise unset>
    Iteration: 0
-   Iteration cap: 3 (configurable at workflow start; semi-auto + autonomous only)
+   Iteration cap: 5 (configurable at workflow start; semi-auto + autonomous only)
    Subagent sessions:
-     rubber_duck: <unset>
-     architect:   <unset>
+     rubber_duck: { id: <unset>, invocations: 0 }
+     architect:   { id: <unset>, invocations: 0 }
    Project context: <fresh | stale-not-refreshed | regenerated this run>
    Artifacts: {}
    Approval history: []
@@ -153,7 +154,7 @@ For concrete examples of correct vs incorrect behavior, see **Anti-Pattern 1** b
    Errors: []
    ```
 
-   `Iteration cap` accepts a user-supplied override at workflow start (`iteration_cap: N`); default is 3.
+   `Iteration cap` accepts a user-supplied override at workflow start (`iteration_cap: N`); default is 5.
    `Predecessor` is set from the optional `predecessor:` invocation parameter and passed to Architect in the initial-run handoff.
 
 3. **Announce workflow start**
@@ -295,7 +296,7 @@ Expected output format: {artifact type}
 
 Wait for agent to complete and produce output.
 
-**Subagent session handling (Rubber Duck and Architect only):** Before issuing the `task` call, check `Subagent sessions.<agent>` — if set, include `task_id: <stored id>` in the tool call so the child session resumes. After the tool returns, scan the leading lines of the result for a `task_id: <id>` token; if present, write that id to `Subagent sessions.<agent>` (overwrite unconditionally — the contract is "always store what the tool last reported"). See "Subagent Session Reuse" under Workflow Contract for the full contract and graceful-degradation rules.
+**Subagent session handling (Rubber Duck and Architect only):** Before issuing the `task` call, check `Subagent sessions.<agent>.id` — if set, include `task_id: <stored id>` in the tool call so the child session resumes. After the tool returns: (a) scan the leading lines of the result for a `task_id: <id>` token; if present, write that id to `Subagent sessions.<agent>.id` (overwrite unconditionally — the contract is "always store what the tool last reported"); (b) increment `Subagent sessions.<agent>.invocations` by 1 unconditionally. See "Subagent Session Reuse" under Workflow Contract for the full contract and graceful-degradation rules.
 
 ### Step 1.3 - Validate Artifact
 
@@ -470,7 +471,7 @@ After Code Reviewer renders its verdict, **invoke the `question` tool** to ask h
   Architect triages (code-only / design edit / requirement edit / too-divergent) and routes accordingly:
   - **code-only:** No HITL gate; Architect's classification is the routing decision. Orchestrator dispatches the feedback to Implementer with the change name. Then Code Reviewer.
   - **design edit / requirement edit:** Architect edits artifacts in place, produces an updated Handoff Note, and you fire a fresh HITL gate (same two-step pattern). Then Implementer (`opsx-apply` walks remaining `[ ]` tasks). Then Code Reviewer.
-  - **too-divergent:** Architect surfaces the archive recommendation via `question`. If the user confirmed, Architect returns triage outcome `too-divergent: archive recommended`. **Orchestrator** then invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>` and restarts the workflow at Rubber Duck with the original problem + user's new feedback as context. **Clear `Subagent sessions.rubber_duck` and `Subagent sessions.architect` before the restart** — the new exploration is fundamentally different from the abandoned one, and carrying forward prior context would re-anchor it on the wrong direction.
+  - **too-divergent:** Architect surfaces the archive recommendation via `question`. If the user confirmed, Architect returns triage outcome `too-divergent: archive recommended`. **Orchestrator** then invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>` and restarts the workflow at Rubber Duck with the original problem + user's new feedback as context. **Reset `Subagent sessions.rubber_duck` and `Subagent sessions.architect` to `{ id: <unset>, invocations: 0 }` before the restart** — the new exploration is fundamentally different from the abandoned one, and carrying forward prior context would re-anchor it on the wrong direction.
 - **Discuss:** Re-prompt with `allow_freeform` for the user to elaborate. Do not act unilaterally.
 
 Record the Architect classification in approval history. Re-entry does not consume a retry budget. The same routing applies if the user interrupts mid-pipeline with new feedback after Architect has already produced a change: route to Architect for triage, never directly to Implementer or Reviewer.
@@ -492,7 +493,7 @@ No `question` calls inside the loop body. Architect is the sign-off authority.
    - reviewer_findings: {full text}
    - implementer_summary: {full text}
    - iteration: {N}
-   - iteration_cap: {default 3, configurable at workflow start}
+   - iteration_cap: {default 5, configurable at workflow start}
    ```
 4. **Branch on Architect's `## Decision`:**
 

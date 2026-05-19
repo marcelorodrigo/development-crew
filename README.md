@@ -26,6 +26,8 @@ https://raw.githubusercontent.com/marcelorodrigo/development-crew/master/README.
 
 You start with a rough idea and end with reviewed, production-ready code: each agent handing off to the next like a relay race, each one knowing exactly what to expect from the previous and what to produce for the next. Durable design lives on disk as an **OpenSpec change** at `openspec/changes/<name>/` — not in chat history — so every downstream agent reads from the same source of truth. _Requires OpenSpec — see [Prerequisites](#prerequisites)._
 
+> **New here?** See [getting-started.md](getting-started.md) for a hands-on walkthrough of the three flows developers use day-to-day (manual, semi-auto, full auto) with the exact prompts to type.
+
 ```mermaid
 flowchart TD
     User["👤 User Request"] -->|"Jira Ticket / Feature"| ORCH["🎯 Orchestrator"]
@@ -87,7 +89,7 @@ The Orchestrator will:
    Task: Add a /healthz endpoint
    ```
 
-3. **Autonomous:** No approval gates. Architect's sign-off (capped by `iteration_cap`, default 3) is the quality gate. Auto-archives on SHIP.
+3. **Autonomous:** No approval gates. Architect's sign-off (capped by `iteration_cap`, default 5) is the quality gate. Auto-archives on SHIP.
 
    ```
    Mode: autonomous
@@ -188,7 +190,7 @@ _It was born from the need to coordinate. In the chaos of context-switching betw
 
 2. **Semi-autonomous:**
    - Gates after Rubber Duck and Architect only
-   - Implementer → Reviewer → Architect sign-off runs as an autonomous build loop, capped by `iteration_cap` (default 3)
+   - Implementer → Reviewer → Architect sign-off runs as an autonomous build loop, capped by `iteration_cap` (default 5)
    - Presents a close prompt on SHIP (archive / send feedback / leave open)
    - Best for: well-scoped work where you want to approve the spec but not babysit the build
 
