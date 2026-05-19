@@ -50,7 +50,7 @@ The Architect explores the repo, makes binding decisions, and writes the change 
 Once the spec looks right, switch to `orchestrator` and kick off the build loop:
 
 ```
-mode: semi-auto, continue working on "fix-duplicate-notifications" change
+mode: semi-autonomous, continue working on "fix-duplicate-notifications" change
 ```
 
 The Orchestrator runs Implementer → Code Reviewer → Architect sign-off in a loop (capped by `iteration_cap`, default 5) until SHIP, FAIL, or the cap is hit.
@@ -111,13 +111,11 @@ Use this only for **simple, low-risk** work: small fixes, mechanical refactors, 
 ### Start the Orchestrator in autonomous mode
 
 ```
-mode: auto
+mode: autonomous
 JIRA-612: add structured logging to PaymentService.refund()
 ```
 
-The orchestrator drives the entire pipeline end-to-end: Rubber Duck → Architect → Implementer → Reviewer → Architect sign-off, no gates. The Architect's sign-off (capped by `iteration_cap`, default 5) is the only quality gate.
-
-**One important difference:** autonomous mode **does not archive** the change automatically when you started from a Jira ticket — it stops at SHIP and waits. This is intentional: it gives you a chance to inspect the final result before it lands in `openspec/changes/archive/`. After your review, archive, commit, push, and open the PR.
+The orchestrator drives the entire pipeline end-to-end: Rubber Duck → Architect → Implementer → Reviewer → Architect sign-off, no gates. The Architect's sign-off (capped by `iteration_cap`, default 5) is the only quality gate. On SHIP, the change is **auto-archived via the `opsx-archive` skill** — no close prompt, no manual step.
 
 If the loop fails (validation errors, iteration cap exhausted), the orchestrator aborts with a `failed_quality_gate` report. Drop back into Flow 1 or 2 to recover — usually the spec needs human judgment.
 
@@ -128,4 +126,4 @@ If the loop fails (validation errors, iteration cap exhausted), the orchestrator
 - **`PROJECT_CONTEXT.md`** is generated once by the Repo Scout (or auto-invoked by the orchestrator on first run). Regenerate it after a stack change with `refresh_context: true`.
 - **Predecessor for follow-ups.** PR-review fixes, post-merge bugs, and follow-up tickets should pass `predecessor: <archived-change-name>` so the new change is grounded in the merged work.
 - **The change name is the handoff token.** Once a change exists at `openspec/changes/<name>/`, you can drop into any agent at any time by passing the change name — you don't need to replay the conversation.
-- **Don't skip the human review of the diff.** Even in semi-auto and auto modes, the Architect signs off on *compliance with the spec*, not on whether the spec was the right one. That part is still on you.
+- **Don't skip the human review of the diff.** Even in semi-autonomous and autonomous modes, the Architect signs off on *compliance with the spec*, not on whether the spec was the right one. That part is still on you.
