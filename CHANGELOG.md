@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.3.0...opencode-development-crew-v0.4.0) (2026-05-19)
+
+
+### Features
+
+* **orchestrator:** preserve Rubber Duck and Architect sessions across re-invocations ([#49](https://github.com/marcelorodrigo/development-crew/issues/49)) ([d4bf9ea](https://github.com/marcelorodrigo/development-crew/commit/d4bf9ea1545bfda54362d824d4d676b5d6af9077))
+
 ## [0.3.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.2.2...opencode-development-crew-v0.3.0) (2026-05-18)
 
 
