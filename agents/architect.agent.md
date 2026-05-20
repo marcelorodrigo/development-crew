@@ -81,12 +81,19 @@ Read the Brainstorm Brief (or user description). Confirm you understand:
 
 If the input is still ambiguous after restating, invoke `opsx-explore` for last-mile clarification before proposing. If critical information is missing and there are multiple valid resolution paths, **invoke the `question` tool**:
 
-- **question:** "I'm missing critical information needed to design this change. Which resolution path should I take?"
-- **choices:**
-  - "I'll provide the missing information now"
-  - "Make a reasonable assumption and document it"
-  - "Descope the ambiguous part for now"
-- **allow_freeform:** true
+```json
+{
+  "questions": [{
+    "question": "I'm missing critical information needed to design this change. Which resolution path should I take?",
+    "header": "Missing info",
+    "options": [
+      { "label": "I'll provide it now", "description": "Supply the missing information directly" },
+      { "label": "Assume and document", "description": "Make a reasonable assumption and document it" },
+      { "label": "Descope for now", "description": "Descope the ambiguous part from this change" }
+    ]
+  }]
+}
+```
 
 Route the user's response and proceed to Step 2 accordingly.
 
@@ -120,12 +127,19 @@ Decide:
 
 Before invoking `opsx-propose`, **invoke the `question` tool** to confirm there are no open issues:
 
-- **question:** "I'm ready to create the OpenSpec change. Are there any constraints, preferences, or open questions you want me to address before I finalize the design?"
-- **choices:**
-  - "Proceed — create the change now"
-  - "I have a constraint or preference to add first"
-  - "I have an open question that needs resolution first"
-- **allow_freeform:** true
+```json
+{
+  "questions": [{
+    "question": "I'm ready to create the OpenSpec change. Are there any constraints, preferences, or open questions you want me to address before I finalize the design?",
+    "header": "Confirm before writing",
+    "options": [
+      { "label": "Proceed (Recommended)", "description": "Create the change now" },
+      { "label": "Add constraint first", "description": "I have a constraint or preference to add" },
+      { "label": "Resolve question first", "description": "I have an open question that needs resolution" }
+    ]
+  }]
+}
+```
 
 Route the user's response: if they have constraints or open questions, address them before invoking `opsx-propose`. Otherwise, proceed to Step 5.
 
@@ -251,12 +265,19 @@ Classify the feedback into **exactly one** of:
 - **Requirement edit** — a Requirement or Scenario in `specs/<cap>/spec.md` changes (behavior shift, new mode, removed mode). Edit `spec.md`. Often update `proposal.md` if scope shifted. Un-tick affected `tasks.md` items or append new tasks. Produce updated Handoff Note. New HITL gate.
 - **Too divergent** — the feedback implies a fundamentally different approach. Do **not** mutate the change. **Invoke the `question` tool** to recommend archiving and restarting:
 
-  - **question:** "This feedback implies a fundamentally different approach than the current change. Recommend archiving the current change and restarting at Rubber Duck. Confirm?"
-  - **choices:**
-    - "Archive current change and restart at Rubber Duck"
-    - "Try to revise in place anyway"
-    - "Discuss before deciding"
-  - **allow_freeform:** true
+  ```json
+  {
+    "questions": [{
+      "question": "This feedback implies a fundamentally different approach than the current change. Recommend archiving the current change and restarting at Rubber Duck. Confirm?",
+      "header": "Too divergent",
+      "options": [
+        { "label": "Archive and restart (Recommended)", "description": "Archive current change and restart at Rubber Duck" },
+        { "label": "Revise in place", "description": "Try to revise the current change anyway" },
+        { "label": "Discuss first", "description": "Discuss before deciding" }
+      ]
+    }]
+  }
+  ```
 
   If the user confirms archive, return a triage outcome of `too-divergent: archive recommended` to the orchestrator. Orchestrator runs `opsx-archive <change-name>` and restarts the workflow at Rubber Duck. You do not execute the archive yourself.
 

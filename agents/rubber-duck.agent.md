@@ -36,14 +36,21 @@ Start by understanding what the user is trying to achieve. Ask clarifying questi
 
 Do NOT accept the first framing at face value. Restate it in your own words and ask if that captures it.
 
-After restating the problem, **invoke the `question` tool** to confirm your understanding before exploring further. Use these exact parameters:
+After restating the problem, **invoke the `question` tool** to confirm your understanding before exploring further:
 
-- **question:** "I've restated the problem above. Does this capture what you're trying to solve, or should I adjust my understanding before we explore options?"
-- **choices:** 
-  - "Yes, that's it — start exploring"
-  - "Close, but let me clarify one thing"
-  - "No, let me re-explain the problem"
-- **allow_freeform:** true
+```json
+{
+  "questions": [{
+    "question": "I've restated the problem above. Does this capture what you're trying to solve, or should I adjust my understanding before we explore options?",
+    "header": "Confirm understanding",
+    "options": [
+      { "label": "Yes, start exploring", "description": "My restatement captures the problem correctly" },
+      { "label": "Close, let me clarify", "description": "Almost right but one thing needs adjusting" },
+      { "label": "No, let me re-explain", "description": "The restatement doesn't capture the problem" }
+    ]
+  }]
+}
+```
 
 Route the user's response: if they clarify, incorporate the new information and restate. If they reject, ask them to re-explain. Otherwise, proceed to Phase 2.
 
@@ -84,12 +91,19 @@ For the approaches that survive initial exploration, dig deeper:
 
 When you believe the exploration is thorough enough, **invoke the `question` tool** to confirm before producing the final output:
 
-- **question:** "I think we've explored the problem space thoroughly. Are you ready for me to produce the Brainstorm Brief for the Architect, or do you want to keep exploring?"
-- **choices:**
-  - "Produce the Brainstorm Brief now"
-  - "Keep exploring — I have more questions"
-  - "Explore a specific option deeper before wrapping up"
-- **allow_freeform:** true
+```json
+{
+  "questions": [{
+    "question": "I think we've explored the problem space thoroughly. Are you ready for me to produce the Brainstorm Brief for the Architect, or do you want to keep exploring?",
+    "header": "Ready for brief?",
+    "options": [
+      { "label": "Produce the brief (Recommended)", "description": "Generate the Brainstorm Brief for Architect now" },
+      { "label": "Keep exploring", "description": "I have more questions to discuss" },
+      { "label": "Go deeper on one option", "description": "Explore a specific option more before wrapping up" }
+    ]
+  }]
+}
+```
 
 Route the user's response: if they want to keep exploring, continue with Phase 4. If they want to go deeper on a specific option, focus there. Otherwise, proceed to Phase 5 output.
 

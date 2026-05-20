@@ -210,22 +210,35 @@ Map the user input to one of:
   ```
 
   **Then invoke the `question` tool:**
-  - **question:** "How would you like to start?"
-  - **choices:**
-    - "1. I have a feature idea — start the flow at brainstorming"
-    - "2. Resume an in-flight change — I have a change_name"
-    - "3. Follow-up to an archived change — I have a predecessor"
-    - "4. Something else — let me explain"
-  - **allow_freeform:** true
+  ```json
+  {
+    "questions": [{
+      "question": "How would you like to start?",
+      "header": "Workflow entry",
+      "options": [
+        { "label": "New feature idea", "description": "Start the flow at brainstorming with Rubber Duck" },
+        { "label": "Resume a change", "description": "Continue an in-flight change — you have a change_name" },
+        { "label": "Follow-up to archived", "description": "Start a follow-up to an archived change — you have a predecessor" }
+      ]
+    }]
+  }
+  ```
 
 If classification is ambiguous (e.g., "resume add-user-auth — also make it support OAuth"), **invoke the `question` tool** to disambiguate:
 
-- **question:** "I have a change_name plus what looks like new requirements. Which is this?"
-- **choices:**
-  - "1. Resume the existing change as-is (no new requirements)"
-  - "2. Re-entry feedback: please route this new requirement through Architect triage"
-  - "3. Follow-up: treat the existing change as predecessor and start a fresh workflow"
-- **allow_freeform:** true
+```json
+{
+  "questions": [{
+    "question": "I have a change_name plus what looks like new requirements. Which is this?",
+    "header": "Classify entry",
+    "options": [
+      { "label": "Resume as-is", "description": "Resume the existing change with no new requirements" },
+      { "label": "Re-entry feedback", "description": "Route this new requirement through Architect triage" },
+      { "label": "Follow-up", "description": "Treat the existing change as predecessor and start a fresh workflow" }
+    ]
+  }]
+}
+```
 
 ### Step 0.5.2 - Rehydrate from disk (Resume change / Re-entry feedback only)
 
@@ -354,38 +367,52 @@ Gate behavior per mode:
     This procedure is **mandatory** when the gate is firing after Architect (initial run or re-entry edit). The graduation choice must appear. Skipping it strands the user with no in-band way to switch to semi-auto.
 
     **Invoke the `question` tool:**
-    - **question:** "Review the Architect output above. What is your decision?"
-    - **choices:**
-      - "1. Approve: Proceed to Implementer (continue in HITL — gate at every phase)"
-      - "2. Approve and graduate to semi-auto: Proceed to autonomous build loop (Implementer → Code Reviewer → Architect sign-off until SHIP/FAIL/cap)"
-      - "3. Send feedback to Architect: Triage and route (code-only / design edit / requirement edit / too-divergent)"
-      - "4. Request changes: Abort workflow and provide feedback"
-    - **allow_freeform:** true
+    ```json
+    {
+      "questions": [{
+        "question": "Review the Architect output above. What is your decision?",
+        "header": "Architect approval",
+        "options": [
+          { "label": "Approve (HITL)", "description": "Proceed to Implementer, gate at every phase" },
+          { "label": "Approve (semi-auto)", "description": "Graduate to autonomous build loop until SHIP/FAIL/cap" },
+          { "label": "Send feedback", "description": "Triage and route (code-only / design edit / requirement edit / too-divergent)" },
+          { "label": "Reject", "description": "Abort workflow and provide feedback" }
+        ]
+      }]
+    }
+    ```
 
     Normalize the response:
-    - "Approve: Proceed to Implementer ..." → `approve`
-    - "Approve and graduate to semi-auto: ..." → `approve_graduate`
-    - "Send feedback to Architect: ..." → `modify`
-    - "Request changes: ..." → `reject`
+    - "Approve (HITL)" → `approve`
+    - "Approve (semi-auto)" → `approve_graduate`
+    - "Send feedback" → `modify`
+    - "Reject" → `reject`
 
    ---
 
     **Procedure 1.4-B: Non-Architect gate (current agent is Rubber Duck or Implementer, mode is human-in-loop)**
 
     **Invoke the `question` tool:**
-    - **question:** "Review the {AGENT_NAME} output above. What is your decision?"
-    - **choices:**
-      - "1. Approve: Proceed to {NEXT_AGENT_NAME}"
-      - "2. Send feedback to {AGENT_NAME}: Re-run with feedback"
-      - "3. Request changes: Abort workflow and provide feedback"
-    - **allow_freeform:** true
+    ```json
+    {
+      "questions": [{
+        "question": "Review the {AGENT_NAME} output above. What is your decision?",
+        "header": "{AGENT_NAME} approval",
+        "options": [
+          { "label": "Approve", "description": "Proceed to {NEXT_AGENT_NAME}" },
+          { "label": "Send feedback", "description": "Re-run {AGENT_NAME} with feedback" },
+          { "label": "Reject", "description": "Abort workflow and provide feedback" }
+        ]
+      }]
+    }
+    ```
 
-    Always interpolate the concrete `{NEXT_AGENT_NAME}` into the labels. Never leave it as the literal placeholder.
+    Always interpolate the concrete `{NEXT_AGENT_NAME}` and `{AGENT_NAME}` into the labels/descriptions. Never leave them as literal placeholders.
 
     Normalize the response:
-    - "Approve: Proceed to {NEXT_AGENT_NAME}" → `approve`
-    - "Send feedback to {AGENT_NAME}: ..." → `modify`
-    - "Request changes: ..." → `reject`
+    - "Approve" → `approve`
+    - "Send feedback" → `modify`
+    - "Reject" → `reject`
 
    ---
 
@@ -440,22 +467,36 @@ Behavior branches on `mode`.
 
 After Code Reviewer renders its verdict, **invoke the `question` tool** to ask how to proceed:
 
-- **question:** "Reviewer has finished. What would you like to do?"
-- **choices:**
-  - "1. Approve — proceed to archive (commit & merge remain yours)"
-  - "2. Send feedback to Architect to triage and route"
-  - "3. Discuss before deciding"
-- **allow_freeform:** true
+```json
+{
+  "questions": [{
+    "question": "Reviewer has finished. What would you like to do?",
+    "header": "Post-review action",
+    "options": [
+      { "label": "Approve", "description": "Proceed to archive (commit & merge remain yours)" },
+      { "label": "Send feedback", "description": "Send feedback to Architect to triage and route" },
+      { "label": "Discuss", "description": "Discuss before deciding" }
+    ]
+  }]
+}
+```
 
 **Handle responses:**
 
 - **Approve:** Record approval. **Invoke the `question` tool** to ask about archive (no Architect round-trip):
-  - **question:** "Archive the change now? Archiving moves openspec/changes/<name>/ to openspec/changes/archive/YYYY-MM-DD-<name>/ and syncs delta specs into openspec/specs/."
-  - **choices:**
-    - "1. Archive now"
-    - "2. Skip archive — I will archive manually later"
-    - "3. Keep the change open — more work coming"
-  - **allow_freeform:** true
+  ```json
+  {
+    "questions": [{
+      "question": "Archive the change now? Archiving moves openspec/changes/<name>/ to openspec/changes/archive/YYYY-MM-DD-<name>/ and syncs delta specs into openspec/specs/.",
+      "header": "Archive change",
+      "options": [
+        { "label": "Archive now", "description": "Archive and sync delta specs" },
+        { "label": "Skip archive", "description": "I will archive manually later" },
+        { "label": "Keep open", "description": "More work coming on this change" }
+      ]
+    }]
+  }
+  ```
 
   **On archive choice:** Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>`. The skill itself prompts the user about sync (Sync now / Archive without syncing) when delta specs exist — let it. Capture the skill's three-state sync result (`synced` / `sync skipped` / `no delta specs`) and pass it into the final report per the "Archive sync result" table.
   **On skip archive:** record `archive: skipped — user will archive manually`.
@@ -472,7 +513,7 @@ After Code Reviewer renders its verdict, **invoke the `question` tool** to ask h
   - **code-only:** No HITL gate; Architect's classification is the routing decision. Orchestrator dispatches the feedback to Implementer with the change name. Then Code Reviewer.
   - **design edit / requirement edit:** Architect edits artifacts in place, produces an updated Handoff Note, and you fire a fresh HITL gate (same two-step pattern). Then Implementer (`opsx-apply` walks remaining `[ ]` tasks). Then Code Reviewer.
   - **too-divergent:** Architect surfaces the archive recommendation via `question`. If the user confirmed, Architect returns triage outcome `too-divergent: archive recommended`. **Orchestrator** then invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>` and restarts the workflow at Rubber Duck with the original problem + user's new feedback as context. **Reset `Subagent sessions.rubber_duck` and `Subagent sessions.architect` to `{ id: <unset>, invocations: 0 }` before the restart** — the new exploration is fundamentally different from the abandoned one, and carrying forward prior context would re-anchor it on the wrong direction.
-- **Discuss:** Re-prompt with `allow_freeform` for the user to elaborate. Do not act unilaterally.
+- **Discuss:** Re-prompt for the user to elaborate (the `question` tool always includes a freeform option by default). Do not act unilaterally.
 
 Record the Architect classification in approval history. Re-entry does not consume a retry budget. The same routing applies if the user interrupts mid-pipeline with new feedback after Architect has already produced a change: route to Architect for triage, never directly to Implementer or Reviewer.
 
@@ -513,12 +554,19 @@ No `question` calls inside the loop body. Architect is the sign-off authority.
       - **Autonomous SHIP:** Reset `iteration = 0`. Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>` immediately (no question — mode contract). The orchestrator answers the skill's sync prompt non-interactively: **choose "Sync now"**. Capture the skill's three-state sync result. Status is `completed` regardless of sync state (a `sync skipped` result is surfaced as a warning in the final report's Archive line, never as `failed_quality_gate`). Done.
 
       - **Semi-auto SHIP:** Reset `iteration = 0`. Do **not** auto-archive. **Invoke the `question` tool** to present the close prompt:
-        - **question:** "Implementation complete and Architect signed off. What would you like to do?"
-        - **choices:**
-          - "1. Archive the change"
-          - "2. Send feedback to Architect to revise"
-          - "3. Leave open — I will archive manually later"
-        - **allow_freeform:** true
+        ```json
+        {
+          "questions": [{
+            "question": "Implementation complete and Architect signed off. What would you like to do?",
+            "header": "Close prompt",
+            "options": [
+              { "label": "Archive the change", "description": "Archive and sync delta specs" },
+              { "label": "Send feedback", "description": "Send feedback to Architect to revise" },
+              { "label": "Leave open", "description": "I will archive manually later" }
+            ]
+          }]
+        }
+        ```
 
         **On archive:** Orchestrator invokes the `opsx-archive` skill via the Skill tool with argument `<change_name>`. The skill prompts the user about sync; let it. Capture the three-state sync result per the "Archive sync result" table. Generate final report (status `completed`). Done.
 
@@ -544,13 +592,20 @@ No `question` calls inside the loop body. Architect is the sign-off authority.
    Please regenerate your output with ALL required sections.
    ```
 3. **If max retries exceeded:**
-    - **Human-in-loop:** **Invoke the `question` tool** with these choices:
-      - **question:** "Agent {agent_name} has failed {N} times and cannot produce a valid artifact. What would you like to do?"
-      - **choices:**
-        - "1. Retry manually: I will provide refined input"
-        - "2. Skip this agent (dangerous — requires confirmation)"
-        - "3. Abort workflow"
-      - **allow_freeform:** true
+    - **Human-in-loop:** **Invoke the `question` tool:**
+      ```json
+      {
+        "questions": [{
+          "question": "Agent {agent_name} has failed {N} times and cannot produce a valid artifact. What would you like to do?",
+          "header": "Agent failure",
+          "options": [
+            { "label": "Retry manually", "description": "I will provide refined input" },
+            { "label": "Skip agent", "description": "Dangerous — requires confirmation" },
+            { "label": "Abort workflow", "description": "Stop the workflow and generate error report" }
+          ]
+        }]
+      }
+      ```
 
     - **Autonomous / semi-autonomous:** Abort workflow, generate error report.
 
@@ -765,12 +820,19 @@ Errors:
 ```
 
 **Invoke the `question` tool:**
-- **question:** "{Agent} has failed 3 times. What would you like to do?"
-- **choices:**
-  - "1. Retry manually: I will provide refined input"
-  - "2. Skip this agent (dangerous — not recommended)"
-  - "3. Abort workflow"
-- **allow_freeform:** true
+```json
+{
+  "questions": [{
+    "question": "{Agent} has failed 3 times. What would you like to do?",
+    "header": "Agent failure",
+    "options": [
+      { "label": "Retry manually", "description": "I will provide refined input" },
+      { "label": "Skip agent", "description": "Dangerous — not recommended" },
+      { "label": "Abort workflow", "description": "Stop and generate error report" }
+    ]
+  }]
+}
+```
 
 **Autonomous / semi-autonomous:**
 ```text
