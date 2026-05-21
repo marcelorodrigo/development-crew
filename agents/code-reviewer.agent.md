@@ -215,13 +215,20 @@ Each finding uses this exact format. Keep `Why` to **1–2 sentences max**. `Whe
 
 After delivering the verdict, **invoke the `question` tool** to find out what the user wants to do next:
 
-- **question:** "Review complete. The verdict is above. What would you like to do next?"
-- **choices:**
-  - "Approve — proceed to archive (commit & merge remain yours)"
-  - "Send findings back to Implementer to fix"
-  - "Re-run Code Reviewer after fixes are applied"
-  - "Discuss a specific finding before deciding"
-- **allow_freeform:** true
+```json
+{
+  "questions": [{
+    "question": "Review complete. The verdict is above. What would you like to do next?",
+    "header": "Post-review action",
+    "options": [
+      { "label": "Approve", "description": "Proceed to archive (commit & merge remain yours)" },
+      { "label": "Send to Implementer", "description": "Send findings back to Implementer to fix" },
+      { "label": "Re-run reviewer", "description": "Re-run Code Reviewer after fixes are applied" },
+      { "label": "Discuss a finding", "description": "Discuss a specific finding before deciding" }
+    ]
+  }]
+}
+```
 
 Route the user's response accordingly.
 
