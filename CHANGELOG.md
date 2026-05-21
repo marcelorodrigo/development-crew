@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.4.0...opencode-development-crew-v0.5.0) (2026-05-21)
+
+
+### Features
+
+* update AGENTS to use question tool correctly ([#54](https://github.com/marcelorodrigo/development-crew/issues/54)) ([3734561](https://github.com/marcelorodrigo/development-crew/commit/37345613edfe8ca1945146753f98d747fefbe68f))
+
 ## [0.4.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.3.0...opencode-development-crew-v0.4.0) (2026-05-19)
 
 
