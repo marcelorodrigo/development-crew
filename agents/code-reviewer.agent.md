@@ -183,7 +183,7 @@ Only report findings that genuinely matter. **If the code is good, say so.** A r
 
 After delivering the verdict, call `question` to find out what the user wants to do next:
 
-```
+```javascript
 question({
   "question": "Review complete. The verdict is above. What would you like to do next?",
   "choices": [

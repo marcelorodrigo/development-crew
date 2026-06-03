@@ -69,13 +69,13 @@ The Orchestrator will:
 
 1. **Human-in-the-Loop (default):** Pauses after each agent for approval
 
-   ```
+   ```text
    Task: Add user authentication
    ```
 
 2. **Autonomous:** Runs full pipeline without interruption
 
-   ```
+   ```text
    Mode: autonomous
    Task: Add logging to PaymentService
    ```

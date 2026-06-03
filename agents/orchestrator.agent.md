@@ -172,9 +172,9 @@ If artifact is missing required sections:
    {Full artifact content from the agent}
    ```
 
-   **Step B - After the artifact is fully visible to the user, call `ask_user`** with only the decision question and choices (do NOT embed artifact content inside the question string):
+   **Step B - After the artifact is fully visible to the user, call `question`** with only the decision question and choices (do NOT embed artifact content inside the question string):
 
-```
+```javascript
 question({
   "question": "Review the {AGENT_NAME} output above. What is your decision?",
   "choices": [
@@ -243,8 +243,8 @@ Repeat steps 1.1–1.5 for the next agent in the pipeline.
    Please regenerate your output with ALL required sections.
    ```
 3. **If max retries exceeded:**
-   - **Human-in-loop:** Call `ask_user` with these choices:
-     ```
+   - **Human-in-loop:** Call `question` with these choices:
+     ```javascript
      question({
        "question": "Agent {agent_name} has failed {N} times and cannot produce a valid artifact. What would you like to do?",
        "choices": [
@@ -552,8 +552,8 @@ Users currently have no authentication mechanism...
 [... full artifact content ...]
 ```
 
-**Step B - After the artifact is visible, call ask_user with only the decision question:**
-```
+**Step B - After the artifact is visible, call question with only the decision question:**
+```javascript
 question({
   "question": "Review the Rubber Duck output above. What is your decision?",
   "choices": [
@@ -680,7 +680,7 @@ Errors:
 - Attempt 3: Missing both sections
 ```
 
-```
+```javascript
 question({
   "question": "Architect has failed 3 times to produce a valid Architecture Spec. What would you like to do?",
   "choices": [
@@ -779,7 +779,7 @@ Orchestrator: "Now switching to: Architect"
 Orchestrator: "I'm the workflow orchestrator. I don't provide technical answers myself."
 ```
 
-```
+```javascript
 question({
   "question": "What would you like to do?",
   "choices": [

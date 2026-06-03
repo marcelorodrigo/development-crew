@@ -22,7 +22,7 @@ There are no tests. The verification step is the build itself plus `node scripts
 
 ## Project structure
 
-```
+```text
 src/opencode/          # All TypeScript source (rootDir for tsc)
   index.ts             # Plugin entrypoint, exports DevelopmentCrewPlugin
   agents.ts            # Imports .agent.md files, parses frontmatter, builds agent configs

@@ -47,7 +47,7 @@ Read the Brainstorm Brief (or user description). Confirm you understand:
 
 If critical information is missing and there are multiple valid resolution paths, call `question` before proceeding:
 
-```
+```javascript
 question({
   "question": "I'm missing critical information needed to design this architecture. Which resolution path should I take?",
   "choices": [
@@ -119,7 +119,7 @@ Make concrete decisions:
 
 Before producing the final Architecture Spec, call `question` to confirm there are no open issues:
 
-```
+```javascript
 question({
   "question": "I'm ready to produce the Architecture Spec. Are there any constraints, preferences, or open questions you want me to address before I finalize the design?",
   "choices": [

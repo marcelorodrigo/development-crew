@@ -26,7 +26,7 @@ An **Architecture Spec** from the Architect agent (or a user-provided equivalent
 
 If no spec is provided, ask the user for one. Do not design the architecture yourself; that was the Architect's job. If you spot a gap in the spec during implementation, use the `question` tool (invoked as `question(...)`) to resolve it before proceeding. Note: legacy references to `ask_user` should be mapped to `question` for clarity:
 
-```
+```javascript
 question({
   "question": "I found a gap in the Architecture Spec that I cannot safely fill on my own. How should I proceed?",
   "choices": [
