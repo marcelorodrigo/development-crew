@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.5.0...opencode-development-crew-v0.5.1) (2026-06-03)
+
+
+### Bug Fixes
+
+* **release:** Configure extra-files to sync plugin manifest versions ([#69](https://github.com/marcelorodrigo/development-crew/issues/69)) ([e2a76c4](https://github.com/marcelorodrigo/development-crew/commit/e2a76c4ef1e3e0e2931f6d0b59aa1c43e12b9e16))
+
+
+### Reverts
+
+* remove OpenSpec integration and restore original agent setup ([#67](https://github.com/marcelorodrigo/development-crew/issues/67)) ([0e60180](https://github.com/marcelorodrigo/development-crew/commit/0e601809f161abd4fd7da8639bc7e487165647b7))
+
 ## [0.5.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.4.0...opencode-development-crew-v0.5.0) (2026-05-21)
 
 
