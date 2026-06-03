@@ -183,17 +183,19 @@ Only report findings that genuinely matter. **If the code is good, say so.** A r
 
 After delivering the verdict, call `question` to find out what the user wants to do next:
 
-```javascript
-question({
-  "question": "Review complete. The verdict is above. What would you like to do next?",
-  "choices": [
-    "Approve and proceed to merge",
-    "Send findings back to Implementer to fix",
-    "Re-run Code Reviewer after fixes are applied",
-    "Discuss a specific finding before deciding"
-  ],
-  "allow_freeform": true
-})
+```json
+{
+  "questions": [{
+    "question": "Review complete. The verdict is above. What would you like to do next?",
+    "header": "Post-review action",
+    "options": [
+      { "label": "Approve", "description": "Proceed to archive (commit & merge remain yours)" },
+      { "label": "Send to Implementer", "description": "Send findings back to Implementer to fix" },
+      { "label": "Re-run reviewer", "description": "Re-run Code Reviewer after fixes are applied" },
+      { "label": "Discuss a finding", "description": "Discuss a specific finding before deciding" }
+    ]
+  }]
+}
 ```
 
 # Rules

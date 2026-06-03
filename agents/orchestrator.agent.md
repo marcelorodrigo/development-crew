@@ -172,19 +172,21 @@ If artifact is missing required sections:
    {Full artifact content from the agent}
    ```
 
-   **Step B - After the artifact is fully visible to the user, call `question`** with only the decision question and choices (do NOT embed artifact content inside the question string):
+    **Step B - After the artifact is fully visible to the user, call `question`** with only the decision question and choices (do NOT embed artifact content inside the question string):
 
-```javascript
-question({
-  "question": "Review the {AGENT_NAME} output above. What is your decision?",
-  "choices": [
-    "Approve: Proceed to next agent",
-    "Approve with comments: Proceed and attach comments to the next agent",
-    "Request changes: Abort workflow and provide feedback",
-    "Provide custom input: Provide feedback to re-run this agent"
-  ],
-  "allow_freeform": true
-})
+```json
+{
+  "questions": [{
+    "question": "Review the {AGENT_NAME} output above. What is your decision?",
+    "header": "{AGENT_NAME} approval",
+    "options": [
+      { "label": "Approve", "description": "Proceed to next agent" },
+      { "label": "Approve with comments", "description": "Proceed and attach comments to the next agent" },
+      { "label": "Reject", "description": "Abort workflow and provide feedback" },
+      { "label": "Send feedback", "description": "Provide feedback to re-run this agent" }
+    ]
+  }]
+}
 ```
 
 2. **Handle user response:**
@@ -243,18 +245,20 @@ Repeat steps 1.1–1.5 for the next agent in the pipeline.
    Please regenerate your output with ALL required sections.
    ```
 3. **If max retries exceeded:**
-   - **Human-in-loop:** Call `question` with these choices:
-     ```javascript
-     question({
-       "question": "Agent {agent_name} has failed {N} times and cannot produce a valid artifact. What would you like to do?",
-       "choices": [
-         "Retry manually: I will provide refined input",
-         "Skip this agent (dangerous — requires confirmation)",
-         "Abort workflow"
-       ],
-       "allow_freeform": true
-     })
-     ```
+    - **Human-in-loop:** Call `question`:
+      ```json
+      {
+        "questions": [{
+          "question": "Agent {agent_name} has failed {N} times and cannot produce a valid artifact. What would you like to do?",
+          "header": "Agent failure",
+          "options": [
+            { "label": "Retry manually", "description": "I will provide refined input" },
+            { "label": "Skip agent", "description": "Dangerous — requires confirmation" },
+            { "label": "Abort workflow", "description": "Stop the workflow and generate error report" }
+          ]
+        }]
+      }
+      ```
    - **Autonomous:** Abort workflow, generate error report
 
 ### If Agent Execution Fails (Exception/Timeout)
@@ -553,17 +557,19 @@ Users currently have no authentication mechanism...
 ```
 
 **Step B - After the artifact is visible, call question with only the decision question:**
-```javascript
-question({
-  "question": "Review the Rubber Duck output above. What is your decision?",
-  "choices": [
-    "Approve: Proceed to Architect",
-    "Approve with comments: Proceed and attach comments to Architect",
-    "Request changes: Abort workflow and provide feedback",
-    "Provide custom input: Provide feedback to re-run Rubber Duck"
-  ],
-  "allow_freeform": true
-})
+```json
+{
+  "questions": [{
+    "question": "Review the Rubber Duck output above. What is your decision?",
+    "header": "Rubber Duck approval",
+    "options": [
+      { "label": "Approve", "description": "Proceed to Architect" },
+      { "label": "Approve with comments", "description": "Proceed and attach comments to Architect" },
+      { "label": "Reject", "description": "Abort workflow and provide feedback" },
+      { "label": "Send feedback", "description": "Provide feedback to re-run Rubber Duck" }
+    ]
+  }]
+}
 ```
 
 ### Turn 3: User approves
@@ -680,16 +686,18 @@ Errors:
 - Attempt 3: Missing both sections
 ```
 
-```javascript
-question({
-  "question": "Architect has failed 3 times to produce a valid Architecture Spec. What would you like to do?",
-  "choices": [
-    "Retry manually: I will provide refined input",
-    "Skip Architect (dangerous — not recommended)",
-    "Abort workflow"
-  ],
-  "allow_freeform": true
-})
+```json
+{
+  "questions": [{
+    "question": "Architect has failed 3 times to produce a valid Architecture Spec. What would you like to do?",
+    "header": "Architect failure",
+    "options": [
+      { "label": "Retry manually", "description": "I will provide refined input" },
+      { "label": "Skip agent", "description": "Dangerous — not recommended" },
+      { "label": "Abort workflow", "description": "Stop and generate error report" }
+    ]
+  }]
+}
 ```
 
 **Orchestrator (Autonomous):**
@@ -779,16 +787,18 @@ Orchestrator: "Now switching to: Architect"
 Orchestrator: "I'm the workflow orchestrator. I don't provide technical answers myself."
 ```
 
-```javascript
-question({
-  "question": "What would you like to do?",
-  "choices": [
-    "Start full pipeline (Rubber Duck → Architect → Implementer → Code Reviewer)",
-    "Provide an existing artifact and start mid-pipeline",
-    "Ask your question to a specific agent directly"
-  ],
-  "allow_freeform": true
-})
+```json
+{
+  "questions": [{
+    "question": "What would you like to do?",
+    "header": "Workflow entry",
+    "options": [
+      { "label": "Start full pipeline (Recommended)", "description": "Run Rubber Duck → Architect → Implementer → Code Reviewer" },
+      { "label": "Start mid-pipeline", "description": "Provide an existing artifact and start from a specific agent" },
+      { "label": "Ask a specific agent", "description": "Direct question to a specific agent without full pipeline" }
+    ]
+  }]
+}
 ```
 
 ### Correct Pattern 3: Pure Validation (Not Content Judgment)

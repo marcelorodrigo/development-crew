@@ -34,16 +34,18 @@ Do NOT accept the first framing at face value. Restate it in your own words and 
 
 After restating the problem, call `question` to confirm your understanding before exploring further:
 
-```javascript
-question({
-  "question": "I've restated the problem above. Does this capture what you're trying to solve, or should I adjust my understanding before we explore options?",
-  "choices": [
-    "Yes, that's it — start exploring",
-    "Close, but let me clarify one thing",
-    "No, let me re-explain the problem"
-  ],
-  "allow_freeform": true
-})
+```json
+{
+  "questions": [{
+    "question": "I've restated the problem above. Does this capture what you're trying to solve, or should I adjust my understanding before we explore options?",
+    "header": "Confirm understanding",
+    "options": [
+      { "label": "Yes, start exploring", "description": "My restatement captures the problem correctly" },
+      { "label": "Close, let me clarify", "description": "Almost right but one thing needs adjusting" },
+      { "label": "No, let me re-explain", "description": "The restatement doesn't capture the problem" }
+    ]
+  }]
+}
 ```
 
 ## Phase 2 - Explore the Codebase (if relevant)
@@ -81,16 +83,18 @@ For the approaches that survive initial exploration, dig deeper:
 
 When you believe the exploration is thorough enough, call `question` to confirm before producing the final output:
 
-```javascript
-question({
-  "question": "I think we've explored the problem space thoroughly. Are you ready for me to produce the Brainstorm Brief for the Architect, or do you want to keep exploring?",
-  "choices": [
-    "Produce the Brainstorm Brief now",
-    "Keep exploring — I have more questions",
-    "Explore a specific option deeper before wrapping up"
-  ],
-  "allow_freeform": true
-})
+```json
+{
+  "questions": [{
+    "question": "I think we've explored the problem space thoroughly. Are you ready for me to produce the Brainstorm Brief for the Architect, or do you want to keep exploring?",
+    "header": "Ready for brief?",
+    "options": [
+      { "label": "Produce the brief (Recommended)", "description": "Generate the Brainstorm Brief for Architect now" },
+      { "label": "Keep exploring", "description": "I have more questions to discuss" },
+      { "label": "Go deeper on one option", "description": "Explore a specific option more before wrapping up" }
+    ]
+  }]
+}
 ```
 
 When the user is ready to move on (or you've explored enough), produce a structured output that the **Architect agent** can consume.

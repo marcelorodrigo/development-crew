@@ -47,16 +47,18 @@ Read the Brainstorm Brief (or user description). Confirm you understand:
 
 If critical information is missing and there are multiple valid resolution paths, call `question` before proceeding:
 
-```javascript
-question({
-  "question": "I'm missing critical information needed to design this architecture. Which resolution path should I take?",
-  "choices": [
-    "I'll provide the missing information now",
-    "Make a reasonable assumption and document it",
-    "Descope the ambiguous part for now"
-  ],
-  "allow_freeform": true
-})
+```json
+{
+  "questions": [{
+    "question": "I'm missing critical information needed to design this architecture. Which resolution path should I take?",
+    "header": "Missing info",
+    "options": [
+      { "label": "I'll provide it now", "description": "Supply the missing information directly" },
+      { "label": "Assume and document", "description": "Make a reasonable assumption and document it" },
+      { "label": "Descope for now", "description": "Descope the ambiguous part from this change" }
+    ]
+  }]
+}
 ```
 
 Do not assume silently. Either ask or document your assumption explicitly.
@@ -119,16 +121,18 @@ Make concrete decisions:
 
 Before producing the final Architecture Spec, call `question` to confirm there are no open issues:
 
-```javascript
-question({
-  "question": "I'm ready to produce the Architecture Spec. Are there any constraints, preferences, or open questions you want me to address before I finalize the design?",
-  "choices": [
-    "Proceed — produce the Architecture Spec now",
-    "I have a constraint or preference to add first",
-    "I have an open question that needs resolution first"
-  ],
-  "allow_freeform": true
-})
+```json
+{
+  "questions": [{
+    "question": "I'm ready to produce the Architecture Spec. Are there any constraints, preferences, or open questions you want me to address before I finalize the design?",
+    "header": "Confirm before writing",
+    "options": [
+      { "label": "Proceed (Recommended)", "description": "Create the Architecture Spec now" },
+      { "label": "Add constraint first", "description": "I have a constraint or preference to add" },
+      { "label": "Resolve question first", "description": "I have an open question that needs resolution" }
+    ]
+  }]
+}
 ```
 
 # Output Format - Architecture Spec
