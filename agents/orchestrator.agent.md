@@ -82,7 +82,7 @@ Correct response (do this): "I don't read or display code files. If you need cod
    Mode: human-in-loop
    Current phase: DC Rubber Duck
    Completed: []
-   Pending: [DC Rubber Duck, architect, implementer, DC Code Reviewer]
+   Pending: [DC Rubber Duck, DC Architect, DC Implementer, DC Code Reviewer]
    Artifacts: {}
    Approval history: []
    Errors: []
