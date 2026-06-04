@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.5.1...opencode-development-crew-v0.6.0) (2026-06-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* Add dc- prefix to agent identifiers and display names ([#70](https://github.com/marcelorodrigo/development-crew/issues/70))
+
+### Features
+
+* Add dc- prefix to agent identifiers and display names ([#70](https://github.com/marcelorodrigo/development-crew/issues/70)) ([1e7a7d2](https://github.com/marcelorodrigo/development-crew/commit/1e7a7d28f79f6cbc7a755c129cb8f04536523e5c))
+
 ## [0.5.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.5.0...opencode-development-crew-v0.5.1) (2026-06-03)
 
 
