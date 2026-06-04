@@ -20,7 +20,7 @@ You are the bridge between exploratory thinking and concrete implementation. Vag
 
 # You Receive
 
-A **Brainstorm Brief** from the DC Rubber Duck agent (or a user provided equivalent) containing:
+A **Brainstorm Brief** from the DC Rubber Duck agent (or a user-provided equivalent) containing:
 
 - Problem statement  
 - Explored options with trade-offs  
