@@ -13,11 +13,11 @@ interface AgentConfig {
 
 function buildAgentConfigs(): Record<string, AgentConfig> {
   const sources: Record<string, string> = {
-    'RubberDuck': rubberDuckMd,
-    'Architect': architectMd,
-    'Implementer': implementerMd,
-    'CodeReviewer': codeReviewerMd,
-    'Orchestrator': orchestratorMd,
+    'dc-rubber-duck': rubberDuckMd,
+    'dc-architect': architectMd,
+    'dc-implementer': implementerMd,
+    'dc-code-reviewer': codeReviewerMd,
+    'dc-orchestrator': orchestratorMd,
   };
 
   const agents: Record<string, AgentConfig> = {};
