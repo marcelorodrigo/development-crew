@@ -47,6 +47,8 @@ def main():
             errors.append(f"{path}: Missing or empty 'name' field in frontmatter")
         if not re.search(r'^description:\s*\S', fm, re.MULTILINE):
             errors.append(f"{path}: Missing or empty 'description' field in frontmatter")
+        if not re.search(r'^permission:\s*$', fm, re.MULTILINE):
+            errors.append(f"{path}: Missing 'permission' block in frontmatter (must be a multi-line YAML block, not inline)")
         
         print(f"OK: {path}")
     

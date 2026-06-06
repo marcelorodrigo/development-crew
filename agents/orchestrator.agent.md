@@ -1,6 +1,8 @@
 ---
 name: DC Orchestrator
 description: Workflow orchestrator. Manages the 4-agent pipeline (DC Rubber Duck → DC Architect → DC Implementer → DC Code Reviewer) with optional human approval gates between steps. Supports autonomous and human-in-the-loop modes. Entry point for full-pipeline execution from Jira tickets or user requests.
+permission:
+  question: allow
 ---
 
 # Identity

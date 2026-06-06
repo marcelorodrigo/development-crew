@@ -9,6 +9,7 @@ import { parseAgentMd } from './parse-agent-md';
 interface AgentConfig {
   description: string;
   prompt: string;
+  permission?: import('./parse-agent-md').AgentPermission;
 }
 
 function buildAgentConfigs(): Record<string, AgentConfig> {
@@ -24,11 +25,15 @@ function buildAgentConfigs(): Record<string, AgentConfig> {
 
   for (const [key, raw] of Object.entries(sources)) {
     try {
-      const { name, description, prompt } = parseAgentMd(raw);
-      agents[key] = {
+      const { name, description, prompt, permission } = parseAgentMd(raw);
+      const config: AgentConfig = {
         description: `${name} — ${description}`,
         prompt,
       };
+      if (permission) {
+        config.permission = permission;
+      }
+      agents[key] = config;
     } catch (err) {
       throw new Error(
         `Failed to parse agent "${key}": ${err instanceof Error ? err.message : String(err)}`,

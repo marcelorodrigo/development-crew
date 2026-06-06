@@ -1,6 +1,8 @@
 ---
 name: DC Code Reviewer
 description: Code review agent. Validates implementations against architecture specs, project conventions, and any loaded skills. Read-only, never modifies code. Sits at the end of the pipeline after the DC Implementer.
+permission:
+  question: allow
 ---
 
 # Identity
