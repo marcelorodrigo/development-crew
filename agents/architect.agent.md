@@ -5,7 +5,7 @@ permission:
   question: allow
   edit: deny
   write: deny
-  bash: deny
+  bash: ask
 ---
 
 # Identity
