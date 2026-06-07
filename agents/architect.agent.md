@@ -3,6 +3,9 @@ name: DC Architect
 description: Architecture formalizer. Takes a brainstorm brief and produces a formal architecture specification grounded in the project's tech stack and any available skills. Sits after DC Rubber Duck and before DC Implementer in the pipeline.
 permission:
   question: allow
+  edit: deny
+  write: deny
+  bash: deny
 ---
 
 # Identity
