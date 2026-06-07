@@ -55,7 +55,7 @@ description: One-line description
 
 Both `name` and `description` are required. The parser (`parse-agent-md.ts`) extracts frontmatter and uses everything after the closing `---` as the prompt. CI will fail if any agent file is malformed or its name is missing from the bundle.
 
-**Optional `permission:` block.** When present, it must be a multi-line YAML map. Inline form (`permission: { question: allow }`) is rejected. Each value is either a flat action (`ask` | `allow` | `deny`) or a nested map of pattern → action. The block is emitted on the agent's OpenCode config so the tools it gates (e.g. `question`) are guaranteed to be exposed regardless of OpenCode's defaults. See <https://opencode.ai/docs/agents/#permissions> for the full key list and ordering rules.
+**Runtime-optional, repo-required `permission:` block.** When present, it must be a multi-line YAML map. Inline form (`permission: { question: allow }`) is rejected. Each value is either a flat action (`ask` | `allow` | `deny`) or a nested map of pattern → action. The block is emitted on the agent's OpenCode config so the tools it gates (e.g. `question`) are guaranteed to be exposed regardless of OpenCode's defaults. See <https://opencode.ai/docs/agents/#permissions> for the full key list and ordering rules. The repository validator (`validation/validate_agents.py`) enforces that every agent file includes this block.
 
 ```markdown
 ---

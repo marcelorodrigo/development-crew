@@ -45,6 +45,9 @@ function parsePermissionBlock(blockLines: string[]): AgentPermission {
   // Normalize indentation: strip the minimum common leading whitespace so
   // sub-block detection can rely on relative indent.
   const nonEmpty = blockLines.filter((l) => l.trim().length > 0);
+  if (nonEmpty.length === 0) {
+    throw new Error("'permission:' block is empty");
+  }
   const minIndent = Math.min(
     ...nonEmpty.map((l) => l.match(/^( *)/)?.[0].length ?? 0),
   );
@@ -70,11 +73,15 @@ function parsePermissionBlock(blockLines: string[]): AgentPermission {
       while (i < normalized.length) {
         const subLine = normalized[i];
         if (!/^\s/.test(subLine)) break; // back at top level
-        const subMatch = subLine.match(/^ {2}(\S+):\s*(.+)$/);
+        const subMatch = subLine.match(/^ {2}(.+?):\s*(.+)$/);
         if (!subMatch) {
           throw new Error(`Malformed permission sub-entry: "${subLine}"`);
         }
-        subBlock[subMatch[1]] = validatePermissionAction(subMatch[2].trim());
+        const rawSubKey = subMatch[1].trim();
+        const subKey = rawSubKey
+          .replace(/^"(.*)"$/, "$1")
+          .replace(/^'(.*)'$/, "$1");
+        subBlock[subKey] = validatePermissionAction(subMatch[2].trim());
         i++;
       }
       if (Object.keys(subBlock).length === 0) {
