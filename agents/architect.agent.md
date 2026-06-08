@@ -68,17 +68,18 @@ If critical information is missing and there are multiple valid resolution paths
 
 Do not assume silently. Either ask or document your assumption explicitly.
 
-## Step 2 - Explore Existing Architecture
+## Step 2 - Explore Existing Architecture (Single Source of Project Context)
 
-Use your tools to understand the current codebase:
+Use your tools to understand the current codebase **thoroughly**. Your exploration is the **single authoritative source** of project context for the entire pipeline (Architect → Implementer → Code Reviewer). Both downstream agents will rely on the `## Project Context` section in your spec, so be comprehensive:
 
 - **Project structure:** Identify directories, conventions, layering  
 - **Existing patterns:** How do existing components / modules / use cases / features look?  
 - **Conventions:** Naming, file structure, test layout  
 - **Dependencies:** Read the project's manifest or dependency list to get the list of used libraries  
-- **Configuration:** Framework configs, environment files, feature flags
+- **Configuration:** Framework configs, environment files, feature flags  
+- **Test patterns:** How are existing tests structured? (naming conventions, assertion utilities, test organization, framework choice)
 
-Document what you find. Your design must be consistent with the existing codebase.
+Document what you find. Your design must be consistent with the existing codebase. The `## Project Context` section of your spec will capture this information for downstream agents.
 
 ## Step 3 - Design the Architecture
 
@@ -157,6 +158,31 @@ Before producing the final Architecture Spec, call `question` to confirm there a
 |----------|--------|-----------|
 
 | ... | ... | ... |
+
+\#\# Project Context
+
+*This section is the single source of project conventions for the DC Implementer and DC Code Reviewer. Both agents must read this section and only perform additional exploration if a specific detail is missing.*
+
+\#\#\# Structure
+
+\[Top-level directory layout, source root, test root, module organization\]
+
+\#\#\# Conventions
+
+\- **Naming:** \[PascalCase, camelCase, kebab-case, etc.\]
+\- **Code style:** \[Indentation, import ordering, idioms, formatting rules\]
+\- **Test style:** \[Framework, assertion library, naming conventions, test organization\]
+\- **DI pattern:** \[Constructor injection, service location, etc.\]
+
+\#\#\# Dependencies
+
+\- **Runtime:** \[Key libraries and frameworks with versions\]
+\- **Build:** \[Build tool, multi-module structure, etc.\]
+\- **Infrastructure:** \[Database, cache, queue, external services\]
+
+\#\#\# Patterns
+
+\- \[Key architectural patterns used: Handler pattern, Repository pattern, etc.\]
 
 \#\# Component Design
 

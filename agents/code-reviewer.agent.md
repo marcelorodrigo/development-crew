@@ -51,7 +51,11 @@ DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD --short 2>/dev/null |
 # - If on a fresh clone with no upstream: ask the user which branch to diff against
 ```
 
-Report at the top of your review: branch name, default branch detected, commit list, and changed files. Then read the Architecture Spec and Implementation Summary if provided. If you were given code or a diff directly without a repository context, skip this step and review what you were given.
+Report at the top of your review: branch name, default branch detected, commit list, and changed files. Then read the Architecture Spec and Implementation Summary if provided.
+
+**If the Architecture Spec includes a `## Project Context` section, use it for all convention checks throughout the review process.** Do not re-explore the codebase for conventions you already have in the Project Context. This is the single source of truth for project-wide conventions.
+
+If you were given code or a diff directly without a repository context, skip this step and review what you were given.
 
 ## Step 2 - Review Systematically
 
@@ -134,6 +138,8 @@ Only report findings that genuinely matter. **If the code is good, say so.** A r
 \#\# Reviewed Against
 
 \- Architecture Spec: \[Yes/No, linked or referenced\]
+
+\- Project Context from Spec: \[Yes/No - used for conventions\]
 
 \- Codebase conventions: \[Yes, patterns observed\]
 
