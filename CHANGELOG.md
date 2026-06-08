@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.6.0...opencode-development-crew-v0.7.0) (2026-06-08)
+
+
+### Features
+
+* **agents:** Add permission frontmatter to expose question tool ([#82](https://github.com/marcelorodrigo/development-crew/issues/82)) ([b8c60bd](https://github.com/marcelorodrigo/development-crew/commit/b8c60bd79c4daa698c5269676f2b9cd6bc5159a6))
+
 ## [0.6.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.5.1...opencode-development-crew-v0.6.0) (2026-06-04)
 
 
