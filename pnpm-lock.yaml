@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@opencode-ai/plugin':
-        specifier: 1.16.0
-        version: 1.16.0
+        specifier: 1.16.2
+        version: 1.16.2
       '@opencode-ai/sdk':
         specifier: 1.16.2
         version: 1.16.2
@@ -222,8 +222,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@opencode-ai/plugin@1.16.0':
-    resolution: {integrity: sha512-Plk76tTrJWR43wT8XBkXtSy1N4jFBfEuHpFpb7C3niydqHRih26z1LcbOSkHTFx1XuHGfgBi9+D8cuUn7305AQ==}
+  '@opencode-ai/plugin@1.16.2':
+    resolution: {integrity: sha512-FaZhVXrbz93xsdGLCtarRDTeqFt8AkLfh8B34tFBj6G4HXVmKSgBwVXmtELKKC+08xMtawBC9hshiMbXryv6cg==}
     peerDependencies:
       '@opentui/core': '>=0.3.2'
       '@opentui/keymap': '>=0.3.2'
@@ -235,9 +235,6 @@ packages:
         optional: true
       '@opentui/solid':
         optional: true
-
-  '@opencode-ai/sdk@1.16.0':
-    resolution: {integrity: sha512-S4H2e9j4rdHs5BQOCjmVEdqdXmKwPFKjXPbPUaWiRJpAjBcZ/uIBpoZkmV+x9BLzc+vrE6WAffMZieQgukt4DA==}
 
   '@opencode-ai/sdk@1.16.2':
     resolution: {integrity: sha512-Z/xZ7q79dYeE0afqIk/yFEcRNGEQFcE+H8ssYivUiy+xGZ1mGwT72jpaQZKBwPn3JH4sRCu4KA2lcktBQfcOjg==}
@@ -506,8 +503,8 @@ packages:
     resolution: {integrity: sha512-4kmO/MdyUIkLIvTPr8VHLil4AtoKIoniWPIEk5+CDy0xnWC84azhSFmuJ7PxZdsYtiP5kEeQsORAVIeMgxT+Hw==}
     hasBin: true
 
-  msgpackr@2.0.2:
-    resolution: {integrity: sha512-c5hYOXFbP79Slh6Dzd2wzk+jnV7mX1UxfMYtilnY1NmalXPqG8DGb5cYCMBrW4AsH3zekBBZd4QrKz9NhtvYLQ==}
+  msgpackr@2.0.3:
+    resolution: {integrity: sha512-vFKpMYFTEQujRQxvdS/u6zlfesws0J40K74w6E1fVsYnIa9WKJKB5xIVVON8L7S39hCNrCVGXcPjrYmCb9lT+w==}
 
   multipasta@0.2.7:
     resolution: {integrity: sha512-KPA58d68KgGil15oDqXjkUBEBYc00XvbPj5/X+dyzeo/lWm9Nc25pQRlf1D+gv4OpK7NM0J1odrbu9JNNGvynA==}
@@ -776,15 +773,11 @@ snapshots:
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.4':
     optional: true
 
-  '@opencode-ai/plugin@1.16.0':
+  '@opencode-ai/plugin@1.16.2':
     dependencies:
-      '@opencode-ai/sdk': 1.16.0
+      '@opencode-ai/sdk': 1.16.2
       effect: 4.0.0-beta.74
       zod: 4.1.8
-
-  '@opencode-ai/sdk@1.16.0':
-    dependencies:
-      cross-spawn: 7.0.6
 
   '@opencode-ai/sdk@1.16.2':
     dependencies:
@@ -910,7 +903,7 @@ snapshots:
       find-my-way-ts: 0.1.6
       ini: 7.0.0
       kubernetes-types: 1.30.0
-      msgpackr: 2.0.2
+      msgpackr: 2.0.3
       multipasta: 0.2.7
       toml: 4.1.1
       uuid: 14.0.0
@@ -1003,7 +996,7 @@ snapshots:
       '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.4
     optional: true
 
-  msgpackr@2.0.2:
+  msgpackr@2.0.3:
     optionalDependencies:
       msgpackr-extract: 3.0.4
 
