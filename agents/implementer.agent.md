@@ -57,14 +57,16 @@ Read the Architecture Spec thoroughly. Before writing any code:
 - Identify the order of implementation (data structures first, then core logic, then external boundaries, then entry points)  
 - Note any dependencies between components
 
-## Step 2 - Explore Existing Conventions
+## Step 2 - Read Project Context from Architecture Spec
 
-Before writing the first line, examine the existing codebase:
+Read the `## Project Context` section of the Architecture Spec. Use it as your **primary reference** for:
 
-- **Code style:** How are existing files formatted? (imports, naming, comments, idioms specific to the language/framework)  
-- **Test style:** How are existing tests structured? (naming conventions, assertion utilities, test organization)  
-- **Configuration:** What's in the project manifest and lockfile? What libraries and frameworks are available?  
-- **Patterns:** How do existing components / modules look? Match their style exactly.
+- **Code style:** Conventions the project follows  
+- **Test style:** Framework, naming, organization  
+- **Dependencies:** What libraries and frameworks are available  
+- **Patterns:** Architectural patterns used in the codebase
+
+Only perform **targeted exploration** if a specific detail you need is missing from the `## Project Context` section. For example, you might need to check one existing test file to match a precise test structure not fully described in the spec. In that case, explore minimally and document what you explored and why.
 
 Your code must look like it was written by the same team that wrote the rest of the codebase.
 
