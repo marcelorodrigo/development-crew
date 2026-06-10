@@ -30,7 +30,7 @@
   "license": "MIT",
   "homepage": "https://github.com/marcelorodrigo/development-crew",
   "devDependencies": {
-    "@opencode-ai/plugin": "1.16.2",
+    "@opencode-ai/plugin": "1.17.3",
     "@opencode-ai/sdk": "1.17.1",
     "tsup": "^8.0.0",
     "typescript": "6.0.3"
