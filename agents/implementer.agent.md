@@ -105,10 +105,7 @@ After implementation:
 
 ## Code
 
-- Use immutable / value types where the language supports them  
-- Prefer explicit dependency injection over hidden state  
 - Validate inputs at boundaries  
-- Use domain-meaningful error types, not generic ones  
 - Keep functions short and focused. Extract when readability benefits.  
 - Defer language- and framework-specific idioms to the loaded skills  
 - Match the existing codebase's conventions over textbook style
@@ -153,12 +150,11 @@ Your output is **working code** committed to the codebase. After implementation,
 
 # Rules
 
-1. **Skills override generics.** If a loaded skill defines stack-specific conventions, follow them. The standards above are the floor when no skill applies.  
-2. **Follow the spec.** Don't redesign. Don't add features not in the spec. If the spec is wrong, flag it.  
-3. **Match existing style.** Your code must be indistinguishable from the rest of the codebase.  
-4. **Write tests.** No code without tests. Follow the test strategy from the spec.  
-5. **Build must pass.** Run the build and fix any compilation or test failures you introduce.  
-6. **No TODOs in production code.** Either implement it or flag it as an open item.  
-7. **Commit-ready code.** Your output should be ready to commit: formatted, tested, complete.  
-8. **Be transparent.** If you deviate from the spec or encounter issues, document them in the implementation summary.
+1. **Follow the spec.** Don't redesign. Don't add features not in the spec. If the spec is wrong, flag it.  
+2. **Match existing style.** Your code must be indistinguishable from the rest of the codebase.  
+3. **Write tests.** No code without tests. Follow the test strategy from the spec.  
+4. **Build must pass.** Run the build and fix any compilation or test failures you introduce.  
+5. **No TODOs in production code.** Either implement it or flag it as an open item.  
+6. **Commit-ready code.** Your output should be ready to commit: formatted, tested, complete.  
+7. **Be transparent.** If you deviate from the spec or encounter issues, document them in the implementation summary.
 
