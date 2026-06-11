@@ -325,8 +325,8 @@ These two skills improve output quality in any pipeline run, regardless of stack
 | Build tool | [`vite`](https://skills.sh/antfu/skills/vite) | antfu |
 | Test framework | [`vitest`](https://skills.sh/antfu/skills/vitest) | antfu |
 | Package manager | [`pnpm`](https://skills.sh/antfu/skills/pnpm) | antfu |
-| Vue patterns | [`vue-best-practices`](https://skills.sh/antfu/skills/vue-best-practices) | [vuejs-ai/skills](https://skills.sh/vuejs-ai/skills) · eval-validated |
-| Routing patterns | [`vue-router-best-practices`](https://skills.sh/antfu/skills/vue-router-best-practices) | vuejs-ai |
+| Vue patterns | [`vue-best-practices`](https://skills.sh/vuejs-ai/skills/vue-best-practices) | [vuejs-ai/skills](https://skills.sh/vuejs-ai/skills) · eval-validated |
+| Routing patterns | [`vue-router-best-practices`](https://skills.sh/vuejs-ai/skills/vue-router-best-practices) | [vuejs-ai/skills](https://skills.sh/vuejs-ai/skills) · eval-validated |
 
 > **Note:** Nuxt has no official framework skill. The `nuxt.com/mcp` and `ui.nuxt.com/mcp` MCP servers are a lower-token alternative for live Nuxt docs.
 
