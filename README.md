@@ -297,7 +297,86 @@ _Nothing ships past the Code Reviewer without earning it. It diffs against the d
 
 Development Crew agents are **skill-aware**. When skills are available in the user's environment (e.g., via an `<available_skills>` block or a platform skill-loading tool), the Architect, Implementer, Code Reviewer, and Rubber Duck will detect the project's tech stack and load matching skills before starting work. This means the agents adapt their guidance, conventions, and review checklists to the specific frameworks and languages in use, without any manual configuration.
 
-When no skills are available, agents fall back to the model's built-in knowledge and the project's own conventions. A curated list of recommended skills per tech stack is planned as a follow-up.
+When no skills are available, agents fall back to the model's built-in knowledge and the project's own conventions.
+
+### Recommended skills per tech stack
+
+#### Every workflow (universal)
+
+These two skills improve output quality in any pipeline run, regardless of stack:
+
+| Capability | Skill | Source |
+|---|---|---|
+| Conventional commit messages | [`conventional-commit`](https://skills.sh/marcelorodrigo/agent-skills/conventional-commit) | marcelorodrigo |
+| Pull request authoring | [`create-pr`](https://skills.sh/marcelorodrigo/agent-skills/create-pr) | marcelorodrigo |
+
+---
+
+#### Vue / Nuxt Frontend
+
+**Core (any Vue/Nuxt project):**
+
+| Capability | Skill | Install |
+|---|---|---|
+| Vue 3 API | [`vue-skilld`](https://skills.sh/skilld-dev/vue-ecosystem-skills/vue-skilld) | [skilld-dev/vue-ecosystem-skills](https://skills.sh/skilld-dev/vue-ecosystem-skills) · Harlan Zw |
+| State management | [`pinia-skilld`](https://skills.sh/skilld-dev/vue-ecosystem-skills/pinia-skilld) | skilld-dev |
+| Routing API | [`vue-router-skilld`](https://skills.sh/skilld-dev/vue-ecosystem-skills/vue-router-skilld) | skilld-dev |
+| Nuxt framework | [`nuxt`](https://skills.sh/antfu/skills/nuxt) | [antfu/skills](https://skills.sh/antfu/skills) · Vue/Vite/Nuxt core team |
+| Build tool | [`vite`](https://skills.sh/antfu/skills/vite) | antfu |
+| Test framework | [`vitest`](https://skills.sh/antfu/skills/vitest) | antfu |
+| Package manager | [`pnpm`](https://skills.sh/antfu/skills/pnpm) | antfu |
+| Vue patterns | [`vue-best-practices`](https://skills.sh/vuejs-ai/skills/vue-best-practices) | [vuejs-ai/skills](https://skills.sh/vuejs-ai/skills) · eval-validated |
+| Routing patterns | [`vue-router-best-practices`](https://skills.sh/vuejs-ai/skills/vue-router-best-practices) | [vuejs-ai/skills](https://skills.sh/vuejs-ai/skills) · eval-validated |
+
+> **Note:** Nuxt has no official framework skill. The `nuxt.com/mcp` and `ui.nuxt.com/mcp` MCP servers are a lower-token alternative for live Nuxt docs.
+
+**Testing + composables (strongly recommended):**
+
+| Capability | Skill | Install |
+|---|---|---|
+| Component testing patterns | [`vue-testing-best-practices`](https://skills.sh/antfu/skills/vue-testing-best-practices) | [vuejs-ai/skills](https://skills.sh/vuejs-ai/skills) |
+| Vue Test Utils API | [`vue-test-utils-skilld`](https://skills.sh/skilld-dev/vue-ecosystem-skills/vue-test-utils-skilld) | [skilld-dev/vue-ecosystem-skills](https://skills.sh/skilld-dev/vue-ecosystem-skills) |
+| E2E testing | [`playwright-best-practices`](https://github.com/currents-dev/playwright-best-practices) | [currents-dev](https://github.com/currents-dev/playwright-best-practices) · 33.4K installs |
+| Composable utilities | [`vueuse-functions`](https://skills.sh/vueuse/skills/vueuse-functions) | [vueuse/skills](https://skills.sh/vueuse/skills) · official VueUse org |
+
+**Situational (install what you need):**
+
+- **UI libraries:** [skilld-dev](https://skills.sh/skilld-dev/vue-ecosystem-skills) has `reka-ui-skilld`, `shadcn-vue-skilld`, `primevue-skilld`, `vuetify-skilld`, `quasar-skilld`
+- **Nuxt UI:** [`nuxt-ui`](https://skills.sh/nuxt/ui/nuxt-ui) from [nuxt/ui](https://skills.sh/nuxt/ui) (official, 12.9K installs)
+- **Nuxt modules:** [onmax/nuxt-skills](https://skills.sh/onmax/nuxt-skills) has `nuxt-content`, `nuxthub`, `nuxt-seo` (auto-regenerated weekly)
+- **Forms / i18n:** skilld-dev has `formkit-core-skilld`, `vee-validate-skilld`, `vue-i18n-skilld`
+- **Vue debugging:** [vuejs-ai](https://skills.sh/vuejs-ai/skills) has `vue-debug-guides`, `vue-pinia-best-practices`
+- **Web quality:** [addyosmani/agent-skills](https://skills.sh/addyosmani/agent-skills) has [`performance-optimization`](https://skills.sh/addyosmani/agent-skills/performance-optimization), [`browser-testing-with-devtools`](https://skills.sh/addyosmani/agent-skills/browser-testing-with-devtools)
+
+---
+
+#### General Frontend & Cross-Stack
+
+| Category | Skill | Install | Credibility |
+|---|---|---|---|
+| TypeScript | [`typescript-advanced-types`](https://skills.sh/wshobson/agents/typescript-advanced-types) | [wshobson/agents](https://skills.sh/wshobson/agents) | Best available |
+| Cypress | [`cypress-author`](https://skills.sh/cypress-io/ai-toolkit/cypress-author) + [`cypress-explain`](https://skills.sh/cypress-io/ai-toolkit/cypress-explain) | [cypress-io/ai-toolkit](https://skills.sh/cypress-io/ai-toolkit) · official | Best available |
+| Accessibility | [`accessibility`](https://skills.sh/addyosmani/web-quality-skills/accessibility) | [addyosmani/web-quality-skills](https://skills.sh/addyosmani/web-quality-skills) · Google Chrome | Strong |
+| Monorepo (Turborepo) | [`turborepo`](https://skills.sh/vercel/turborepo/turborepo) | [vercel/turborepo](https://skills.sh/vercel/turborepo) · official | Strong |
+| Monorepo (Nx) | Nx suite | [nrwl/nx](https://skills.sh/nrwl/nx) · official | Strong |
+| CSS / Tailwind | [`tailwind-design-system`](https://skills.sh/wshobson/agents/tailwind-design-system) | [wshobson/agents](https://skills.sh/wshobson/agents) | Best available |
+| GraphQL | [`graphql-schema`](https://skills.sh/apollographql/skills/graphql-schema) + [`graphql-operations`](https://skills.sh/apollographql/skills/graphql-operations) | [apollographql/skills](https://skills.sh/apollographql/skills) · official | Strong |
+| Performance | [`performance-optimization`](https://skills.sh/addyosmani/agent-skills/performance-optimization) | [addyosmani/agent-skills](https://skills.sh/addyosmani/agent-skills) · Google Chrome | Strong |
+| Node.js (Fastify) | [`fastify-best-practices`](https://skills.sh/mcollina/skills/fastify-best-practices) | [mcollina/skills](https://skills.sh/mcollina/skills) · Fastify creator | Strong |
+| Node.js (Hono) | [`hono`](https://skills.sh/yusukebe/hono-skill/hono) | [yusukebe/hono-skill](https://skills.sh/yusukebe/hono-skill) · Hono creator | Strong |
+| Docker / CI | [`docker-development`](https://skills.sh/wshobson/agents/docker-development) + [`cicd-automation`](https://skills.sh/wshobson/agents/cicd-automation) | [wshobson/agents](https://skills.sh/wshobson/agents) | Best available |
+
+**Known gaps** (no quality skill exists as of research date): TypeScript from the TS team, Vue Apollo / `@vue/apollo-composable`, Tailwind v4 from Tailwind Labs, Docker from Docker org, GitHub Actions from GitHub, NestJS, tRPC.
+
+---
+
+#### Spring Boot / Java
+
+| Capability | Skill | Install |
+|---|---|---|
+| Testing (JUnit, AssertJ, Mockito) | [`spring-boot-testing`](https://skills.sh/marcelorodrigo/agent-skills/spring-boot-testing) | [marcelorodrigo/agent-skills](https://skills.sh/marcelorodrigo/agent-skills) |
+
+> Spring Boot framework and Clean Architecture skills are under research. Contributions welcome.
 
 ---
 
