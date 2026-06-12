@@ -30,13 +30,13 @@ function buildAgentConfigs(): Record<string, AgentConfig> {
   for (const [slug, raw] of Object.entries(sources)) {
     try {
       const key = `dc:${slug}`;
-      const rawWithPreamble = PREAMBLE_AGENTS.has(key)
-        ? sharedPrinciplesMd.trim() + '\n\n' + raw
-        : raw;
-      const { name, description, prompt, permission } = parseAgentMd(rawWithPreamble);
+      const { name, description, prompt, permission } = parseAgentMd(raw);
+      const fullPrompt = PREAMBLE_AGENTS.has(key)
+        ? sharedPrinciplesMd.trim() + '\n\n' + prompt
+        : prompt;
       const config: AgentConfig = {
         description: `${name} — ${description}`,
-        prompt,
+        prompt: fullPrompt,
       };
       if (permission) {
         config.permission = permission;
