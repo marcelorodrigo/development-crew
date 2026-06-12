@@ -1,6 +1,6 @@
 {
   "name": "development-crew",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Five-agent AI crew for software development with Clean Architecture. Includes Orchestrator (workflow management), Rubber Duck (brainstorming), Architect (design), Implementer (coding), and Code Reviewer: a full development pipeline in one plugin.",
   "author": {
     "name": "Marcelo Rodrigo",
