@@ -15,7 +15,8 @@
   "scripts": {
     "build": "tsup && tsc --emitDeclarationOnly",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "keywords": [
     "opencode",
@@ -33,7 +34,8 @@
     "@opencode-ai/plugin": "1.17.3",
     "@opencode-ai/sdk": "1.17.3",
     "tsup": "^8.0.0",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "vitest": "^4.1.8"
   },
   "repository": {
     "type": "git",

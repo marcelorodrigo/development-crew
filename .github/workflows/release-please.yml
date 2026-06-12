@@ -56,22 +56,10 @@ jobs:
         run: pnpm run build
 
       - name: Verify agent prompts are embedded
-        run: |
-          count=0
-          for agent_file in agents/*.agent.md; do
-            agent_name=$(grep -m1 '^name: ' "$agent_file" | sed 's/^name: //')
-            if [ -z "$agent_name" ]; then
-              echo "ERROR: Failed to extract agent name from $agent_file"
-              exit 1
-            fi
-            if ! grep -Fq -- "$agent_name" dist/index.js; then
-              echo "ERROR: Agent prompt not found in bundle: $agent_name (from $agent_file)"
-              exit 1
-            fi
-            echo "OK: $agent_name"
-            count=$((count + 1))
-          done
-          echo "All $count agent prompts verified in dist/index.js"
+        run: node scripts/verify-agents.mjs
+
+      - name: Test
+        run: pnpm run test
 
       - name: Publish to npmjs
         run: pnpm publish --provenance --access public --no-git-checks
