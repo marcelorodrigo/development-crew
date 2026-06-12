@@ -1,6 +1,6 @@
 {
   "name": "@marcelorodrigo/opencode-development-crew",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Development agents for opencode: Orchestrator, Rubber Duck, Architect, Implementer and Code Reviewer",
   "type": "module",
   "main": "dist/index.js",

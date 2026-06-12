@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.2](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.8.1...opencode-development-crew-v0.8.2) (2026-06-12)
+
+
+### Bug Fixes
+
+* **agents:** Prepend shared principles to prompt body instead of raw markdown ([#95](https://github.com/marcelorodrigo/development-crew/issues/95)) ([e3cf5f8](https://github.com/marcelorodrigo/development-crew/commit/e3cf5f8292e471f64e58e771c1a610208e12f8a3))
+
 ## [0.8.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.8.0...opencode-development-crew-v0.8.1) (2026-06-12)
 
 

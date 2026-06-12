@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Marketplace for the Development Crew AI development pipeline — five-agent crew with Clean Architecture and workflow orchestration",
-    "version": "0.8.1"
+    "version": "0.8.2"
   },
   "plugins": [
     {
       "name": "development-crew",
       "description": "Five-agent AI crew for software development with Clean Architecture. Includes Orchestrator (workflow management), Rubber Duck (brainstorming), Architect (design), Implementer (coding), and Code Reviewer: a full development pipeline in one plugin.",
-      "version": "0.8.1",
+      "version": "0.8.2",
       "source": ".",
       "author": {
         "name": "Marcelo Rodrigo",
