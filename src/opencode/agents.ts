@@ -3,8 +3,12 @@ import architectMd from '../../agents/architect.agent.md';
 import implementerMd from '../../agents/implementer.agent.md';
 import codeReviewerMd from '../../agents/code-reviewer.agent.md';
 import orchestratorMd from '../../agents/orchestrator.agent.md';
+import sharedPrinciplesMd from '../../agents/shared-principles.md';
 
 import { parseAgentMd } from './parse-agent-md';
+
+// Agents that receive the shared design-principles preamble
+const PREAMBLE_AGENTS = new Set(['dc-architect', 'dc-implementer', 'dc-code-reviewer']);
 
 interface AgentConfig {
   description: string;
@@ -25,7 +29,10 @@ function buildAgentConfigs(): Record<string, AgentConfig> {
 
   for (const [key, raw] of Object.entries(sources)) {
     try {
-      const { name, description, prompt, permission } = parseAgentMd(raw);
+      const rawWithPreamble = PREAMBLE_AGENTS.has(key)
+        ? sharedPrinciplesMd.trim() + '\n\n' + raw
+        : raw;
+      const { name, description, prompt, permission } = parseAgentMd(rawWithPreamble);
       const config: AgentConfig = {
         description: `${name} — ${description}`,
         prompt,
