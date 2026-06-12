@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.8.0...opencode-development-crew-v0.8.1) (2026-06-12)
+
+
+### Bug Fixes
+
+* Migrate agent keys from dc-* to dc:* colon namespace ([#92](https://github.com/marcelorodrigo/development-crew/issues/92)) ([4505d5b](https://github.com/marcelorodrigo/development-crew/commit/4505d5b0d18013d1c8b9ebeb72eb81ea36dceeab))
+
 ## [0.8.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.7.0...opencode-development-crew-v0.8.0) (2026-06-12)
 
 
