@@ -6,16 +6,22 @@ on:
     paths:
       - 'src/**'
       - 'agents/**'
+      - 'tests/**'
       - 'package.json'
+      - 'pnpm-lock.yaml'
       - 'tsconfig.json'
       - 'tsup.config.ts'
+      - 'vitest.config.ts'
   pull_request:
     paths:
       - 'src/**'
       - 'agents/**'
+      - 'tests/**'
       - 'package.json'
+      - 'pnpm-lock.yaml'
       - 'tsconfig.json'
       - 'tsup.config.ts'
+      - 'vitest.config.ts'
   workflow_dispatch:
 
 concurrency:
@@ -48,4 +54,7 @@ jobs:
 
       - name: Verify agent prompts are embedded
         run: node scripts/verify-agents.mjs
+
+      - name: Test
+        run: pnpm run test
 
