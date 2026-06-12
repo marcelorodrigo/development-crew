@@ -5,7 +5,7 @@
 
 _Five specialists that don't just write code: they think about it, they challenge you, they design it, build it, and hold it accountable._
 
-**A five-agent AI development pipeline** · Skill-aware · Process-disciplined · Production-ready · Automated workflow orchestration
+**A five-agent AI development crew** · Skill-aware · Process-disciplined · Production-ready · Automated workflow orchestration
 
 ---
 
@@ -51,7 +51,7 @@ Use the **Orchestrator** agent to manage the full pipeline automatically:
 
 ```bash
 # Start the orchestrator
-/agent development-crew:orchestrator
+/agent dc:orchestrator
 
 # Provide your task
 Task: JIRA-123: Add user authentication with JWT tokens
@@ -387,20 +387,20 @@ These two skills improve output quality in any pipeline run, regardless of stack
 ```json
 {
   "agent": {
-    "development-crew:orchestrator": {
-      "model": "anthropic/claude-sonnet-4.6"
+    "dc:orchestrator": {
+      "model": "anthropic/claude-sonnet-4-6"
     },
-    "development-crew:rubber-duck": {
-      "model": "anthropic/claude-opus-4.6"
+    "dc:rubber-duck": {
+      "model": "anthropic/claude-opus-4-6"
     },
-    "development-crew:architect": {
-      "model": "anthropic/claude-sonnet-4.6"
+    "dc:architect": {
+      "model": "anthropic/claude-sonnet-4-6"
     },
-    "development-crew:implementer": {
-      "model": "anthropic/claude-sonnet-4.6"
+    "dc:implementer": {
+      "model": "anthropic/claude-sonnet-4-6"
     },
-    "development-crew:code-reviewer": {
-      "model": "anthropic/claude-sonnet-4.6"
+    "dc:code-reviewer": {
+      "model": "anthropic/claude-sonnet-4-6"
     }
   }
 }
