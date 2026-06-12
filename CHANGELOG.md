@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.7.0...opencode-development-crew-v0.8.0) (2026-06-12)
+
+
+### Features
+
+* extract shared design principles into common preamble ([#88](https://github.com/marcelorodrigo/development-crew/issues/88)) ([e253b27](https://github.com/marcelorodrigo/development-crew/commit/e253b27f7e35c5ccf62b39a89094e6d0703e10af)), closes [#75](https://github.com/marcelorodrigo/development-crew/issues/75)
+
 ## [0.7.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.6.0...opencode-development-crew-v0.7.0) (2026-06-08)
 
 
