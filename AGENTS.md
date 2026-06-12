@@ -2,7 +2,7 @@
 
 ## What this repo is
 
-An OpenCode plugin (`@marcelorodrigo/opencode-development-crew`) that ships five AI agents as a pipeline: Rubber Duck, Architect, Implementer, Code Reviewer, and Orchestrator. It is **not** a web app or service -- it builds to a single ESM bundle (`dist/index.js`) that OpenCode loads as a plugin.
+An OpenCode plugin (`@marcelorodrigo/opencode-development-crew`) that ships five AI agents -- four specialists (Rubber Duck, Architect, Implementer, Code Reviewer) coordinated by an Orchestrator. It is **not** a web app or service -- it builds to a single ESM bundle (`dist/index.js`) that OpenCode loads as a plugin.
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ pnpm run build                   # tsup + tsc --emitDeclarationOnly -> dist/
 pnpm run dev                     # tsup --watch
 ```
 
-There are no tests. The verification step is the build itself plus `node scripts/verify-agents.mjs` which checks every `agents/*.agent.md` name appears in `dist/index.js`.
+There are no tests. The verification step is the build itself plus `node scripts/verify-agents.mjs` which checks that every `agents/*.agent.md` name appears in `dist/index.js`, validates that each agent declares a `permission:` block, and verifies the permission text is embedded in the bundle.
 
 ## Project structure
 
@@ -31,6 +31,7 @@ src/opencode/          # All TypeScript source (rootDir for tsc)
 
 agents/                # Agent prompt definitions (bundled into dist at build time)
   *.agent.md           # Each file has YAML frontmatter (name, description) + markdown prompt body
+  shared-principles.md # Common design principles prepended to Architect, Implementer, Code Reviewer
 
 scripts/
   verify-agents.mjs    # CI verification: every agent name must appear in dist/index.js
@@ -42,7 +43,7 @@ tsup bundles `src/opencode/index.ts` into `dist/index.js` (ESM). The `.md` loade
 
 ## Agent markdown format
 
-Every file in `agents/` must follow this structure:
+Every `*.agent.md` file in `agents/` must follow this structure:
 
 ```markdown
 ---
@@ -66,7 +67,7 @@ permission:
 ---
 ```
 
-**Why this exists:** the prompts instruct models to call the `question` tool for HITL approvals, but if the tool isn't declared, the model falls back to inline text — a broken approval flow. Declaring `permission` in frontmatter removes that gap. All five current agents set `question: allow`. If a future agent needs a different policy (e.g. read-only `code-reviewer` denying `edit`), encode it in the same block.
+**Why this exists:** the prompts instruct models to call the `question` tool for HITL approvals, but if the tool isn't declared, the model falls back to inline text -- a broken approval flow. Declaring `permission` in frontmatter removes that gap. All five current agents set `question: allow`. If an agent needs a different policy (e.g. `code-reviewer` denying `edit` to enforce read-only behavior), encode it in the same block.
 
 ## Versioning
 
