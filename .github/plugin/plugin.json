@@ -1,6 +1,6 @@
 {
   "name": "development-crew",
-  "description": "Five-agent AI crew for software development with Clean Architecture. Includes Orchestrator (workflow management), Rubber Duck (brainstorming), Architect (design), Implementer (coding), and Code Reviewer: a full development pipeline in one plugin.",
+  "description": "A skills-first development workflow: four specialist skills for brainstorming (Rubber Duck), architecture design (Architect), implementation (Implementer), and code review (Code Reviewer). Load skills on-demand and chain them together in a pipeline or use them independently.",
   "version": "0.8.2",
   "author": {
     "name": "Marcelo Rodrigo",
@@ -17,9 +17,9 @@
   "category": "development",
   "keywords": [
     "development",
-    "clean-architecture",
-    "agents",
+    "skills",
     "code-review",
-    "architecture"
+    "architecture",
+    "brainstorming"
   ]
 }

@@ -2,7 +2,7 @@
 
 ## What this repo is
 
-An OpenCode plugin (`@marcelorodrigo/opencode-development-crew`) that ships five AI agents -- four specialists (Rubber Duck, Architect, Implementer, Code Reviewer) coordinated by an Orchestrator. It is **not** a web app or service -- it builds to a single ESM bundle (`dist/index.js`) that OpenCode loads as a plugin.
+An OpenCode plugin (`@marcelorodrigo/opencode-development-crew`) that ships a **skills-first** development workflow. Four specialist skills (Rubber Duck, Architect, Implementer, Code Reviewer) are registered as on-demand skills and a bootstrap skill (`using-development-crew`) is injected into every session to orient the model. It is **not** a web app or service -- it builds to a single ESM bundle (`dist/index.js`) that OpenCode loads as a plugin.
 
 ## Prerequisites
 
@@ -16,58 +16,65 @@ pnpm install --frozen-lockfile   # install deps (never use npm)
 pnpm run typecheck               # tsc --noEmit
 pnpm run build                   # tsup + tsc --emitDeclarationOnly -> dist/
 pnpm run dev                     # tsup --watch
+pnpm run test                    # vitest run
 ```
 
-There are no tests. The verification step is the build itself plus `node scripts/verify-agents.mjs` which checks that every `agents/*.agent.md` name appears in `dist/index.js`, validates that each agent declares a `permission:` block, and verifies the permission text is embedded in the bundle.
+There are no tests. The verification step is the build itself plus `node scripts/verify-skills.mjs` which checks that every `skills/*/SKILL.md` has valid frontmatter and that the bootstrap skill body (`skills/using-development-crew/SKILL.md`) is embedded in `dist/index.js`.
 
 ## Project structure
 
 ```text
 src/opencode/          # All TypeScript source (rootDir for tsc)
   index.ts             # Plugin entrypoint, exports DevelopmentCrewPlugin
-  agents.ts            # Imports .agent.md files, parses frontmatter, builds agent configs
-  parse-agent-md.ts    # Frontmatter parser (name + description + prompt)
   md.d.ts              # Ambient module declaration for *.md imports
 
-agents/                # Agent prompt definitions (bundled into dist at build time)
-  *.agent.md           # Each file has YAML frontmatter (name, description) + markdown prompt body
-  shared-principles.md # Common design principles prepended to Architect, Implementer, Code Reviewer
+skills/                # Skill prompt definitions (bundled into dist at build time)
+  using-development-crew/SKILL.md  # Bootstrap skill: injected into every session
+  rubber-duck/SKILL.md             # Brainstorming sparring partner
+  architect/SKILL.md               # Architecture formalizer
+  implementer/SKILL.md             # Builder / implementer
+  code-reviewer/SKILL.md           # Code review specialist
+  shared-principles/SKILL.md       # Shared design principles (embedded in technical skills)
 
 scripts/
-  verify-agents.mjs    # CI verification: every agent name must appear in dist/index.js
+  verify-skills.mjs    # CI verification: skill frontmatter valid + bootstrap body in bundle
+
+validation/
+  validate_skills.py   # Validates skills/*.*/SKILL.md frontmatter (name + description)
 ```
 
 ## How the build works
 
-tsup bundles `src/opencode/index.ts` into `dist/index.js` (ESM). The `.md` loader in `tsup.config.ts` inlines agent markdown files as strings. Then `tsc --emitDeclarationOnly` generates type declarations. The build output is **only** the `dist/` directory (see `files` in `package.json`).
+tsup bundles `src/opencode/index.ts` into `dist/index.js` (ESM). The `.md` loader in `tsup.config.ts` inlines the bootstrap skill (`skills/using-development-crew/SKILL.md`) as a string. The `config` hook registers the `skills/` directory path at runtime; OpenCode discovers all `SKILL.md` files from that path when a user invokes the `skill` tool. Then `tsc --emitDeclarationOnly` generates type declarations. The build output is **only** the `dist/` directory (see `files` in `package.json`).
 
-## Agent markdown format
+## Plugin hooks
 
-Every `*.agent.md` file in `agents/` must follow this structure:
+The plugin provides two hooks:
+
+### `config` hook
+
+Registers the bundled `skills/` directory in `opencodeConfig.skills.paths` so OpenCode can discover all skill files when a user invokes the `skill` tool.
+
+### `experimental.chat.messages.transform` hook
+
+Prepends the body of `skills/using-development-crew/SKILL.md` (frontmatter stripped) to the first user message in every new session. This orients the model to the available skills and the pipeline workflow without requiring explicit invocation.
+
+Idempotency: checks for `'Development Crew'` in existing message parts before injecting.
+
+## Skill file format
+
+Every `skills/*/SKILL.md` file must follow this structure:
 
 ```markdown
 ---
-name: Agent Name
+name: skill-name
 description: One-line description
 ---
 
-(prompt body in markdown)
+(skill body in markdown)
 ```
 
-Both `name` and `description` are required. The parser (`parse-agent-md.ts`) extracts frontmatter and uses everything after the closing `---` as the prompt. CI will fail if any agent file is malformed or its name is missing from the bundle.
-
-**Runtime-optional, repo-required `permission:` block.** When present, it must be a multi-line YAML map. Inline form (`permission: { question: allow }`) is rejected. Each value is either a flat action (`ask` | `allow` | `deny`) or a nested map of pattern → action. The block is emitted on the agent's OpenCode config so the tools it gates (e.g. `question`) are guaranteed to be exposed regardless of OpenCode's defaults. See <https://opencode.ai/docs/agents/#permissions> for the full key list and ordering rules. The repository validator (`validation/validate_agents.py`) enforces that every agent file includes this block.
-
-```markdown
----
-name: DC Example
-description: ...
-permission:
-  question: allow
----
-```
-
-**Why this exists:** the prompts instruct models to call the `question` tool for HITL approvals, but if the tool isn't declared, the model falls back to inline text -- a broken approval flow. Declaring `permission` in frontmatter removes that gap. All five current agents set `question: allow`. If an agent needs a different policy (e.g. `code-reviewer` denying `edit` to enforce read-only behavior), encode it in the same block.
+Both `name` and `description` are required. The directory name must match the `name` field. CI will fail if any skill file is malformed or the bootstrap body is missing from the bundle.
 
 ## Versioning
 
@@ -81,7 +88,7 @@ Release Please `extra-files` in `release-please-config.json` handles syncing aut
 
 ## CI workflows
 
-- **build-opencode.yml** -- Builds + typechecks + verifies agent embedding on push/PR
+- **build-opencode.yml** -- Builds + typechecks + verifies skill embedding on push/PR
 - **release-please.yml** -- Creates release PR on push to `master`, publishes to npmjs on release
 - **validate-plugin.yml** -- Validates plugin/marketplace JSON files and cross-file version consistency
 - **validate-pr-title.yml** -- Enforces conventional commit format on PR titles
@@ -92,4 +99,4 @@ Release Please `extra-files` in `release-please-config.json` handles syncing aut
 - **Commit messages**: Conventional commits (see `release-please-config.json` for accepted types: `feat`, `fix`, `perf`, `deps`, `docs`, `chore`, `ci`, `refactor`, `test`, `build`, `style`, `revert`)
 - **Default branch**: `master` (not `main`)
 - **Plugin manifests**: Two sets exist -- `.github/plugin/` (OpenCode) and `.claude-plugin/` (Claude Code). Both must be kept in sync
-- **No tests**: There is no test suite. Verification is `typecheck` + `build` + `verify-agents.mjs`
+- **Tests**: `pnpm run test` (vitest). Verification is `typecheck` + `build` + `verify-skills.mjs` + `test`

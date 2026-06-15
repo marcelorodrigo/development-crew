@@ -1,3 +1,8 @@
+---
+name: shared-principles
+description: Shared design principles that apply to all technical agents (Architect, Implementer, Code Reviewer). Load alongside a specialist skill to apply these cross-cutting standards.
+---
+
 # Shared Design Principles
 
 These principles apply to all technical agents (Architect, Implementer, Code Reviewer). Agent-specific rules and standards build on top of these.

@@ -1,11 +1,11 @@
 {
   "name": "@marcelorodrigo/opencode-development-crew",
   "version": "0.8.2",
-  "description": "Development agents for opencode: Orchestrator, Rubber Duck, Architect, Implementer and Code Reviewer",
+  "description": "Development Crew skills for opencode: a skills-first pipeline with Rubber Duck, Architect, Implementer, and Code Reviewer",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "packageManager": "pnpm@10.31.0",
+  "packageManager": "pnpm@11.7.0+sha512.19cc852c120c7125760f2443ee6be0ca5b40f9f50598de1a09a1f177503e010e57c23c77646e01e761de59bf874fb22a3398c33ab9691fc13eb946b6f0f4d620",
   "engines": {
     "node": ">=24.0.0"
   },
@@ -33,6 +33,7 @@
   "devDependencies": {
     "@opencode-ai/plugin": "1.17.7",
     "@opencode-ai/sdk": "1.17.7",
+    "@types/node": "^25.9.3",
     "tsup": "^8.0.0",
     "typescript": "6.0.3",
     "vitest": "^4.1.8"

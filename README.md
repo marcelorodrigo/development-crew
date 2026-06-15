@@ -3,9 +3,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![GitHub tag](https://img.shields.io/github/v/tag/marcelorodrigo/development-crew?label=version)](https://github.com/marcelorodrigo/development-crew/tags)
 
-_Five specialists that don't just write code: they think about it, they challenge you, they design it, build it, and hold it accountable._
+_Four specialists that don't just write code: they think about it, they challenge you, they design it, build it, and hold it accountable._
 
-**A five-agent AI development crew** · Skill-aware · Process-disciplined · Production-ready · Automated workflow orchestration
+**A skills-first development workflow** · Four specialist skills · On-demand · Pipeline-native · Bootstrap-injected orientation
 
 ---
 
@@ -22,84 +22,61 @@ https://raw.githubusercontent.com/marcelorodrigo/development-crew/master/README.
 
 ## The Pipeline
 
-**Development Crew** works best as a pipeline.
+**Development Crew** is a pipeline-first workflow where four specialist skills coordinate structured software development from idea to reviewed code.
 
-You start with a rough idea and end with reviewed, production-ready code: each agent handing off to the next like a relay race, each one knowing exactly what to expect from the previous and what to produce for the next.
+You start with a rough idea and end with reviewed, production-ready code: each specialist handing off to the next like a relay race, each one knowing exactly what to expect from the previous and what to produce for the next.
 
 ```mermaid
-flowchart TD
-    User["👤 User Request"] -->|"Jira Ticket / Feature"| ORCH["🎯 Orchestrator"]
-    ORCH -->|"Delegates"| RD["🦆 Rubber Duck"]
-    RD -->|"Brainstorm Brief"| ORCH
-    ORCH -->|"Approval Gate (HITL)"| ORCH
-    ORCH -->|"Delegates"| AR["🏛️ Architect"]
-    AR -->|"Architecture Spec"| ORCH
-    ORCH -->|"Approval Gate (HITL)"| ORCH
-    ORCH -->|"Delegates"| IM["🔨 Implementer"]
-    IM -->|"Implementation Summary"| ORCH
-    ORCH -->|"Approval Gate (HITL)"| ORCH
-    ORCH -->|"Delegates"| CR["🔍 Code Reviewer"]
-    CR -->|"Code Review"| ORCH
-    ORCH -->|"Final Report"| User
+flowchart LR
+    RD["🦆 Rubber Duck"] -->|Brainstorm Brief| AR["🏛️ Architect"]
+    AR -->|Architecture Spec| IM["🔨 Implementer"]
+    IM -->|Implementation Summary| CR["🔍 Code Reviewer"]
+    CR -->|Code Review| End["✓ Reviewed Code"]
+    
+    style RD fill:#f9f,stroke:#333
+    style AR fill:#bbf,stroke:#333
+    style IM fill:#fbf,stroke:#333
+    style CR fill:#fbb,stroke:#333
 ```
 
-### Two ways to work: Manual or Automated
+### How to Work the Pipeline
 
-**Option 1: Orchestrator (Automated Pipeline)**
+You can work the pipeline three ways:
 
-Use the **Orchestrator** agent to manage the full pipeline automatically:
+**1. Manual Handoffs (Recommended for Learning)**
 
-```bash
-# Start the orchestrator
-/agent dc:orchestrator
+Move through the pipeline manually, reviewing artifacts at each stage:
 
-# Provide your task
-Task: JIRA-123: Add user authentication with JWT tokens
-```
+1. Start with **Rubber Duck**: describe your idea, challenge assumptions
+   - Takes: User request or vague idea
+   - Produces: **Brainstorm Brief**
 
-The Orchestrator will:
+2. Load **Architect**: formalize the design
+   - Takes: Brainstorm Brief
+   - Produces: **Architecture Spec**
 
-- Manage the full pipeline from Rubber Duck → Architect → Implementer → Code Reviewer
-- Validate artifacts between each step
-- Request approval at each stage (human-in-the-loop mode)
-- Or run autonomously without approval gates (autonomous mode)
-- Generate a complete execution report with all artifacts
+3. Load **Implementer**: write production code
+   - Takes: Architecture Spec
+   - Produces: **Implementation Summary**
 
-**Two execution modes:**
+4. Load **Code Reviewer**: validate the implementation
+   - Takes: Implementation Summary + code changes
+   - Produces: **Code Review** with approval/feedback
 
-1. **Human-in-the-Loop (default):** Pauses after each agent for approval
+**2. Sequential Skills (Fastest for Routine Tasks)**
 
-   ```text
-   Task: Add user authentication
-   ```
+Load skills back-to-back without manual approval gates between steps. Each skill output feeds directly into the next skill's input.
 
-2. **Autonomous:** Runs full pipeline without interruption
+**3. Entry at Any Point**
 
-   ```text
-   Mode: autonomous
-   Task: Add logging to PaymentService
-   ```
+You don't have to start at the Rubber Duck:
 
-**Option 2: Manual Agent Switching**
+- **Have a clear direction?** Skip Rubber Duck, start with Architect
+- **Have a spec already?** Jump straight to Implementer
+- **Want to review existing code?** Start with Code Reviewer
+- **Need brainstorming?** Start with Rubber Duck
 
-You don't switch context. You switch agents.
-
-1. Start a conversation with the _Rubber Duck_: describe your idea, even half-baked or a rough draft is fine. The Rubber Duck will ask sharp questions, challenge your assumptions, and widen your thinking before you commit to anything. When the thinking is done, it produces a **Brainstorm Brief** right there in the conversation. Take that output, open a new session with the Architect, and paste it in.
-
-2. The _Architect_ reads the brief, explores your codebase, makes every binding technical decision: class names, package paths, API contracts, error handling, and produces an **Architecture Spec**. Take that spec to the Implementer.
-
-3. The _Implementer_ reads the spec, matches your codebase's conventions, writes production code with tests, runs the build, and produces an **Implementation Summary** with everything the reviewer needs to know. Take that to the Code Reviewer.
-
-4. The _Code Reviewer_ diffs against the default branch, validates the implementation against the spec and project conventions, and delivers a categorized review. Nothing ships past it without earning it.
-
-**You can also enter at any stage.**
-
-- Already know the direction? Skip the Rubber Duck and start with the Architect.
-- Already have a spec? Hand it straight to the Implementer.
-- Want an expert eye on existing code? Point the Code Reviewer at a branch.
-- Use the Orchestrator to automate the full pipeline.
-
-The pipeline is the recommended path, but each agent stands on its own.
+The pipeline is the recommended path, but each skill works independently.
 
 ---
 
@@ -123,6 +100,12 @@ Or add manually to your `opencode.json`:
 }
 ```
 
+Then use the `skill` tool to load any specialist:
+
+```
+skill: rubber-duck
+```
+
 ### Claude Code
 
 **Step 1** - Add the Development Crew marketplace:
@@ -137,11 +120,11 @@ claude plugin marketplace add marcelorodrigo/development-crew
 claude plugin install development-crew@development-crew-plugin
 ```
 
-**Step 3** - Verify:
+**Step 3** - Verify and use:
 
 ```bash
-/agents
-# Orchestrator, Rubber Duck, Architect, Implementer, Code Reviewer should appear
+/skill rubber-duck
+# or load any of: architect, implementer, code-reviewer
 ```
 
 ### GitHub Copilot
@@ -158,62 +141,16 @@ copilot plugin marketplace add marcelorodrigo/development-crew
 copilot plugin install development-crew@development-crew-plugin
 ```
 
-**Step 3** - Verify:
+**Step 3** - Verify and use:
 
 ```bash
-copilot plugin list
-# development-crew should appear
+/skill rubber-duck
+# or load any of: architect, implementer, code-reviewer
 ```
 
 ---
 
 ## Meet the Crew
-
-### Orchestrator: The Pipeline Manager
-
-_It was born from the need to coordinate. In the chaos of context-switching between agents, the Orchestrator emerged as a workflow manager that understands one truth: great software comes from specialists doing what they do best, in the right order, at the right time. It doesn't write code. It doesn't design systems. It doesn't review. It coordinates. It validates. It enforces the handoff protocol. It ensures nothing ships without passing through every gate._
-
-**Role:** `Workflow coordination · Pipeline management · Artifact validation · Approval gates`
-
-**Invoke when:**
-
-- You want to execute the full 4-agent pipeline from a Jira ticket or feature request
-- You need structured handoffs with validation between each phase
-- You want human approval gates at each step (human-in-the-loop mode)
-- You want fully automated execution without interruption (autonomous mode)
-- You need a complete audit trail of the development workflow
-
-**Two execution modes:**
-
-1. **Human-in-the-Loop (default):**
-   - Pauses after Rubber Duck, Architect, and Implementer for approval
-   - You can approve, reject, or request modifications
-   - Complete control over each phase
-   - Best for: critical features, learning, quality assurance
-
-2. **Autonomous:**
-   - Executes all 4 agents sequentially without pausing
-   - Validates artifacts automatically
-   - Aborts on validation failure after 3 retries
-   - Best for: routine tasks, batch processing, rapid prototyping
-
-**What it does:**
-- Routes tasks to the appropriate specialist
-- Validates artifact structure between phases
-- Manages approval gates (HITL mode)
-- Tracks complete workflow state
-- Generates comprehensive execution reports
-
-**What it does NOT do:**
-- Write code or provide code snippets
-- Design architecture or make technical decisions
-- Brainstorm solutions or answer technical questions
-- Review code or identify bugs
-- Modify files or run commands
-
-**Produces:** A comprehensive **Workflow Execution Report** with execution timeline, all artifacts (Brainstorm Brief, Architecture Spec, Implementation Summary, Code Review), approval history, and next steps.
-
----
 
 ### Rubber Duck: The Sparring Partner
 
@@ -295,9 +232,9 @@ _Nothing ships past the Code Reviewer without earning it. It diffs against the d
 
 ## Skill Awareness
 
-Development Crew agents are **skill-aware**. When skills are available in the user's environment (e.g., via an `<available_skills>` block or a platform skill-loading tool), the Architect, Implementer, Code Reviewer, and Rubber Duck will detect the project's tech stack and load matching skills before starting work. This means the agents adapt their guidance, conventions, and review checklists to the specific frameworks and languages in use, without any manual configuration.
+Development Crew skills are **skill-aware**. When skills are available in your environment (e.g., via the OpenCode skill tool or platform skill-loading mechanisms), the Architect, Implementer, Code Reviewer, and Rubber Duck will detect your project's tech stack and load matching skills before starting work. This means they adapt their guidance, conventions, and review checklists to the specific frameworks and languages in use, without any manual configuration.
 
-When no skills are available, agents fall back to the model's built-in knowledge and the project's own conventions.
+When no stack-specific skills are available, the skills fall back to general best practices and the project's own conventions.
 
 ### Recommended skills per tech stack
 
@@ -382,17 +319,26 @@ These two skills improve output quality in any pipeline run, regardless of stack
 
 ## Configuration
 
-### Override model per agent (opencode)
+### Load skills on demand
+
+The plugin is skills-first, meaning all four specialist skills are discovered and loaded on-demand via the `skill` tool:
+
+```
+skill: architect
+skill: implementer
+skill: code-reviewer
+skill: rubber-duck
+```
+
+There is no static agent configuration. Each skill is discovered from the `skills/` directory when you invoke it.
+
+### Override model per skill (opencode)
+
+You can configure model overrides in your `opencode.json` if you use the built-in agent system (not recommended—use skills instead):
 
 ```json
 {
   "agent": {
-    "dc:orchestrator": {
-      "model": "anthropic/claude-sonnet-4-6"
-    },
-    "dc:rubber-duck": {
-      "model": "anthropic/claude-opus-4-6"
-    },
     "dc:architect": {
       "model": "anthropic/claude-sonnet-4-6"
     },
@@ -401,10 +347,15 @@ These two skills improve output quality in any pipeline run, regardless of stack
     },
     "dc:code-reviewer": {
       "model": "anthropic/claude-sonnet-4-6"
+    },
+    "dc:rubber-duck": {
+      "model": "anthropic/claude-opus-4-6"
     }
   }
 }
 ```
+
+**Note:** The plugin now uses skills, not hardcoded agents. This configuration is for backward compatibility only if you wish to layer agents on top.
 
 ---
 
