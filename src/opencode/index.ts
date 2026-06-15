@@ -1,5 +1,5 @@
 import type { Plugin } from '@opencode-ai/plugin';
-import { agents } from './agents';
+import { agents, skillsPaths } from './skills';
 
 const DevelopmentCrewPlugin: Plugin = async (_ctx) => {
   return {
@@ -10,6 +10,7 @@ const DevelopmentCrewPlugin: Plugin = async (_ctx) => {
       const isPlainObject = (v: unknown): v is Record<string, unknown> =>
         v !== null && typeof v === 'object' && !Array.isArray(v);
 
+      // Register the rubber-duck agent
       if (!isPlainObject(opencodeConfig.agent)) {
         opencodeConfig.agent = { ...agents };
       } else {
@@ -22,6 +23,18 @@ const DevelopmentCrewPlugin: Plugin = async (_ctx) => {
             configAgents[name] = { ...pluginAgent };
           }
         }
+      }
+
+      // Register skills paths for specialist agents (architect, implementer, code-reviewer, using-development-crew)
+      if (!isPlainObject(opencodeConfig.skills)) {
+        opencodeConfig.skills = { paths: skillsPaths };
+      } else {
+        const skillsConfig = opencodeConfig.skills;
+        if (!Array.isArray(skillsConfig.paths)) {
+          skillsConfig.paths = [];
+        }
+        // Prepend plugin skills paths so they are found first
+        skillsConfig.paths = [...skillsPaths, ...(skillsConfig.paths as string[])];
       }
     },
   };

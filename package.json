@@ -10,7 +10,8 @@
     "node": ">=24.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "skills"
   ],
   "scripts": {
     "build": "tsup && tsc --emitDeclarationOnly",

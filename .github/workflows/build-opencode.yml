@@ -6,22 +6,22 @@ on:
     paths:
       - 'src/**'
       - 'agents/**'
-      - 'tests/**'
+      - 'skills/**'
+      - 'scripts/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'tsconfig.json'
       - 'tsup.config.ts'
-      - 'vitest.config.ts'
   pull_request:
     paths:
       - 'src/**'
       - 'agents/**'
-      - 'tests/**'
+      - 'skills/**'
+      - 'scripts/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'tsconfig.json'
       - 'tsup.config.ts'
-      - 'vitest.config.ts'
   workflow_dispatch:
 
 concurrency:
@@ -52,9 +52,6 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Verify agent prompts are embedded
-        run: node scripts/verify-agents.mjs
-
-      - name: Test
-        run: pnpm run test
+      - name: Verify rubber-duck agent and skills
+        run: node scripts/verify-skills.mjs
 

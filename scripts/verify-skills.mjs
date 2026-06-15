@@ -1,12 +1,14 @@
 /**
- * Verifies that every agents/*.agent.md file has its agent name embedded in dist/index.js,
- * AND that the `permission:` block from each frontmatter is also embedded in the bundle.
+ * Verifies that:
+ * 1. The rubber-duck agent is embedded in dist/index.js
+ * 2. All skills in the skills directory have valid frontmatter (name, description)
+ * 3. The rubber-duck agent's permission block is embedded in the bundle
  *
- * Mirrors the parseAgentMd logic from src/opencode/parse-agent-md.ts so CI validation
- * uses the same frontmatter parsing rules as the runtime.
+ * Mirrors the parseAgentMd and parseSkillMd logic from src/opencode to use
+ * the same frontmatter parsing rules as the runtime.
  */
 
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 /** @typedef {"ask" | "allow" | "deny"} PermissionAction */
@@ -85,12 +87,12 @@ function parsePermissionBlock(blockLines) {
 }
 
 /**
- * Mirrors parseAgentMd from src/opencode/parse-agent-md.ts.
+ * Parses frontmatter from a markdown file. Used for both agents and skills.
  * @param {string} raw - Raw file content
  * @param {string} filePath - File path for error messages
  * @returns {{ name: string, description: string, permission?: AgentPermission }}
  */
-function parseAgentMd(raw, filePath) {
+function parseMarkdownFrontmatter(raw, filePath) {
   const lines = raw.split('\n');
 
   if (lines[0]?.trim() !== '---') {
@@ -161,10 +163,7 @@ function parseAgentMd(raw, filePath) {
 }
 
 /**
- * Extracts the `permission:` block (top-level line + indented children) from
- * the source file's frontmatter, preserving its original text. Returns null
- * if the frontmatter has no `permission:` key.
- *
+ * Extracts the `permission:` block from source, preserving original text.
  * @param {string} raw
  * @returns {string | null}
  */
@@ -188,70 +187,102 @@ function extractPermissionText(raw) {
   return lines.slice(startIdx, endIdx).join('\n');
 }
 
-const distContent = readFileSync('dist/index.js', 'utf-8');
-const agentFiles = readdirSync('agents')
-  .filter((f) => f.endsWith('.agent.md'))
-  .sort();
+/**
+ * Recursively finds all SKILL.md files in a directory
+ * @param {string} dir
+ * @returns {string[]}
+ */
+function findSkillFiles(dir) {
+  const results = [];
+  try {
+    const entries = readdirSync(dir);
+    for (const entry of entries) {
+      const path = join(dir, entry);
+      const stat = statSync(path);
+      if (stat.isDirectory()) {
+        results.push(...findSkillFiles(path));
+      } else if (entry === 'SKILL.md') {
+        results.push(path);
+      }
+    }
+  } catch (err) {
+    // Directory doesn't exist, return empty
+  }
+  return results;
+}
 
-let count = 0;
+const distContent = readFileSync('dist/index.js', 'utf-8');
 let failed = false;
 
-for (const filename of agentFiles) {
-  const filePath = join('agents', filename);
-  let meta;
-  try {
-    const raw = readFileSync(filePath, 'utf-8');
-    meta = parseAgentMd(raw, filePath);
-  } catch (err) {
-    console.error(`ERROR: ${err.message}`);
-    failed = true;
-    continue;
-  }
+// Step 1: Verify rubber-duck agent (from agents/rubber-duck.agent.md)
+console.log('\n=== Verifying Rubber Duck Agent ===');
+try {
+  const rubberDuckPath = 'agents/rubber-duck.agent.md';
+  const raw = readFileSync(rubberDuckPath, 'utf-8');
+  const meta = parseMarkdownFrontmatter(raw, rubberDuckPath);
 
   if (!distContent.includes(meta.name)) {
     console.error(
-      `ERROR: Agent prompt not found in bundle: ${meta.name} (from ${filePath})`,
+      `ERROR: Agent prompt not found in bundle: ${meta.name}`,
     );
     failed = true;
   } else {
-    console.log(`OK: ${meta.name}`);
+    console.log(`✓ ${meta.name}`);
   }
 
-  // Permission checks. Every agent is required to declare at least one
-  // permission entry so the `question` tool (or any other required tool) is
-  // guaranteed to be exposed regardless of OpenCode's defaults.
+  // Check permission
   if (!meta.permission || Object.keys(meta.permission).length === 0) {
     console.error(
-      `ERROR: Frontmatter missing required "permission" field: ${filePath}`,
+      `ERROR: Frontmatter missing required "permission" field: ${rubberDuckPath}`,
     );
     failed = true;
   } else {
-    const permText = extractPermissionText(readFileSync(filePath, 'utf-8'));
+    const permText = extractPermissionText(raw);
     if (permText === null) {
-      console.error(
-        `ERROR: Parsed permission but could not locate block in source: ${filePath}`,
-      );
+      console.error(`ERROR: Parsed permission but could not locate block in source`);
       failed = true;
     } else {
-      // tsup's text loader inlines the markdown as a JS string literal, so
-      // the bundle stores newlines as the two-char escape sequence `\n`
-      // rather than literal newlines. Convert before checking.
       const escapedPermText = permText.replace(/\n/g, '\\n');
       if (!distContent.includes(escapedPermText)) {
         console.error(
-          `ERROR: Agent permission not found in bundle: ${meta.name} (from ${filePath})`,
+          `ERROR: Agent permission not found in bundle: ${meta.name}`,
         );
         failed = true;
       } else {
-        console.log(`OK: ${meta.name} permission in bundle`);
-        count++;
+        console.log(`✓ ${meta.name} permission in bundle`);
       }
+    }
+  }
+} catch (err) {
+  console.error(`ERROR: Failed to verify rubber-duck agent: ${err.message}`);
+  failed = true;
+}
+
+// Step 2: Verify all skills in skills/ directory
+console.log('\n=== Verifying Skills ===');
+const skillFiles = findSkillFiles('skills').sort();
+
+if (skillFiles.length === 0) {
+  console.warn('WARNING: No SKILL.md files found in skills/ directory');
+} else {
+  for (const skillPath of skillFiles) {
+    try {
+      const raw = readFileSync(skillPath, 'utf-8');
+      const meta = parseMarkdownFrontmatter(raw, skillPath);
+      console.log(`✓ ${meta.name} (${skillPath})`);
+    } catch (err) {
+      console.error(`ERROR: ${err.message}`);
+      failed = true;
     }
   }
 }
 
+// Exit
 if (failed) {
+  console.log('\n❌ Verification failed');
   process.exit(1);
 }
 
-console.log(`All ${count} agent prompts verified in dist/index.js`);
+console.log(
+  `\n✅ All verifications passed (rubber-duck agent + ${skillFiles.length} skills)`,
+);
