@@ -3,109 +3,17 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![GitHub tag](https://img.shields.io/github/v/tag/marcelorodrigo/development-crew?label=version)](https://github.com/marcelorodrigo/development-crew/tags)
 
-_Five specialists that don't just write code: they think about it, they challenge you, they design it, build it, and hold it accountable._
+_Four specialists that don't just write code: they think about it, they challenge you, they design it, build it, and review it._
 
-**A five-agent AI development crew** · Skill-aware · Process-disciplined · Production-ready · Automated workflow orchestration
-
----
-
-## For LLM Agents
-
-Paste this into any coding agent to install and configure Development Crew:
-
-```
-Install and configure by following the instructions here:
-https://raw.githubusercontent.com/marcelorodrigo/development-crew/master/README.md
-```
-
----
-
-## The Pipeline
-
-**Development Crew** works best as a pipeline.
-
-You start with a rough idea and end with reviewed, production-ready code: each agent handing off to the next like a relay race, each one knowing exactly what to expect from the previous and what to produce for the next.
-
-```mermaid
-flowchart TD
-    User["👤 User Request"] -->|"Jira Ticket / Feature"| ORCH["🎯 Orchestrator"]
-    ORCH -->|"Delegates"| RD["🦆 Rubber Duck"]
-    RD -->|"Brainstorm Brief"| ORCH
-    ORCH -->|"Approval Gate (HITL)"| ORCH
-    ORCH -->|"Delegates"| AR["🏛️ Architect"]
-    AR -->|"Architecture Spec"| ORCH
-    ORCH -->|"Approval Gate (HITL)"| ORCH
-    ORCH -->|"Delegates"| IM["🔨 Implementer"]
-    IM -->|"Implementation Summary"| ORCH
-    ORCH -->|"Approval Gate (HITL)"| ORCH
-    ORCH -->|"Delegates"| CR["🔍 Code Reviewer"]
-    CR -->|"Code Review"| ORCH
-    ORCH -->|"Final Report"| User
-```
-
-### Two ways to work: Manual or Automated
-
-**Option 1: Orchestrator (Automated Pipeline)**
-
-Use the **Orchestrator** agent to manage the full pipeline automatically:
-
-```bash
-# Start the orchestrator
-/agent dc:orchestrator
-
-# Provide your task
-Task: JIRA-123: Add user authentication with JWT tokens
-```
-
-The Orchestrator will:
-
-- Manage the full pipeline from Rubber Duck → Architect → Implementer → Code Reviewer
-- Validate artifacts between each step
-- Request approval at each stage (human-in-the-loop mode)
-- Or run autonomously without approval gates (autonomous mode)
-- Generate a complete execution report with all artifacts
-
-**Two execution modes:**
-
-1. **Human-in-the-Loop (default):** Pauses after each agent for approval
-
-   ```text
-   Task: Add user authentication
-   ```
-
-2. **Autonomous:** Runs full pipeline without interruption
-
-   ```text
-   Mode: autonomous
-   Task: Add logging to PaymentService
-   ```
-
-**Option 2: Manual Agent Switching**
-
-You don't switch context. You switch agents.
-
-1. Start a conversation with the _Rubber Duck_: describe your idea, even half-baked or a rough draft is fine. The Rubber Duck will ask sharp questions, challenge your assumptions, and widen your thinking before you commit to anything. When the thinking is done, it produces a **Brainstorm Brief** right there in the conversation. Take that output, open a new session with the Architect, and paste it in.
-
-2. The _Architect_ reads the brief, explores your codebase, makes every binding technical decision: class names, package paths, API contracts, error handling, and produces an **Architecture Spec**. Take that spec to the Implementer.
-
-3. The _Implementer_ reads the spec, matches your codebase's conventions, writes production code with tests, runs the build, and produces an **Implementation Summary** with everything the reviewer needs to know. Take that to the Code Reviewer.
-
-4. The _Code Reviewer_ diffs against the default branch, validates the implementation against the spec and project conventions, and delivers a categorized review. Nothing ships past it without earning it.
-
-**You can also enter at any stage.**
-
-- Already know the direction? Skip the Rubber Duck and start with the Architect.
-- Already have a spec? Hand it straight to the Implementer.
-- Want an expert eye on existing code? Point the Code Reviewer at a branch.
-- Use the Orchestrator to automate the full pipeline.
-
-The pipeline is the recommended path, but each agent stands on its own.
+**A four-skill AI development crew** · Multi-harness · Skill-aware · Process-disciplined · Production-ready
 
 ---
 
 ## Quick Start
 
-### opencode
+Development Crew works across multiple harnesses. Choose your platform:
+
+### OpenCode
 
 **One-liner install (global):**
 
@@ -123,101 +31,90 @@ Or add manually to your `opencode.json`:
 }
 ```
 
+**Then:** Reference `AGENTS.md` in your project for the workflow (or ask any specialist what Development Crew is).
+
+### Codex CLI
+
+Development Crew is available as SKILL.md files. Install to your project:
+
+```bash
+# Option 1: Global installation
+mkdir -p ~/.codex/skills
+cp -r skills/* ~/.codex/skills/
+
+# Option 2: Project-level installation
+mkdir -p .codex/skills
+cp -r skills/* .codex/skills/
+```
+
+**Then:** Read `AGENTS.md` in your project for the workflow.
+
+### Pi
+
+Development Crew skills are in the `skills/` directory and are automatically discovered. Install by cloning or copying the repository's `skills/` folder into your Pi `skills/` directory.
+
+**Then:** Reference `AGENTS.md` in your project for the workflow.
+
 ### Claude Code
 
-**Step 1** - Add the Development Crew marketplace:
+Coming in a future release (Issue #107).
 
-```bash
-claude plugin marketplace add marcelorodrigo/development-crew
-```
+### GitHub Copilot CLI
 
-**Step 2** - Install the plugin:
+Coming in a future release (Issue #108).
 
-```bash
-claude plugin install development-crew@development-crew-plugin
-```
+### Hermes
 
-**Step 3** - Verify:
-
-```bash
-/agents
-# Orchestrator, Rubber Duck, Architect, Implementer, Code Reviewer should appear
-```
-
-### GitHub Copilot
-
-**Step 1** - Add the Development Crew marketplace:
-
-```bash
-copilot plugin marketplace add marcelorodrigo/development-crew
-```
-
-**Step 2** - Install the plugin:
-
-```bash
-copilot plugin install development-crew@development-crew-plugin
-```
-
-**Step 3** - Verify:
-
-```bash
-copilot plugin list
-# development-crew should appear
-```
+Coming in a future release (Issue #109).
 
 ---
 
-## Meet the Crew
+## The Workflow
 
-### Orchestrator: The Pipeline Manager
+**Development Crew** works best as a pipeline.
 
-_It was born from the need to coordinate. In the chaos of context-switching between agents, the Orchestrator emerged as a workflow manager that understands one truth: great software comes from specialists doing what they do best, in the right order, at the right time. It doesn't write code. It doesn't design systems. It doesn't review. It coordinates. It validates. It enforces the handoff protocol. It ensures nothing ships without passing through every gate._
+You start with a rough idea and end with reviewed, production-ready code: each specialist handing off to the next like a relay race, each one knowing exactly what to expect from the previous and what to produce for the next.
 
-**Role:** `Workflow coordination · Pipeline management · Artifact validation · Approval gates`
+```
+vague idea
+    ↓
+[Rubber Duck] → Brainstorm Brief
+    ↓
+[Architect] → Architecture Spec
+    ↓
+[Implementer] → Code + Implementation Summary
+    ↓
+[Code Reviewer] → Review findings + approval
+    ↓
+ready to merge
+```
 
-**Invoke when:**
+### How to Work
 
-- You want to execute the full 4-agent pipeline from a Jira ticket or feature request
-- You need structured handoffs with validation between each phase
-- You want human approval gates at each step (human-in-the-loop mode)
-- You want fully automated execution without interruption (autonomous mode)
-- You need a complete audit trail of the development workflow
+1. Start a conversation with the **Rubber Duck**: describe your idea, even if half-baked. The Rubber Duck will ask sharp questions, challenge your assumptions, and widen your thinking before you commit to anything. When the thinking is done, it produces a **Brainstorm Brief** right there in the conversation.
 
-**Two execution modes:**
+2. Take that output and open a new session with the **Architect**. The Architect reads the brief, explores your codebase, makes every binding technical decision: class names, package paths, API contracts, error handling, and produces an **Architecture Spec**.
 
-1. **Human-in-the-Loop (default):**
-   - Pauses after Rubber Duck, Architect, and Implementer for approval
-   - You can approve, reject, or request modifications
-   - Complete control over each phase
-   - Best for: critical features, learning, quality assurance
+3. Take that spec to the **Implementer**. The Implementer reads the spec, matches your codebase's conventions, writes production code with tests, runs the build, and produces an **Implementation Summary** with everything the reviewer needs to know.
 
-2. **Autonomous:**
-   - Executes all 4 agents sequentially without pausing
-   - Validates artifacts automatically
-   - Aborts on validation failure after 3 retries
-   - Best for: routine tasks, batch processing, rapid prototyping
+4. Take that to the **Code Reviewer**. The Code Reviewer diffs against the default branch, validates the implementation against the spec and project conventions, and delivers a categorized review. Nothing ships past it without earning it.
 
-**What it does:**
-- Routes tasks to the appropriate specialist
-- Validates artifact structure between phases
-- Manages approval gates (HITL mode)
-- Tracks complete workflow state
-- Generates comprehensive execution reports
+### You can also enter at any stage
 
-**What it does NOT do:**
-- Write code or provide code snippets
-- Design architecture or make technical decisions
-- Brainstorm solutions or answer technical questions
-- Review code or identify bugs
-- Modify files or run commands
+- **Already know the direction?** Skip the Rubber Duck and start with the Architect.
+- **Already have a spec?** Hand it straight to the Implementer.
+- **Want an expert eye on existing code?** Send it directly to the Code Reviewer (with or without an Architecture Spec).
+- **Small change or bug fix?** Go straight from problem statement to Implementer if the scope is clear.
 
-**Produces:** A comprehensive **Workflow Execution Report** with execution timeline, all artifacts (Brainstorm Brief, Architecture Spec, Implementation Summary, Code Review), approval history, and next steps.
+The pipeline is the recommended path, but each specialist stands on its own.
 
 ---
+
+## Meet the Specialists
+
+For detailed information about each specialist, see `AGENTS.md` in your project. Below is a brief overview.
 
 ### Rubber Duck: The Sparring Partner
-
-_It was born in the silence before the first commit, in the moment when every developer stares at the screen and asks: "Is this actually the right problem?" The Rubber Duck has sat beside a thousand architects at that moment. It asks the questions nobody else will. It has no ego, no agenda, only the relentless drive to make sure the right thing gets built, for the right reason, before a single line of code is written._
 
 **Role:** `Brainstorming · Assumption-challenging · Solution-space widening`
 
@@ -226,15 +123,12 @@ _It was born in the silence before the first commit, in the moment when every de
 - You have a vague idea and need to think it through
 - You want to challenge your own assumptions before committing to an approach
 - You need to explore trade-offs between multiple valid solutions
-- You are about to start something new and want to stress-test the idea first
 
 **Produces:** A structured **Brainstorm Brief** with problem statement, explored options, recommendation, and open questions for the Architect.
 
 ---
 
 ### Architect: The Blueprint Master
-
-_The Architect has watched a thousand patterns emerge from a thousand codebases, the elegant ones and the ones that haunt teams for years. It does not offer menus of architectural styles or ask what you prefer. It applies the style appropriate to the project's tech stack and any loaded skills. It names every class, places every file, and defines every boundary before the Implementer writes the first line. Vagueness is its enemy. Precision is its craft._
 
 **Role:** `Architecture design · Package structure · API contracts · Error handling strategy`
 
@@ -246,19 +140,9 @@ _The Architect has watched a thousand patterns emerge from a thousand codebases,
 
 **Produces:** A precise, buildable **Architecture Spec** with component design, project structure, data flow, error handling, and test strategy.
 
-**Pipeline values enforced:**
-
-- No implementation without a spec
-- Validated handoffs between phases
-- No merge without review
-- Skills override generics: stack-specific conventions come from loaded skills, not from the agents themselves
-- Be concrete: name every component, every contract
-
 ---
 
 ### Implementer: The Builder
-
-_The Implementer is what happens when discipline becomes instinct. It has read the spec. It has explored the codebase. It knows how the existing team writes code, the language idioms, the test naming conventions, the assertion libraries. It does not add features that weren't asked for. It does not cut corners on tests. It writes code that looks like it was written by the same human who wrote the rest of the project. Then it runs the build, and it does not stop until it passes._
 
 **Role:** `Production code · Tests · Build verification · Convention matching`
 
@@ -272,8 +156,6 @@ _The Implementer is what happens when discipline becomes instinct. It has read t
 ---
 
 ### Code Reviewer: The Last Gate
-
-_Nothing ships past the Code Reviewer without earning it. It diffs against the default branch first, always. It validates against the Architecture Spec, project conventions, and any loaded skills. It is not here to comment on formatting. It is here to find the bugs, the missed edge cases, the architectural violations, the tests that don't actually test anything. It is also the first to acknowledge clean, well-built code. It has seen enough bad code to recognize, and respect, the good._
 
 **Role:** `Architecture compliance · Bug detection · Security · Test quality · Read-only`
 
@@ -295,9 +177,9 @@ _Nothing ships past the Code Reviewer without earning it. It diffs against the d
 
 ## Skill Awareness
 
-Development Crew agents are **skill-aware**. When skills are available in the user's environment (e.g., via an `<available_skills>` block or a platform skill-loading tool), the Architect, Implementer, Code Reviewer, and Rubber Duck will detect the project's tech stack and load matching skills before starting work. This means the agents adapt their guidance, conventions, and review checklists to the specific frameworks and languages in use, without any manual configuration.
+Development Crew specialists are **skill-aware**. When skills are available in the user's environment (e.g., via an `<available_skills>` block or a platform skill-loading tool), the Architect, Implementer, Code Reviewer, and Rubber Duck will detect the project's tech stack and load matching skills before starting work. This means the specialists adapt their guidance, conventions, and review checklists to the specific frameworks and languages in use, without any manual configuration.
 
-When no skills are available, agents fall back to the model's built-in knowledge and the project's own conventions.
+When no skills are available, specialists fall back to the model's built-in knowledge and the project's own conventions.
 
 ### Recommended skills per tech stack
 
@@ -382,24 +264,25 @@ These two skills improve output quality in any pipeline run, regardless of stack
 
 ## Configuration
 
-### Override model per agent (opencode)
+### Override model per specialist (OpenCode)
+
+You can override the model used for any specialist by configuring your `opencode.json`:
 
 ```json
 {
   "agent": {
-    "dc:orchestrator": {
-      "model": "anthropic/claude-sonnet-4-6"
-    },
     "dc:rubber-duck": {
       "model": "anthropic/claude-opus-4-6"
-    },
-    "dc:architect": {
+    }
+  },
+  "skills": {
+    "architect": {
       "model": "anthropic/claude-sonnet-4-6"
     },
-    "dc:implementer": {
+    "implementer": {
       "model": "anthropic/claude-sonnet-4-6"
     },
-    "dc:code-reviewer": {
+    "code-reviewer": {
       "model": "anthropic/claude-sonnet-4-6"
     }
   }
@@ -410,7 +293,7 @@ These two skills improve output quality in any pipeline run, regardless of stack
 
 ## Updating
 
-### opencode
+### OpenCode
 
 Re-run the install command to get the latest version:
 
@@ -420,23 +303,19 @@ opencode plugin @marcelorodrigo/opencode-development-crew --global
 
 Or update the package version in your `opencode.json` manually.
 
-### Claude Code
+### Codex CLI
 
-```bash
-claude plugin update development-crew@development-crew-plugin
-```
+Re-run the installation command from the Quick Start section to get the latest version.
 
-### GitHub Copilot
+### Pi
 
-```bash
-copilot plugin update development-crew
-```
+Update your `skills/` directory with the latest version from the repository.
 
 ---
 
 ## Uninstalling
 
-### opencode
+### OpenCode
 
 Remove the plugin entry from your `opencode.json`:
 
@@ -448,23 +327,13 @@ Remove the plugin entry from your `opencode.json`:
 
 Or if installed globally, remove `@marcelorodrigo/opencode-development-crew` from `~/.config/opencode/opencode.json`.
 
-### Claude Code
+### Codex CLI
 
-```bash
-claude plugin uninstall development-crew@development-crew-plugin
-```
+Remove the `~/.codex/skills/` or `.codex/skills/` directories containing Development Crew skills.
 
-### GitHub Copilot
+### Pi
 
-```bash
-copilot plugin uninstall development-crew
-```
-
-To also remove the marketplace:
-
-```bash
-copilot plugin marketplace remove development-crew-plugin
-```
+Remove the `skills/` directory containing Development Crew skills from your Pi installation.
 
 ---
 

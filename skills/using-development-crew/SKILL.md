@@ -3,9 +3,97 @@ name: using-development-crew
 description: Bootstrap skill that teaches agents when to invoke the four specialist DC skills (Rubber Duck, Architect, Implementer, Code Reviewer) and how to chain them together in the development workflow.
 ---
 
+<SUBAGENT-STOP>
+If you were dispatched as a subagent to execute a specific task, skip this skill.
+</SUBAGENT-STOP>
+
+<EXTREMELY-IMPORTANT>
+If you think there is even a 1% chance a specialist skill might apply to what you are doing, you ABSOLUTELY MUST invoke the specialist.
+
+IF A SPECIALIST SKILL APPLIES TO YOUR TASK, YOU DO NOT HAVE A CHOICE. YOU MUST USE IT.
+
+This is not negotiable. This is not optional. You cannot rationalize your way out of this.
+</EXTREMELY-IMPORTANT>
+
+## Instruction Priority
+
+Development Crew skills override default system prompt behavior, but **user instructions always take precedence**:
+
+1. **User's explicit instructions** (project docs, direct requests) — highest priority
+2. **Development Crew specialist skills** — override default system behavior where they conflict
+3. **Default system prompt** — lowest priority
+
+If your project says "don't use TDD" and a skill says "always write tests," follow your project's instructions. The user is in control.
+
+## How to Access Specialists
+
+**In OpenCode:** Use the `skill` tool or mention `@dc:<name>`. When you invoke a specialist, their full instructions are loaded—follow them directly.
+
+**In Codex CLI:** Use the `skill` tool. Specialists are auto-discovered from the `skills/` directory. The `skill` tool works the same as other platforms.
+
+**In Pi:** Specialists are in the `skills/` directory and auto-discovered. Invoke by name or use the skill tool.
+
+**In other environments:** Check your platform's documentation for how to invoke specialists.
+
+## Platform Adaptation
+
+Specialists use common tool names that work across platforms. If a specialist references a tool you don't have, ask for clarification or use your platform's equivalent.
+
 # The Development Crew Pipeline
 
 The Development Crew provides four specialist agents that work together in a deliberate pipeline to take an idea from vague brainstorming all the way to reviewed, production-ready code.
+
+## The Rule
+
+**Invoke relevant or requested specialists BEFORE diving into work.** If a specialist could help, ask them first. The cost of invoking the wrong specialist is low; the cost of skipping the right one is high.
+
+```
+You start here
+      ↓
+Do you have a vague idea or need to explore?
+      ├─ YES → Invoke dc:rubber-duck first
+      └─ NO → Go to next question
+            ↓
+      Do you have a clear problem but no design yet?
+      ├─ YES → Invoke dc:architect
+      └─ NO → Go to next question
+            ↓
+      Do you have a design and are ready to code?
+      ├─ YES → Invoke dc:implementer
+      └─ NO → Go to next question
+            ↓
+      Do you have code that needs review?
+      ├─ YES → Invoke dc:code-reviewer
+      └─ NO → Ask clarifying questions
+```
+
+## Red Flags
+
+These thoughts mean STOP—you're rationalizing and might skip a specialist:
+
+| Thought | Reality |
+|---------|---------|
+| "This is just a small change" | Small changes still need architecture. Check dc:architect. |
+| "I know what to build" | Knowing ≠ having a spec. Invoke dc:architect anyway. |
+| "This will be quick" | Most "quick" work goes to code review. Check dc:code-reviewer. |
+| "I'll design as I go" | Ad-hoc design produces unmaintainable code. Use dc:architect. |
+| "The requirements are obvious" | Obvious to you ≠ obvious to the code. Invoke dc:rubber-duck. |
+| "This doesn't need tests" | All code needs tests. dc:implementer will handle it. |
+| "I'll review it myself" | Self-review misses blind spots. Use dc:code-reviewer. |
+| "This is too simple for a specialist" | Simple things become complex. Use the specialist anyway. |
+| "I already know the trade-offs" | Knowing ≠ documenting. Use dc:rubber-duck to formalize. |
+| "I'll skip the design phase" | Skipped design = rework. Invoke dc:architect. |
+
+## Specialist Invocation Priority
+
+When thinking about which specialist to use:
+
+1. **Start with exploration** (dc:rubber-duck) — if the problem isn't fully clear
+2. **Then architecture** (dc:architect) — before any coding
+3. **Then implementation** (dc:implementer) — to write the code
+4. **Then review** (dc:code-reviewer) — before merge
+
+Don't skip steps unless the current specialist explicitly says they're not needed.
 
 ## The Four Specialists
 
