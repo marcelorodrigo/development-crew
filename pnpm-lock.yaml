@@ -12,8 +12,8 @@ importers:
         specifier: 1.17.4
         version: 1.17.4
       '@opencode-ai/sdk':
-        specifier: 1.17.3
-        version: 1.17.3
+        specifier: 1.17.7
+        version: 1.17.7
       tsup:
         specifier: ^8.0.0
         version: 8.5.1(postcss@8.5.15)(typescript@6.0.3)(yaml@2.9.0)
@@ -254,11 +254,11 @@ packages:
       '@opentui/solid':
         optional: true
 
-  '@opencode-ai/sdk@1.17.3':
-    resolution: {integrity: sha512-oXrEjOuP3+J9pPNw3cmOnRma/xiVQ4WIIvGd6YkhPQgqqi2PnD/b1qfNY0AMead3QfNhKwKdDM4QFJdN2LpByg==}
-
   '@opencode-ai/sdk@1.17.4':
     resolution: {integrity: sha512-OdHkBoNIQOjQsPnFtkcxAp9HsLAKn/MQiq7wIQURkRARmw8yhFqGiMPYbNm+UfLn6bMkx97rdPkWQARejMyiXQ==}
+
+  '@opencode-ai/sdk@1.17.7':
+    resolution: {integrity: sha512-7q7StGM+N0OwUgRsmDc8Gyz3hMIH1XGig+qZ4lzWUpmSgFEjLx8U7R14GXY7KiMJVdbVf6FeaYloRz2Rcsma4A==}
 
   '@oxc-project/types@0.133.0':
     resolution: {integrity: sha512-KzkdCd6Uxqnf6l3HOw1xfatAlUURA0g14cvBYFyJ5SaNOQbOUvBr9PKArcPcrNIeRsBdgcUzOGrhKveVpvOIGA==}
@@ -1195,11 +1195,11 @@ snapshots:
       effect: 4.0.0-beta.74
       zod: 4.1.8
 
-  '@opencode-ai/sdk@1.17.3':
+  '@opencode-ai/sdk@1.17.4':
     dependencies:
       cross-spawn: 7.0.6
 
-  '@opencode-ai/sdk@1.17.4':
+  '@opencode-ai/sdk@1.17.7':
     dependencies:
       cross-spawn: 7.0.6
 
