@@ -7,14 +7,32 @@ description: Bootstrap skill that teaches how to use the Development Crew skill 
 
 You have access to the **Development Crew** skill pipeline: four specialist skills that coordinate structured software development from idea to reviewed code. Use the `skill` tool to load any of them on demand.
 
+<SUBAGENT-STOP>
+If you were dispatched as a subagent to execute a specific task, skip this skill—your dispatch instructions override it.
+</SUBAGENT-STOP>
+
+## Instruction Priority
+
+Development Crew skills override default system prompt behavior, but **user instructions always take precedence**:
+
+1. **User's explicit instructions** (direct requests, project docs, AGENTS.md) — highest priority
+2. **Development Crew skills** — override default system behavior where they conflict
+3. **Default system prompt** — lowest priority
+
+If your instructions say "don't use TDD" and a skill says "always use TDD," follow your instructions. You are in control.
+
 ## The Four Specialist Skills
 
-| Skill | When to Load |
-|-------|-------------|
-| `rubber-duck` | You have a vague idea, need to challenge assumptions, or want to explore the solution space before committing |
-| `architect` | You have a clear direction and need a formal architecture specification before writing code |
-| `implementer` | You have an Architecture Spec and need to write production code, tests, and wiring |
-| `code-reviewer` | You have implemented changes and need a structured review against the spec and conventions |
+| Skill | Type | When to Load |
+|-------|------|-------------|
+| `rubber-duck` | Flexible | You have a vague idea, need to challenge assumptions, or want to explore the solution space before committing |
+| `architect` | Rigid | You have a clear direction and need a formal architecture specification before writing code |
+| `implementer` | Rigid | You have an Architecture Spec and need to write production code, tests, and wiring |
+| `code-reviewer` | Rigid | You have implemented changes and need a structured review against the spec and conventions |
+
+**Skill Types:**
+- **Rigid** (architect, implementer, code-reviewer): Follow exactly. These define a contract with the next stage in the pipeline.
+- **Flexible** (rubber-duck): Adapt the principles to your context while respecting the brainstorming intent.
 
 ## The Pipeline
 
