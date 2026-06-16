@@ -4,21 +4,25 @@ on:
   push:
     branches: [master]
     paths:
+      - 'scripts/**'
       - 'skills/**'
       - 'tests/**'
       - '.opencode/**'
       - 'hooks/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
+      - '.github/workflows/build-opencode.yml'
       - 'vitest.config.ts'
   pull_request:
     paths:
+      - 'scripts/**'
       - 'skills/**'
       - 'tests/**'
       - '.opencode/**'
       - 'hooks/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
+      - '.github/workflows/build-opencode.yml'
       - 'vitest.config.ts'
   workflow_dispatch:
 
