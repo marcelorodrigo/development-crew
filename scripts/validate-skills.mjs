@@ -1,7 +1,5 @@
 /**
- * Verifies that every skills/*\/SKILL.md file has valid frontmatter (name + description)
- * and that the bootstrap skill body (skills/using-development-crew/SKILL.md) is
- * embedded in dist/index.js.
+ * Validates that every skills/*\/SKILL.md file has valid frontmatter (name + description).
  */
 
 import { readFileSync, readdirSync, statSync } from 'node:fs';
@@ -60,24 +58,7 @@ function parseSkillMd(raw, filePath) {
   return { name, description, body };
 }
 
-/**
- * Modular validators for skill metadata fields.
- * Each validator returns an array of error messages (empty = valid).
- */
 const validators = {
-
-  /**
-   * Validate the `name` field per the Agent Skills spec:
-   * - Max 64 characters
-   * - Only lowercase alphanumeric (a-z, 0-9) and hyphens
-   * - No consecutive hyphens
-   * - No leading or trailing hyphens
-   * - Must match the parent directory name
-   * @param {string} name
-   * @param {string} dirName
-   * @param {string} filePath
-   * @returns {string[]}
-   */
   name(name, dirName, filePath) {
     const errors = [];
     if (name.length > 64) {
@@ -95,14 +76,6 @@ const validators = {
     return errors;
   },
 
-  /**
-   * Validate the `description` field per the Agent Skills spec:
-   * - Max 1024 characters
-   * - Non-empty (already guaranteed by parseSkillMd)
-   * @param {string} description
-   * @param {string} filePath
-   * @returns {string[]}
-   */
   description(description, filePath) {
     const errors = [];
     if (description.length > 1024) {
@@ -110,16 +83,7 @@ const validators = {
     }
     return errors;
   },
-
 };
-
-let distContent;
-try {
-  distContent = readFileSync('dist/index.js', 'utf-8');
-} catch {
-  console.error('ERROR: dist/index.js not found — run `pnpm run build` first');
-  process.exit(1);
-}
 
 // Discover all skill directories (direct children of skills/ that contain SKILL.md)
 const skillsDir = 'skills';
@@ -158,45 +122,6 @@ for (const dirName of skillDirs) {
     console.log(`OK: ${filePath} (name: ${meta.name})`);
   }
   count++;
-}
-
-// Verify bootstrap skill body is embedded in the bundle.
-// tsup's text loader inlines .md files as JS string literals, where newlines
-// are stored as the two-character escape sequence `\n` rather than literal
-// newlines. We therefore escape the body before searching.
-const bootstrapPath = join(skillsDir, 'using-development-crew', 'SKILL.md');
-try {
-  const raw = readFileSync(bootstrapPath, 'utf-8');
-  const { body } = parseSkillMd(raw, bootstrapPath);
-  if (!body) {
-    console.error(`ERROR: Bootstrap skill body is empty: ${bootstrapPath}`);
-    failed = true;
-  } else {
-    // Take a distinctive substring from the body to avoid false positives.
-    // We use a later portion of the body (past the heading line) to avoid
-    // issues with Unicode characters in headings being encoded differently
-    // by tsup's bundler (e.g. em-dash → \u2014).
-    const bodyLines = body.split('\n');
-    // Skip the first heading line; use the first non-empty non-heading line
-    const anchorLine = bodyLines.find((l) => l.trim() && !l.startsWith('#'));
-    if (!anchorLine) {
-      console.error(`ERROR: Bootstrap skill body has no verifiable content: ${bootstrapPath}`);
-      failed = true;
-    } else {
-      const snippet = anchorLine.slice(0, 80).replace(/\n/g, '\\n');
-      if (!distContent.includes(snippet)) {
-        console.error(
-          `ERROR: Bootstrap skill body not found in dist/index.js (checked: ${JSON.stringify(snippet)})`,
-        );
-        failed = true;
-      } else {
-        console.log(`OK: Bootstrap skill body embedded in dist/index.js`);
-      }
-    }
-  }
-} catch (err) {
-  console.error(`ERROR: ${err.message}`);
-  failed = true;
 }
 
 if (failed) {

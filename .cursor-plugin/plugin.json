@@ -1,0 +1,29 @@
+{
+  "name": "development-crew",
+  "displayName": "Development Crew",
+  "description": "A skills-first development workflow: four specialist skills for brainstorming, architecture design, implementation, and code review.",
+  "version": "0.9.1",
+  "author": {
+    "name": "Marcelo Rodrigo",
+    "url": "https://github.com/marcelorodrigo"
+  },
+  "contributors": [
+    {
+      "name": "Lucas Germani"
+    }
+  ],
+  "homepage": "https://github.com/marcelorodrigo/development-crew",
+  "repository": "https://github.com/marcelorodrigo/development-crew",
+  "license": "MIT",
+  "keywords": [
+    "development",
+    "skills",
+    "code-review",
+    "architecture",
+    "brainstorming"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks-cursor.json"
+}

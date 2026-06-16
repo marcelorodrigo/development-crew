@@ -1,0 +1,48 @@
+{
+  "name": "development-crew",
+  "version": "0.9.1",
+  "description": "A skills-first development workflow: four specialist skills for brainstorming (Rubber Duck), architecture design (Architect), implementation (Implementer), and code review (Code Reviewer).",
+  "author": {
+    "name": "Marcelo Rodrigo",
+    "url": "https://github.com/marcelorodrigo"
+  },
+  "contributors": [
+    {
+      "name": "Lucas Germani"
+    }
+  ],
+  "homepage": "https://github.com/marcelorodrigo/development-crew",
+  "repository": "https://github.com/marcelorodrigo/development-crew",
+  "license": "MIT",
+  "keywords": [
+    "development",
+    "skills",
+    "code-review",
+    "architecture",
+    "brainstorming"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Development Crew",
+    "shortDescription": "Skills-first pipeline: brainstorm, architect, implement, review",
+    "longDescription": "A skills-first development workflow with four specialist skills: Rubber Duck for brainstorming, Architect for formal design, Implementer for production code, and Code Reviewer for validation.",
+    "developerName": "Marcelo Rodrigo",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "I need to build something new and want to run it through the full pipeline.",
+      "Let's design and implement a new feature."
+    ],
+    "websiteURL": "https://github.com/marcelorodrigo/development-crew",
+    "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
+    "termsOfServiceURL": "https://github.com/marcelorodrigo/development-crew",
+    "brandColor": "#6366F1",
+    "composerIcon": null,
+    "logo": null,
+    "screenshots": []
+  }
+}

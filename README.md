@@ -84,23 +84,15 @@ The pipeline is the recommended path, but each skill works independently.
 
 ### opencode
 
-**One-liner install (global):**
-
-```bash
-opencode plugin @marcelorodrigo/opencode-development-crew --global
-```
-
-Or add manually to your `opencode.json`:
+Add to your `opencode.json` (global or project-level):
 
 ```json
 {
-  "plugin": [
-    "@marcelorodrigo/opencode-development-crew"
-  ]
+  "plugin": ["@marcelorodrigo/opencode-development-crew@git+https://github.com/marcelorodrigo/development-crew.git"]
 }
 ```
 
-Then use the `skill` tool to load any specialist:
+Restart OpenCode. Use the `skill` tool to load any specialist:
 
 ```bash
 skill: rubber-duck
@@ -147,6 +139,30 @@ copilot plugin install development-crew@development-crew-plugin
 /skill rubber-duck
 # or load any of: architect, implementer, code-reviewer
 ```
+
+### Codex CLI
+
+Install from GitHub:
+
+```bash
+codex plugin install https://github.com/marcelorodrigo/development-crew
+```
+
+### Cursor
+
+Add to your `.cursor/plugins.json`:
+
+```json
+{
+  "plugins": [
+    "development-crew@git+https://github.com/marcelorodrigo/development-crew.git"
+  ]
+}
+```
+
+### Gemini
+
+Use the bundled `GEMINI.md` context file by adding `gemini-extension.json` to your project.
 
 ---
 
@@ -369,13 +385,13 @@ You can configure model overrides in your `opencode.json` if you use the built-i
 
 ### opencode
 
-Re-run the install command to get the latest version:
+Re-run the install command or update the git tag in your `opencode.json`:
 
-```bash
-opencode plugin @marcelorodrigo/opencode-development-crew --global
+```json
+{
+  "plugin": ["@marcelorodrigo/opencode-development-crew@git+https://github.com/marcelorodrigo/development-crew.git#v0.9.2"]
+}
 ```
-
-Or update the package version in your `opencode.json` manually.
 
 ### Claude Code
 
@@ -402,8 +418,6 @@ Remove the plugin entry from your `opencode.json`:
   "plugin": []
 }
 ```
-
-Or if installed globally, remove `@marcelorodrigo/opencode-development-crew` from `~/.config/opencode/opencode.json`.
 
 ### Claude Code
 
