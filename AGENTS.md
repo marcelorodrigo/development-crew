@@ -34,7 +34,7 @@ skills/                # Skill prompt definitions (bundled into dist at build ti
   architect/SKILL.md               # Architecture formalizer
   implementer/SKILL.md             # Builder / implementer
   code-reviewer/SKILL.md           # Code review specialist
-  shared-principles/SKILL.md       # Shared design principles (embedded in technical skills)
+  shared-principles/SKILL.md       # Shared design principles (standalone, loaded by technical skills)
 
 scripts/
   verify-skills.mjs    # CI verification: skill frontmatter valid + bootstrap body in bundle

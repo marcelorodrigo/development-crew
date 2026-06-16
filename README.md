@@ -321,13 +321,19 @@ These two skills improve output quality in any pipeline run, regardless of stack
 
 ### Load skills on demand
 
-The plugin is skills-first, meaning all four specialist skills are discovered and loaded on-demand via the `skill` tool:
+The plugin is skills-first, meaning all skills are discovered and loaded on-demand via the `skill` tool:
 
 ```bash
 skill: architect
 skill: implementer
 skill: code-reviewer
 skill: rubber-duck
+```
+
+A standalone `shared-principles` skill is also available with the cross-cutting design principles that all technical specialists follow. Load it when you need the principles without the full specialist workflow:
+
+```bash
+skill: shared-principles
 ```
 
 There is no static agent configuration. Each skill is discovered from the `skills/` directory when you invoke it.

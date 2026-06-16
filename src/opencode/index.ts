@@ -48,7 +48,8 @@ const DevelopmentCrewPlugin: Plugin = async (_ctx) => {
 
       bootstrap += '\n\n<!-- development-crew-bootstrap -->';
 
-      firstUser.parts.unshift({ type: 'text', text: bootstrap });
+      const ref = firstUser.parts[0];
+      firstUser.parts.unshift({ ...ref, type: 'text', text: bootstrap });
     },
   };
 };

@@ -3,13 +3,15 @@ name: using-development-crew
 description: Bootstrap skill that teaches how to use the Development Crew skill pipeline. Explains the four specialist skills, when to invoke each one, and how the pipeline flows from brainstorming to code review.
 ---
 
-# Development Crew — How to Use This Plugin
-
-You have access to the **Development Crew** skill pipeline: four specialist skills that coordinate structured software development from idea to reviewed code. Use the `skill` tool to load any of them on demand.
-
 <SUBAGENT-STOP>
 If you were dispatched as a subagent to execute a specific task, skip this skill—your dispatch instructions override it.
 </SUBAGENT-STOP>
+
+<EXTREMELY_IMPORTANT>
+
+You have access to the **Development Crew** skill pipeline: four specialist skills that coordinate structured software development from idea to reviewed code.
+
+**IMPORTANT: This content is ALREADY LOADED. You are currently following it. Do NOT use the \`skill\` tool to load \`using-development-crew\` again — that would be redundant.**
 
 ## Instruction Priority
 
@@ -60,6 +62,33 @@ You do not need to start from the beginning every time. Match your entry point t
 | A complete Architecture Spec | `implementer` |
 | A finished implementation to validate | `code-reviewer` |
 
+## The Rule
+
+**Invoke a relevant skill BEFORE any response or action.** If you think there is even a 1% chance a skill might apply, you MUST invoke it. If an invoked skill turns out to be wrong, you don't need to use it — but the check is non-negotiable.
+
+This applies even when:
+- You think the request is "just a simple question"
+- You feel the need to gather more context first
+- You remember what the skill says
+- You think you already know the answer
+
+| Red Flag | Reality |
+|----------|---------|
+| "This is just a simple question" | Questions are tasks. Check for skills. |
+| "I need more context first" | Skill check comes BEFORE clarifying questions. |
+| "Let me explore the codebase first" | Skills tell you HOW to explore. Check first. |
+| "I can check git/files quickly" | Files lack conversation context. Check for skills. |
+| "Let me gather information first" | Skills tell you HOW to gather information. |
+| "This doesn't need a formal skill" | If a skill exists, use it. |
+| "I remember this skill" | Skills evolve. Read current version. |
+| "This doesn't count as a task" | Action = task. Check for skills. |
+| "The skill is overkill" | Simple things become complex. Use it. |
+| "I'll just do this one thing first" | Check BEFORE doing anything. |
+| "This feels productive" | Undisciplined action wastes time. Skills prevent this. |
+| "I know what that means" | Knowing the concept ≠ using the skill. Invoke it. |
+
+IF A SKILL APPLIES TO YOUR TASK, YOU DO NOT HAVE A CHOICE. YOU MUST USE IT. This is not negotiable. This is not optional. You cannot rationalize your way out of this.
+
 ## How to Invoke a Skill
 
 Use the `skill` tool and pass the skill name:
@@ -91,7 +120,7 @@ You don't always need the full pipeline. Load a single skill when:
 
 ## Shared Design Principles
 
-The `architect`, `implementer`, and `code-reviewer` skills all embed the Shared Design Principles at the top of their instructions. These cross-cutting standards are always in effect for technical work:
+The `architect`, `implementer`, and `code-reviewer` skills all load the `shared-principles` skill at startup. These cross-cutting standards are always in effect for technical work:
 
 1. Match existing conventions first
 2. Single Responsibility
@@ -100,3 +129,5 @@ The `architect`, `implementer`, and `code-reviewer` skills all embed the Shared 
 5. Loaded skills override generic defaults
 
 Load the `shared-principles` skill explicitly if you need these principles without loading a full specialist.
+
+</EXTREMELY_IMPORTANT>
