@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.9.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.8.2...opencode-development-crew-v0.9.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to skills-first architecture ([#111](https://github.com/marcelorodrigo/development-crew/issues/111))
+
+### Features
+
+* migrate to skills-first architecture ([#111](https://github.com/marcelorodrigo/development-crew/issues/111)) ([8d974c2](https://github.com/marcelorodrigo/development-crew/commit/8d974c20a39d3ddda35b7030ce3b1bd073ab3afe))
+
 ## [0.8.2](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.8.1...opencode-development-crew-v0.8.2) (2026-06-12)
 
 
