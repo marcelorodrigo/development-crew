@@ -102,7 +102,7 @@ Or add manually to your `opencode.json`:
 
 Then use the `skill` tool to load any specialist:
 
-```
+```bash
 skill: rubber-duck
 ```
 
@@ -323,7 +323,7 @@ These two skills improve output quality in any pipeline run, regardless of stack
 
 The plugin is skills-first, meaning all four specialist skills are discovered and loaded on-demand via the `skill` tool:
 
-```
+```bash
 skill: architect
 skill: implementer
 skill: code-reviewer

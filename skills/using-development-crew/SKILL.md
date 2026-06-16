@@ -64,7 +64,7 @@ You do not need to start from the beginning every time. Match your entry point t
 
 Use the `skill` tool and pass the skill name:
 
-```
+```bash
 skill: rubber-duck
 ```
 
