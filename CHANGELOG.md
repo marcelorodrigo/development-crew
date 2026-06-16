@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.10.0...opencode-development-crew-v0.11.0) (2026-06-16)
+
+
+### Features
+
+* **skills:** Add pipeline focus directives and compression handoff guidance ([#117](https://github.com/marcelorodrigo/development-crew/issues/117)) ([218c5a8](https://github.com/marcelorodrigo/development-crew/commit/218c5a89aacfede635938a95a702dcb398939ce8))
+
 ## [0.10.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.9.1...opencode-development-crew-v0.10.0) (2026-06-16)
 
 
