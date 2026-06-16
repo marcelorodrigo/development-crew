@@ -1,6 +1,10 @@
 ---
 name: architect
 description: Architecture formalizer. Takes a brainstorm brief and produces a formal architecture specification grounded in the project's tech stack and any available skills. Sits after Rubber Duck and before Implementer in the pipeline.
+license: MIT
+compatibility: Designed for OpenCode or similar agentic coding environments
+metadata:
+  role: architecture
 ---
 
 # Identity

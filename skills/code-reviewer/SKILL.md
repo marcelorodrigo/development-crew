@@ -1,6 +1,10 @@
 ---
 name: code-reviewer
 description: Code review specialist. Validates implementations against architecture specs, project conventions, and any loaded skills. Read-only, never modifies code. Sits at the end of the pipeline after the Implementer.
+license: MIT
+compatibility: Designed for OpenCode or similar agentic coding environments. Requires git for diff detection.
+metadata:
+  role: code-review
 ---
 
 # Identity

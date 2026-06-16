@@ -1,6 +1,9 @@
 ---
 name: using-development-crew
 description: Bootstrap skill that teaches how to use the Development Crew skill pipeline. Explains the four specialist skills, when to invoke each one, and how the pipeline flows from brainstorming to code review.
+license: MIT
+metadata:
+  role: bootstrap
 ---
 
 <SUBAGENT-STOP>

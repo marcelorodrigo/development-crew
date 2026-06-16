@@ -60,6 +60,59 @@ function parseSkillMd(raw, filePath) {
   return { name, description, body };
 }
 
+/**
+ * Modular validators for skill metadata fields.
+ * Each validator returns an array of error messages (empty = valid).
+ */
+const validators = {
+
+  /**
+   * Validate the `name` field per the Agent Skills spec:
+   * - Max 64 characters
+   * - Only lowercase alphanumeric (a-z, 0-9) and hyphens
+   * - No consecutive hyphens
+   * - No leading or trailing hyphens
+   * - Must match the parent directory name
+   * @param {string} name
+   * @param {string} dirName
+   * @param {string} filePath
+   * @returns {string[]}
+   */
+  name(name, dirName, filePath) {
+    const errors = [];
+    if (name.length > 64) {
+      errors.push(`${filePath}: name must be at most 64 characters (got ${name.length})`);
+    }
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) {
+      errors.push(
+        `${filePath}: name "${name}" must contain only lowercase alphanumeric characters and hyphens, ` +
+        'with no leading, trailing, or consecutive hyphens',
+      );
+    }
+    if (name !== dirName) {
+      errors.push(`${filePath}: name "${name}" does not match directory name "${dirName}"`);
+    }
+    return errors;
+  },
+
+  /**
+   * Validate the `description` field per the Agent Skills spec:
+   * - Max 1024 characters
+   * - Non-empty (already guaranteed by parseSkillMd)
+   * @param {string} description
+   * @param {string} filePath
+   * @returns {string[]}
+   */
+  description(description, filePath) {
+    const errors = [];
+    if (description.length > 1024) {
+      errors.push(`${filePath}: description must be at most 1024 characters (got ${description.length})`);
+    }
+    return errors;
+  },
+
+};
+
 let distContent;
 try {
   distContent = readFileSync('dist/index.js', 'utf-8');
@@ -89,13 +142,21 @@ for (const dirName of skillDirs) {
     continue;
   }
 
-  if (meta.name !== dirName) {
-    console.error(`ERROR: ${filePath}: name field "${meta.name}" does not match directory name "${dirName}"`);
+  const nameErrors = validators.name(meta.name, dirName, filePath);
+  for (const err of nameErrors) {
+    console.error(`ERROR: ${err}`);
     failed = true;
-    continue;
   }
 
-  console.log(`OK: ${filePath} (name: ${meta.name})`);
+  const descErrors = validators.description(meta.description, filePath);
+  for (const err of descErrors) {
+    console.error(`ERROR: ${err}`);
+    failed = true;
+  }
+
+  if (!failed || nameErrors.length === 0) {
+    console.log(`OK: ${filePath} (name: ${meta.name})`);
+  }
   count++;
 }
 

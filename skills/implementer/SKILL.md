@@ -1,6 +1,10 @@
 ---
 name: implementer
 description: Builder. Takes an architecture specification and implements it, writing production code, tests, and configuration matching the project's conventions and any available skills. Sits after Architect and before Code Reviewer in the pipeline.
+license: MIT
+compatibility: Designed for OpenCode or similar agentic coding environments. Requires build tools and test runner access.
+metadata:
+  role: implementation
 ---
 
 # Identity
