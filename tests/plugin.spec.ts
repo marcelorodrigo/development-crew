@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import DevelopmentCrewPlugin from '../src/opencode/index';
+import DevelopmentCrewPlugin from '../.opencode/plugins/development-crew.js';
 
 function mockPluginInput() {
   return {
-    client: {} as ReturnType<typeof import('@opencode-ai/sdk').createOpencodeClient>,
+    client: {},
     project: { id: 'test', name: 'test-project' },
     directory: '/tmp/test',
     worktree: '/tmp/test',
     serverUrl: new URL('http://localhost:3000'),
-    $: {} as any,
+    $: {},
     experimental_workspace: {
       register: () => {},
     },
@@ -127,9 +127,7 @@ describe('experimental.chat.messages.transform hook', () => {
     expect(parts).toHaveLength(2);
     expect(parts[0].type).toBe('text');
     expect(parts[0].text).toBeTruthy();
-    // Bootstrap body must mention Development Crew (sentinel used for idempotency)
     expect(parts[0].text).toContain('Development Crew');
-    // Original message remains as second part
     expect(parts[1].text).toBe('do something');
   });
 
@@ -155,7 +153,6 @@ describe('experimental.chat.messages.transform hook', () => {
 
     const parts = output.messages[0].parts;
     expect(parts).toHaveLength(2);
-    // Bootstrap was injected despite the phrase already being in the original message
     expect(parts[0].text).toContain('Development Crew');
     expect(parts[1].text).toBe('I want to use Development Crew for this task');
   });

@@ -2,64 +2,75 @@
 
 ## What this repo is
 
-An OpenCode plugin (`@marcelorodrigo/opencode-development-crew`) that ships a **skills-first** development workflow. Four specialist skills (Rubber Duck, Architect, Implementer, Code Reviewer) are registered as on-demand skills and a bootstrap skill (`using-development-crew`) is injected into every session to orient the model. It is **not** a web app or service -- it builds to a single ESM bundle (`dist/index.js`) that OpenCode loads as a plugin.
+An OpenCode plugin (`@marcelorodrigo/opencode-development-crew`) that ships a **skills-first** development workflow. Four specialist skills (Rubber Duck, Architect, Implementer, Code Reviewer) are registered as on-demand skills and a bootstrap skill (`using-development-crew`) is injected into every session to orient the model. It is **not** a web app or service -- it is raw JavaScript loaded from `.opencode/plugins/development-crew.js` with no build step.
 
 ## Prerequisites
 
 - Node >= 24 (pinned in `.node-version`)
-- pnpm 10.31.0 (pinned via `packageManager` in `package.json`)
+- pnpm 11.7.0 (pinned via `packageManager` in `package.json`)
 
 ## Commands
 
 ```bash
 pnpm install --frozen-lockfile   # install deps (never use npm)
-pnpm run typecheck               # tsc --noEmit
-pnpm run build                   # tsup + tsc --emitDeclarationOnly -> dist/
-pnpm run dev                     # tsup --watch
 pnpm run test                    # vitest run
 ```
 
-There are no manual tests — vitest tests (`pnpm run test`) cover plugin hooks. The verification step is the build itself plus `node scripts/verify-skills.mjs` which checks that every `skills/*/SKILL.md` has valid frontmatter and that the bootstrap skill body (`skills/using-development-crew/SKILL.md`) is embedded in `dist/index.js`.
+There are no manual tests — vitest tests (`pnpm run test`) cover plugin hooks. The verification step is `node scripts/validate-skills.mjs` which checks that every `skills/*/SKILL.md` has valid frontmatter.
 
 ## Project structure
 
 ```text
-src/opencode/          # All TypeScript source (rootDir for tsc)
-  index.ts             # Plugin entrypoint, exports DevelopmentCrewPlugin
-  md.d.ts              # Ambient module declaration for *.md imports
+.opencode/plugins/               # OpenCode plugin entry point (plain JS, no build)
+  development-crew.js            # Plugin factory with config + messages.transform hooks
 
-skills/                # Skill prompt definitions (bundled into dist at build time)
+.claude-plugin/                  # Claude Code plugin manifests
+  plugin.json                    # Claude Code plugin metadata
+  marketplace.json               # Claude Code marketplace listing
+
+.codex-plugin/                   # Codex CLI plugin manifest
+  plugin.json                    # Codex CLI configuration with skills path + interface
+
+.cursor-plugin/                  # Cursor plugin manifest
+  plugin.json                    # Cursor configuration with skills + hooks
+
+.github/plugin/                  # OpenCode plugin manifests
+  plugin.json                    # OpenCode plugin metadata
+  marketplace.json               # OpenCode marketplace listing
+
+hooks/                           # SessionStart hooks for Claude Code / Cursor / Copilot CLI
+  hooks.json                     # Claude Code hook config
+  hooks-cursor.json              # Cursor hook config
+  session-start                  # Bash script: reads bootstrap SKILL.md, strips frontmatter, outputs JSON
+  run-hook.cmd                   # Cross-platform polyglot wrapper (Windows + Unix)
+
+skills/                          # Skill prompt definitions
   using-development-crew/SKILL.md  # Bootstrap skill: injected into every session
   rubber-duck/SKILL.md             # Brainstorming sparring partner
   architect/SKILL.md               # Architecture formalizer
   implementer/SKILL.md             # Builder / implementer
   code-reviewer/SKILL.md           # Code review specialist
-  shared-principles/SKILL.md       # Shared design principles (standalone, loaded by technical skills)
+  shared-principles/SKILL.md       # Shared design principles
+
+GEMINI.md                        # Gemini context file (uses @-includes for skill files)
 
 scripts/
-  verify-skills.mjs    # CI verification: skill frontmatter valid + bootstrap body in bundle
+  validate-skills.mjs            # CI: validates all SKILL.md frontmatter (name + description)
 
 validation/
-  validate_skills.py   # Validates skills/*.*/SKILL.md frontmatter (name + description)
+  validate_skills.py             # Validates skills/*.*/SKILL.md frontmatter (name + description)
 ```
 
-## How the build works
+## How the plugin works
 
-tsup bundles `src/opencode/index.ts` into `dist/index.js` (ESM). The `.md` loader in `tsup.config.ts` inlines the bootstrap skill (`skills/using-development-crew/SKILL.md`) as a string. The `config` hook registers the `skills/` directory path at runtime; OpenCode discovers all `SKILL.md` files from that path when a user invokes the `skill` tool. Then `tsc --emitDeclarationOnly` generates type declarations. The build output is **only** the `dist/` directory (see `files` in `package.json`).
+The plugin has **no build step**. The entry point is `.opencode/plugins/development-crew.js` — raw JavaScript checked into the repo.
 
-## Plugin hooks
+- **Bootstrap skill** (`skills/using-development-crew/SKILL.md`) is read at runtime via `fs.readFileSync` with a module-level cache (`_bootstrapCache`) to avoid repeated disk reads per agent step.
+- **Config hook** registers the `skills/` directory in `opencodeConfig.skills.paths` so OpenCode discovers all skill files when invoked via the `skill` tool.
+- **Messages transform hook** strips frontmatter from the bootstrap SKILL.md and prepends the body to the first user message in every new session.
+- **SessionStart hooks** (for Claude Code, Cursor, Copilot CLI) are bash scripts that inject the same bootstrap content via `additionalContext` JSON output.
 
-The plugin provides two hooks:
-
-### `config` hook
-
-Registers the bundled `skills/` directory in `opencodeConfig.skills.paths` so OpenCode can discover all skill files when a user invokes the `skill` tool.
-
-### `experimental.chat.messages.transform` hook
-
-Prepends the body of `skills/using-development-crew/SKILL.md` (frontmatter stripped) to the first user message in every new session. This orients the model to the available skills and the pipeline workflow without requiring explicit invocation.
-
-Idempotency: checks for `'Development Crew'` in existing message parts before injecting.
+Idempotency: uses `<!-- development-crew-bootstrap -->` marker to avoid double injection.
 
 ## Skill file format
 
@@ -74,7 +85,7 @@ description: One-line description
 (skill body in markdown)
 ```
 
-Both `name` and `description` are required. The directory name must match the `name` field. CI will fail if any skill file is malformed or the bootstrap body is missing from the bundle.
+Both `name` and `description` are required. The directory name must match the `name` field. CI will fail if any skill file is malformed or the bootstrap body is missing.
 
 ## Versioning
 
@@ -88,8 +99,8 @@ Release Please `extra-files` in `release-please-config.json` handles syncing aut
 
 ## CI workflows
 
-- **build-opencode.yml** -- Builds + typechecks + verifies skill embedding on push/PR
-- **release-please.yml** -- Creates release PR on push to `master`, publishes to npmjs on release
+- **build-opencode.yml** -- Validates skills + runs tests on push/PR
+- **release-please.yml** -- Creates release PR on push to `master` (no npm publish)
 - **validate-plugin.yml** -- Validates plugin/marketplace JSON files and cross-file version consistency
 - **validate-pr-title.yml** -- Enforces conventional commit format on PR titles
 
@@ -98,5 +109,5 @@ Release Please `extra-files` in `release-please-config.json` handles syncing aut
 - **Package manager**: Always use `pnpm`, never `npm` or `yarn`
 - **Commit messages**: Conventional commits (see `release-please-config.json` for accepted types: `feat`, `fix`, `perf`, `deps`, `docs`, `chore`, `ci`, `refactor`, `test`, `build`, `style`, `revert`)
 - **Default branch**: `master` (not `main`)
-- **Plugin manifests**: Two sets exist -- `.github/plugin/` (OpenCode) and `.claude-plugin/` (Claude Code). Both must be kept in sync
-- **Tests**: `pnpm run test` (vitest). Verification is `typecheck` + `build` + `verify-skills.mjs` + `test`
+- **Plugin manifests**: Four sets exist -- `.github/plugin/` (OpenCode), `.claude-plugin/` (Claude Code), `.codex-plugin/` (Codex CLI), `.cursor-plugin/` (Cursor). All must be kept in sync
+- **Tests**: `pnpm run test` (vitest). Verification is `validate-skills.mjs` + `test`
