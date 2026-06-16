@@ -61,7 +61,7 @@ Add to your `opencode.json` (global or project-level):
 
 ```json
 {
-  "plugin": ["@marcelorodrigo/opencode-development-crew@git+https://github.com/marcelorodrigo/development-crew.git"]
+  "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git"]
 }
 ```
 
@@ -149,16 +149,17 @@ Use OpenCode's native `skill` tool (or `skill: name` in any harness):
 ## Updating
 
 - **Claude Code:** `claude plugin update development-crew@development-crew-plugin`
-- **GitHub Copilot:** `copilot plugin update development-crew`
-- **Gemini:** `gemini extensions update development-crew`
+- **GitHub Copilot:** `copilot plugin update development-crew@development-crew-plugin`
+- **Gemini:** `gemini extensions update https://github.com/marcelorodrigo/development-crew`
 
-OpenCode users: update the git tag in your `opencode.json`:
+- **OpenCode (latest):** Restart OpenCode — it fetches the latest from `master` automatically.
+- **OpenCode (pinned):** Bump the git tag in your `opencode.json`:
 
-```json
-{
-  "plugin": ["@marcelorodrigo/opencode-development-crew@git+https://github.com/marcelorodrigo/development-crew.git#v1.0.0"]
-}
-```
+  ```json
+  {
+    "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git#v0.11.0"]
+  }
+  ```
 
 ## License
 
