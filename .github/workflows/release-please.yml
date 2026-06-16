@@ -56,7 +56,7 @@ jobs:
         run: pnpm run build
 
       - name: Verify agent prompts are embedded
-        run: node scripts/verify-agents.mjs
+        run: node scripts/verify-skills.mjs
 
       - name: Test
         run: pnpm run test
