@@ -145,6 +145,21 @@ describe('experimental.chat.messages.transform hook', () => {
     expect(output.messages[0].parts).toHaveLength(2);
   });
 
+  it('injects bootstrap even if user message already contains "Development Crew" (marker-based idempotency)', async () => {
+    const transform = await getTransformHook();
+    const output: TransformOutput = {
+      messages: [makeUserMessage('I want to use Development Crew for this task')],
+    };
+
+    await transform(null, output);
+
+    const parts = output.messages[0].parts;
+    expect(parts).toHaveLength(2);
+    // Bootstrap was injected despite the phrase already being in the original message
+    expect(parts[0].text).toContain('Development Crew');
+    expect(parts[1].text).toBe('I want to use Development Crew for this task');
+  });
+
   it('does not mutate assistant messages', async () => {
     const transform = await getTransformHook();
     const output: TransformOutput = {

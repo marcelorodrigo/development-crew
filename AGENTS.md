@@ -19,7 +19,7 @@ pnpm run dev                     # tsup --watch
 pnpm run test                    # vitest run
 ```
 
-There are no tests. The verification step is the build itself plus `node scripts/verify-skills.mjs` which checks that every `skills/*/SKILL.md` has valid frontmatter and that the bootstrap skill body (`skills/using-development-crew/SKILL.md`) is embedded in `dist/index.js`.
+There are no manual tests — vitest tests (`pnpm run test`) cover plugin hooks. The verification step is the build itself plus `node scripts/verify-skills.mjs` which checks that every `skills/*/SKILL.md` has valid frontmatter and that the bootstrap skill body (`skills/using-development-crew/SKILL.md`) is embedded in `dist/index.js`.
 
 ## Project structure
 

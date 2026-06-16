@@ -60,7 +60,13 @@ function parseSkillMd(raw, filePath) {
   return { name, description, body };
 }
 
-const distContent = readFileSync('dist/index.js', 'utf-8');
+let distContent;
+try {
+  distContent = readFileSync('dist/index.js', 'utf-8');
+} catch {
+  console.error('ERROR: dist/index.js not found — run `pnpm run build` first');
+  process.exit(1);
+}
 
 // Discover all skill directories (direct children of skills/ that contain SKILL.md)
 const skillsDir = 'skills';
@@ -79,6 +85,12 @@ for (const dirName of skillDirs) {
     meta = parseSkillMd(raw, filePath);
   } catch (err) {
     console.error(`ERROR: ${err.message}`);
+    failed = true;
+    continue;
+  }
+
+  if (meta.name !== dirName) {
+    console.error(`ERROR: ${filePath}: name field "${meta.name}" does not match directory name "${dirName}"`);
     failed = true;
     continue;
   }

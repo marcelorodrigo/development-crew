@@ -9,7 +9,7 @@ function getBootstrapContent(): string {
 }
 
 const DevelopmentCrewPlugin: Plugin = async (_ctx) => {
-  const skillsDir = path.resolve(import.meta.dirname, '../../skills');
+  const skillsDir = path.resolve(import.meta.dirname, '../skills');
 
   return {
     name: 'development-crew',
@@ -34,17 +34,19 @@ const DevelopmentCrewPlugin: Plugin = async (_ctx) => {
         }>;
       },
     ) => {
-      const bootstrap = getBootstrapContent();
+      let bootstrap = getBootstrapContent();
       if (!bootstrap || !output.messages.length) return;
 
       const firstUser = output.messages.find((m) => m.info.role === 'user');
       if (!firstUser || !firstUser.parts.length) return;
 
-      // Idempotency guard: skip if bootstrap content already injected
+      // Idempotency guard: skip if bootstrap content already injected (marker-based to avoid false positives)
       const alreadyInjected = firstUser.parts.some(
-        (p) => p.type === 'text' && p.text?.includes('Development Crew'),
+        (p) => p.type === 'text' && p.text?.includes('<!-- development-crew-bootstrap -->'),
       );
       if (alreadyInjected) return;
+
+      bootstrap += '\n\n<!-- development-crew-bootstrap -->';
 
       firstUser.parts.unshift({ type: 'text', text: bootstrap });
     },
