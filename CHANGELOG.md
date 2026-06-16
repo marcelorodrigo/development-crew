@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.9.0...opencode-development-crew-v0.9.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* correct verify script name in release-please workflow ([#113](https://github.com/marcelorodrigo/development-crew/issues/113)) ([4861913](https://github.com/marcelorodrigo/development-crew/commit/486191395f4803ee54ccd5b360dca3fa1599f82c))
+
 ## [0.9.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.8.2...opencode-development-crew-v0.9.0) (2026-06-16)
 
 

@@ -4,7 +4,7 @@
     "name": "Marcelo Rodrigo"
   },
   "metadata": {
-    "version": "0.9.0",
+    "version": "0.9.1",
     "description": "A skills-first development workflow: four specialist skills for brainstorming, architecture design, implementation, and code review. Load on-demand and chain into a pipeline."
   },
   "plugins": [
@@ -15,7 +15,7 @@
         "repo": "marcelorodrigo/development-crew"
       },
       "description": "A skills-first development workflow: four specialist skills for brainstorming (Rubber Duck), architecture design (Architect), implementation (Implementer), and code review (Code Reviewer). Load skills on-demand and chain them together in a pipeline or use them independently.",
-      "version": "0.9.0",
+      "version": "0.9.1",
       "author": {
         "name": "Marcelo Rodrigo"
       },
