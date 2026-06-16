@@ -2,12 +2,12 @@
 
 ## What this repo is
 
-An OpenCode plugin (`@marcelorodrigo/opencode-development-crew`) that ships a **skills-first** development workflow. Four specialist skills (Rubber Duck, Architect, Implementer, Code Reviewer) are registered as on-demand skills and a bootstrap skill (`using-development-crew`) is injected into every session to orient the model. It is **not** a web app or service -- it builds to a single ESM bundle (`dist/index.js`) that OpenCode loads as a plugin.
+An OpenCode plugin (`@marcelorodrigo/opencode-development-crew`) that ships a **skills-first** development workflow. Four specialist skills (Rubber Duck, Architect, Implementer, Code Reviewer) are registered as on-demand skills and a bootstrap skill (`using-development-crew`) is injected into every session to orient the model. It is **not** a web app or service -- it is raw JavaScript loaded from `.opencode/plugins/development-crew.js` with no build step.
 
 ## Prerequisites
 
 - Node >= 24 (pinned in `.node-version`)
-- pnpm 10.31.0 (pinned via `packageManager` in `package.json`)
+- pnpm 11.7.0 (pinned via `packageManager` in `package.json`)
 
 ## Commands
 
@@ -85,7 +85,7 @@ description: One-line description
 (skill body in markdown)
 ```
 
-Both `name` and `description` are required. The directory name must match the `name` field. CI will fail if any skill file is malformed or the bootstrap body is missing from the bundle.
+Both `name` and `description` are required. The directory name must match the `name` field. CI will fail if any skill file is malformed or the bootstrap body is missing.
 
 ## Versioning
 
