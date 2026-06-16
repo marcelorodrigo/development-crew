@@ -10,7 +10,7 @@ Add development-crew to the `plugin` array in your `opencode.json` (global or pr
 
 ```json
 {
-  "plugin": ["@marcelorodrigo/opencode-development-crew@git+https://github.com/marcelorodrigo/development-crew.git"]
+  "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git"]
 }
 ```
 
@@ -35,7 +35,7 @@ Update the git tag in your `opencode.json` to pin a specific version:
 
 ```json
 {
-  "plugin": ["@marcelorodrigo/opencode-development-crew@git+https://github.com/marcelorodrigo/development-crew.git#v1.0.0"]
+  "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git#v1.0.0"]
 }
 ```
 
@@ -52,14 +52,14 @@ Update the git tag in your `opencode.json` to pin a specific version:
 Some Windows OpenCode builds have upstream installer issues with git-backed plugin specs, including cache paths for `git+https` URLs and Bun not finding `git.exe` even when it works in a normal terminal. If OpenCode cannot install the plugin, try installing with system npm and pointing OpenCode at the local package:
 
 ```powershell
-npm install @marcelorodrigo/opencode-development-crew@git+https://github.com/marcelorodrigo/development-crew.git --prefix "$HOME\.config\opencode"
+npm install development-crew@git+https://github.com/marcelorodrigo/development-crew.git --prefix "$HOME\.config\opencode"
 ```
 
 Then use the installed package path in `opencode.json`:
 
 ```json
 {
-  "plugin": ["~/.config/opencode/node_modules/@marcelorodrigo/opencode-development-crew"]
+  "plugin": ["~/.config/opencode/node_modules/development-crew"]
 }
 ```
 
