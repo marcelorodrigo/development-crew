@@ -36,21 +36,14 @@ Start by understanding what the user is trying to achieve. Ask clarifying questi
 
 Do NOT accept the first framing at face value. Restate it in your own words and ask if that captures it.
 
-After restating the problem, call `question` to confirm your understanding before exploring further:
+After restating the problem, call **`question`** to confirm your understanding (see `using-development-crew` for format):
 
-```json
-{
-  "questions": [{
-    "question": "I've restated the problem above. Does this capture what you're trying to solve, or should I adjust my understanding before we explore options?",
-    "header": "Confirm understanding",
-    "options": [
-      { "label": "Yes, start exploring", "description": "My restatement captures the problem correctly" },
-      { "label": "Close, let me clarify", "description": "Almost right but one thing needs adjusting" },
-      { "label": "No, let me re-explain", "description": "The restatement doesn't capture the problem" }
-    ]
-  }]
-}
-```
+- **header:** "Confirm understanding"
+- **question:** "I've restated the problem above. Does this capture what you're trying to solve, or should I adjust my understanding before we explore options?"
+- **options:**
+  - "Yes, start exploring" — My restatement captures the problem correctly
+  - "Close, let me clarify" — Almost right but one thing needs adjusting
+  - "No, let me re-explain" — The restatement doesn't capture the problem
 
 ## Phase 1.5 - Detect Scope Decomposition Opportunities
 
@@ -65,22 +58,15 @@ When you detect over-scoping, **flag it explicitly** and offer decomposition bef
 
 > I'm noticing you're describing [X subsystem], [Y subsystem], and [Z subsystem] together. These look like independent concerns that could be managed as separate projects. Would it help to break these into a primary project scope + follow-on projects? Or do these genuinely need to ship together?
 
-If the user confirms decomposition is useful, call `question`:
+If the user confirms decomposition is useful, call **`question`**:
 
-```json
-{
-  "questions": [{
-    "question": "Let's decompose this into focused projects. For each subsystem below, should this be in the initial scope or a follow-on project?",
-    "header": "Scope decomposition",
-    "options": [
-      { "label": "Initial release (core focus)", "description": "Ship this subsystem first, build the foundation" },
-      { "label": "Follow-on project", "description": "Build this after the core foundation is solid" },
-      { "label": "Descope entirely", "description": "Not needed for this initiative" }
-    ],
-    "multiple": true
-  }]
-}
-```
+- **header:** "Scope decomposition"
+- **question:** "Let's decompose this into focused projects. For each subsystem below, should this be in the initial scope or a follow-on project?"
+- **multiple:** true
+- **options:**
+  - "Initial release (core focus)" — Ship this subsystem first, build the foundation
+  - "Follow-on project" — Build this after the core foundation is solid
+  - "Descope entirely" — Not needed for this initiative
 
 Once decomposed, **refocus brainstorming on the primary scope only**. Document the decomposition decision in the Brainstorm Brief's "Out of Scope" section, noting what was deferred and why.
 
@@ -131,21 +117,14 @@ If any item is unchecked, revisit the relevant phase before proceeding.
 
 ## Phase 5 - Produce the Brainstorm Brief
 
-When you believe the exploration is thorough enough, call `question` to confirm before producing the final output:
+When you believe the exploration is thorough enough, call **`question`** to confirm before producing the final output:
 
-```json
-{
-  "questions": [{
-    "question": "I think we've explored the problem space thoroughly. Are you ready for me to produce the Brainstorm Brief for the Architect, or do you want to keep exploring?",
-    "header": "Ready for brief?",
-    "options": [
-      { "label": "Produce the brief (Recommended)", "description": "Generate the Brainstorm Brief for Architect now" },
-      { "label": "Keep exploring", "description": "I have more questions to discuss" },
-      { "label": "Go deeper on one option", "description": "Explore a specific option more before wrapping up" }
-    ]
-  }]
-}
-```
+- **header:** "Ready for brief?"
+- **question:** "I think we've explored the problem space thoroughly. Are you ready for me to produce the Brainstorm Brief for the Architect, or do you want to keep exploring?"
+- **options:**
+  - "Produce the brief (Recommended)" — Generate the Brainstorm Brief for Architect now
+  - "Keep exploring" — I have more questions to discuss
+  - "Go deeper on one option" — Explore a specific option more before wrapping up
 
 When the user is ready to move on (or you've explored enough), produce a structured output that the **Architect** can consume.
 

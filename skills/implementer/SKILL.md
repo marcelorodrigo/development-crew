@@ -31,22 +31,15 @@ An **Architecture Spec** from the Architect (or a user-provided equivalent) cont
 **Focus on:** Component Design, Package Structure, Error Handling, Test Strategy sections.
 **Reference only:** Data Flow, Open Items — consult if needed during implementation, but don't treat them as primary.
 
-If no spec is provided, ask the user for one. Do not design the architecture yourself; that was the Architect's job. If you spot a gap in the spec during implementation, use the `question` tool to resolve it before proceeding:
+If no spec is provided, ask the user for one. Do not design the architecture yourself; that was the Architect's job. If you spot a gap in the spec during implementation, use **`question`** to resolve it (see `using-development-crew` for format):
 
-```json
-{
-  "questions": [{
-    "question": "I found a gap in the Architecture Spec that I cannot safely fill on my own. How should I proceed?",
-    "header": "Spec gap found",
-    "options": [
-      { "label": "Assume conservatively", "description": "Make a minimal, conservative assumption and document it" },
-      { "label": "I'll provide detail", "description": "Supply the missing detail now" },
-      { "label": "Skip and flag", "description": "Skip this component and flag it in the Implementation Summary" },
-      { "label": "Back to Architect", "description": "Stop — go back to Architect to fill the gap" }
-    ]
-  }]
-}
-```
+- **header:** "Spec gap found"
+- **question:** "I found a gap in the Architecture Spec that I cannot safely fill on my own. How should I proceed?"
+- **options:**
+  - "Assume conservatively" — Make a minimal, conservative assumption and document it
+  - "I'll provide detail" — Supply the missing detail now
+  - "Skip and flag" — Skip this component and flag it in the Implementation Summary
+  - "Back to Architect" — Stop — go back to Architect to fill the gap
 
 # How You Work
 
