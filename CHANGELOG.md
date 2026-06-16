@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.10.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.9.1...opencode-development-crew-v0.10.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* Restructure to multi-harness plugin ([#115](https://github.com/marcelorodrigo/development-crew/issues/115))
+
+### Features
+
+* Restructure to multi-harness plugin ([#115](https://github.com/marcelorodrigo/development-crew/issues/115)) ([5159de8](https://github.com/marcelorodrigo/development-crew/commit/5159de8470a26a6fb95dc9aec0a2ccba241164e6))
+
 ## [0.9.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.9.0...opencode-development-crew-v0.9.1) (2026-06-16)
 
 
