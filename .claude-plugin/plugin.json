@@ -6,15 +6,9 @@
     "name": "Marcelo Rodrigo",
     "url": "https://github.com/marcelorodrigo"
   },
-  "contributors": [
-    {
-      "name": "Lucas Germani"
-    }
-  ],
   "homepage": "https://github.com/marcelorodrigo/development-crew",
   "repository": "https://github.com/marcelorodrigo/development-crew",
   "license": "MIT",
-  "category": "development",
   "keywords": [
     "development",
     "skills",
