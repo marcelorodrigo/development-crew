@@ -8,7 +8,8 @@
     "skipLibCheck": true,
     "declaration": true,
     "outDir": "dist",
-    "rootDir": "src/opencode"
+    "rootDir": "src/opencode",
+    "types": ["node"]
   },
   "include": ["src/opencode"]
 }

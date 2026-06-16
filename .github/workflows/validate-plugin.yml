@@ -38,5 +38,5 @@ jobs:
       - name: Validate version consistency
         run: python3 validation/validate_versions.py
 
-      - name: Validate agent files have required frontmatter
-        run: python3 validation/validate_agents.py
+      - name: Validate skill files have required frontmatter
+        run: python3 validation/validate_skills.py

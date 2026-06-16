@@ -5,7 +5,7 @@ on:
     branches: [master]
     paths:
       - 'src/**'
-      - 'agents/**'
+      - 'skills/**'
       - 'tests/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
@@ -15,7 +15,7 @@ on:
   pull_request:
     paths:
       - 'src/**'
-      - 'agents/**'
+      - 'skills/**'
       - 'tests/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
@@ -52,8 +52,8 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Verify agent prompts are embedded
-        run: node scripts/verify-agents.mjs
+      - name: Verify skill files are embedded
+        run: node scripts/verify-skills.mjs
 
       - name: Test
         run: pnpm run test
