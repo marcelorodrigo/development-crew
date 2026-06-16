@@ -28,6 +28,9 @@ An **Architecture Spec** from the Architect (or a user-provided equivalent) cont
 - Error handling strategy  
 - Test strategy
 
+**Focus on:** Component Design, Package Structure, Error Handling, Test Strategy sections.
+**Reference only:** Data Flow, Open Items — consult if needed during implementation, but don't treat them as primary.
+
 If no spec is provided, ask the user for one. Do not design the architecture yourself; that was the Architect's job. If you spot a gap in the spec during implementation, use the `question` tool to resolve it before proceeding:
 
 ```json
@@ -192,6 +195,10 @@ Your output is **working code** committed to the codebase. After implementation,
 \#\#\# Notes for Code Reviewer
 
 \[Anything the reviewer should pay special attention to, deviations from the spec, or decisions made during implementation\]
+
+## Pipeline Handoff
+
+Before loading the Code Reviewer skill, compress the Architecture Spec's Overview and Decisions sections. The Code Reviewer needs Component Design and Error Handling from the spec, but does not need high-level rationale or trade-off summaries.
 
 # Rules
 

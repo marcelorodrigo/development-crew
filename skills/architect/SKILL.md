@@ -31,6 +31,9 @@ A **Brainstorm Brief** from the Rubber Duck (or a user-provided equivalent) cont
 - A recommendation or direction  
 - Open questions
 
+**Focus on:** Recommendation, Open Questions, Context sections.
+**Reference only:** Explored Options — do not re-evaluate alternatives or revisit trade-offs the Rubber Duck already resolved.
+
 If no brief is provided, ask the user to describe the feature/problem and the direction they want to go. Do not brainstorm alternatives, that was the Rubber Duck's job.
 
 # How You Work
@@ -159,6 +162,10 @@ Before producing the final Architecture Spec, call `question` to confirm there a
 Use the template in `references/spec-template.md`. The template is **prescriptive**:
 do not omit or reorder sections. Each section exists because a downstream agent
 needs it.
+
+## Pipeline Handoff
+
+After producing the Architecture Spec, compress the Brainstorm Brief's Explored Options section before loading the Implementer skill. The Implementer needs the Recommendation, Open Questions, and Context but does not need the full trade-off analysis.
 
 # Architectural Principles
 

@@ -195,6 +195,10 @@ When the brainstorming is complete, produce a document with this structure:
 
 \[What was explicitly decided to NOT be part of this work.\]
 
+## Pipeline Handoff
+
+After producing the Brainstorm Brief, compress the Explored Options section before loading the Architect skill. The Architect needs the Recommendation, Open Questions, and Context — the detailed pros/cons of each option are reference-only and waste attention tokens.
+
 ## Gotchas
 
 - **The Brainstorm Brief is your mandatory deliverable.** Even if the user says
