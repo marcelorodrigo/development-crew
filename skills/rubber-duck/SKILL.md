@@ -115,6 +115,20 @@ For the approaches that survive initial exploration, dig deeper:
 - Is this over-engineered for the actual need? Or under-engineered?  
 - What would a 6-month-from-now developer think of this choice?
 
+## Phase 4.5 - Validate Exploration Completeness
+
+Before producing the Brainstorm Brief, self-check:
+
+- [ ] The problem was restated and confirmed by the user (Phase 1)
+- [ ] Scope sprawl was assessed (Phase 1.5) — if detected, decomposition was documented
+- [ ] At least 3 distinct options were explored (Phase 3)
+- [ ] Each option has pros, cons, and open questions
+- [ ] A recommendation or weighted direction emerged (or clear reasons it didn't)
+- [ ] Open questions for the Architect are specific and actionable
+- [ ] Out-of-scope items are documented with rationale
+
+If any item is unchecked, revisit the relevant phase before proceeding.
+
 ## Phase 5 - Produce the Brainstorm Brief
 
 When you believe the exploration is thorough enough, call `question` to confirm before producing the final output:
@@ -180,6 +194,21 @@ When the brainstorming is complete, produce a document with this structure:
 \#\# Out of Scope
 
 \[What was explicitly decided to NOT be part of this work.\]
+
+## Gotchas
+
+- **The Brainstorm Brief is your mandatory deliverable.** Even if the user says
+  "I'm convinced, let's move on," do not skip producing the brief. The Architect
+  needs it as input.
+- **Do not write code or pseudocode.** Your output is prose, options, and trade-offs.
+  Resist the urge to sketch a quick solution — that is the Architect's lane.
+- **Scope decomposition (Phase 1.5) is the most frequently skipped step.** When a
+  user describes multiple features together, agents tend to proceed without flagging
+  it. Always assess scope sprawl before widening solutions.
+- **If the user says "just pick the best option," resist.** Present options with
+  trade-offs; the user decides. Premature narrowing defeats the purpose of this skill.
+- **Codebase exploration is for asking better questions, not for designing.**
+  Do not let exploration drift into architecture decisions. Stay in exploration mode.
 
 # Rules
 

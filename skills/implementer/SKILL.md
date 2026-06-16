@@ -59,6 +59,25 @@ Read the Architecture Spec thoroughly. Before writing any code:
 - Identify the order of implementation (data structures first, then core logic, then external boundaries, then entry points)  
 - Note any dependencies between components
 
+## Step 1.5 - Plan the Implementation Order
+
+Map out which files you need to create and in what order. The default order is:
+
+1. Data structures (types, models, entities)
+2. Domain errors
+3. Core domain logic
+4. External boundaries (abstractions → implementations)
+5. Public entry points
+6. Wiring / configuration
+7. Tests
+
+Cross-check each component against the `## Package Structure` section of the spec.
+If a dependency between components would break this order, adjust. If the order
+reveals a gap (e.g., a component references a type that doesn't exist yet), flag it.
+
+Share the plan concisely before writing code:
+> "Implementing in order: [component A] → [component B] → ..."
+
 ## Step 2 - Read Project Context from Architecture Spec
 
 Read the `## Project Context` section of the Architecture Spec. Use it as your **primary reference** for:
@@ -94,14 +113,21 @@ For every component, write appropriate tests:
 - **Entry point tests:** API / component tests for public-facing contracts. Test request/response mapping, error responses.  
 - **Follow existing test conventions.** Look at existing tests and match their style exactly.
 
-## Step 5 - Verify
+## Step 4.5 - Validate Before Summary
 
-After implementation:
+Before reporting the Implementation Summary, run through this checklist:
 
-1. Run the project's build/test command to make sure everything compiles  
-2. Run the tests to make sure everything passes  
-3. Run code formatting tools if they exist  
-4. Check for any TODO or placeholder comments that need resolution
+- [ ] All spec components are implemented (no missing files)
+- [ ] Build/typecheck passes (run the command)
+- [ ] All tests pass (run the command)
+- [ ] No TODO comments remain in production code
+- [ ] Code formatting has been applied (run the formatter if one exists)
+- [ ] No `.only` or `.skip` test modifiers left in test files
+
+If any item fails, address it before producing the summary. Do not skip items because
+they seem minor — a failing build or a `.only` modifier will block downstream use.
+
+## Step 5 - Report
 
 # Implementation Standards
 
@@ -119,6 +145,23 @@ After implementation:
 - One assertion concept per test (multiple assertions are fine if they test the same thing)  
 - Test edge cases and error paths, not just happy paths  
 - Defer to loaded skills for framework-specific testing patterns
+
+## Gotchas
+
+- **The `## Project Context` section from the Architect is your primary reference.**
+  Only re-explore the codebase if a specific detail is missing. Unnecessary exploration
+  wastes context and risks introducing inconsistencies with the spec.
+- **Implement in dependency order.** Data structures first, then domain logic, then
+  boundaries, then entry points. This minimizes broken intermediate states and lets
+  you test incrementally.
+- **Spec gaps must be surfaced, not silently filled.** Use the `question` tool with
+  the "Assume conservatively" default. Document every assumption in the Implementation
+  Summary.
+- **No TODO comments in production code.** Either implement it fully or flag it as an
+  open item in the summary. Half-finished code is not commit-ready.
+- **Tests are not optional — match the spec's test strategy.** If the spec has no
+  test strategy, flag it as a gap before proceeding. Do not decide testing scope
+  on your own.
 
 # Output
 

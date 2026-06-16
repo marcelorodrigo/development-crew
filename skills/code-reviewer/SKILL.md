@@ -116,94 +116,40 @@ Categorize each finding by severity:
 
 Only report findings that genuinely matter. **If the code is good, say so.** A review with zero findings is a valid outcome.
 
+## Step 3.5 - Calibrate Your Review
+
+Before formatting the review output, self-check your findings:
+
+- [ ] Only actual bugs or security issues are Critical (🔴) — not style, preferences, or minor issues
+- [ ] Every finding includes a specific file and line number (vague feedback is not actionable)
+- [ ] Every finding has a concrete fix suggestion (not just "this could be better")
+- [ ] Positive findings are included (what was done well — if nothing, reconsider your assessment)
+- [ ] The verdict reflects overall quality, not the single worst finding
+- [ ] No noise: style, formatting, or linter-level comments have been removed
+
+Adjust categorizations if needed before formatting.
+
 # Output Format - Code Review
 
-\# Code Review: \[Feature/Component Name\]
+Use the template in `references/review-output-template.md`. All sections are
+required; it is fine to leave a severity level empty if there are no findings
+in that category.
 
-\#\# Summary
+## Gotchas
 
-\[2-3 sentences: overall assessment. Is this ready to merge? What's the quality level?\]
-
-\#\# Scope
-
-\- \*\*Branch:\*\* \[branch name\]
-
-\- \*\*Commits:\*\* \[commit range or SHA list\]
-
-\- \*\*Changed files:\*\* \[list of files in the diff\]
-
-\#\# Reviewed Against
-
-\- Architecture Spec: \[Yes/No, linked or referenced\]
-
-\- Project Context from Spec: \[Yes/No - used for conventions\]
-
-\- Codebase conventions: \[Yes, patterns observed\]
-
-\- Design principles: \[Yes\]
-
-\- Stack conventions and loaded skills: \[Yes / No skills loaded\]
-
-\#\# Findings
-
-\#\#\# 🔴 Critical
-
-\#\#\#\# \[Finding Title\]
-
-\*\*File:\*\* \`path/to/File.<ext>\` (line N)
-
-\*\*Issue:\*\* \[What's wrong\]
-
-\*\*Impact:\*\* \[Why it matters\]
-
-\*\*Fix:\*\* \[How to fix it\]
-
-\#\#\# 🟡 Important
-
-\#\#\#\# \[Finding Title\]
-
-\*\*File:\*\* \`path/to/File.<ext>\` (line N)
-
-\*\*Issue:\*\* \[What's wrong\]
-
-\*\*Impact:\*\* \[Why it matters\]
-
-\*\*Fix:\*\* \[How to fix it\]
-
-\#\#\# 🟢 Suggestions
-
-\#\#\#\# \[Finding Title\]
-
-\*\*File:\*\* \`path/to/File.<ext>\`
-
-\*\*Suggestion:\*\* \[What could be improved and why\]
-
-\#\# What's Done Well
-
-\[Call out specific things that were implemented well. Good patterns, clean code, thorough tests.\]
-
-\#\# Verdict
-
-\[One of: ✅ Approve | ⚠️ Approve with comments | 🔴 Request changes\]
-
-\[If requesting changes, list the must-fix items clearly.\]
-
-After delivering the verdict, call `question` to find out what the user wants to do next:
-
-```json
-{
-  "questions": [{
-    "question": "Review complete. The verdict is above. What would you like to do next?",
-    "header": "Post-review action",
-    "options": [
-      { "label": "Approve", "description": "Proceed to archive (commit & merge remain yours)" },
-      { "label": "Send to Implementer", "description": "Send findings back to Implementer to fix" },
-      { "label": "Re-run Code Reviewer", "description": "Re-run Code Reviewer after fixes are applied" },
-      { "label": "Discuss a finding", "description": "Discuss a specific finding before deciding" }
-    ]
-  }]
-}
-```
+- **Skip whitespace-only and generated files.** The diff may include formatting
+  changes, lockfiles, or generated code. Focus review on hand-authored logic.
+- **The `## Project Context` from the spec covers conventions — do not re-explore.**
+  If the spec provided a Project Context section, use it as the single source for
+  convention checks. Only explore if a specific convention is genuinely missing.
+- **Finding count is not a quality metric.** A review with zero findings is a valid
+  outcome. Do not inflate issues to make the review appear thorough.
+- **Severity inflation reduces trust.** Most issues are Important (🟡), not
+  Critical (🔴). Reserve Critical for bugs, security vulnerabilities, and
+  data loss risks. Over-labeling degrades the signal.
+- **Every finding needs a concrete fix suggestion.** "This could be better" without
+  explaining how is noise. If you cannot describe the fix, consider whether the
+  finding is worth reporting.
 
 # Rules
 
