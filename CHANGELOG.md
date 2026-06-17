@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.11.0...opencode-development-crew-v0.12.0) (2026-06-17)
+
+
+### Features
+
+* Centralize question tool format ([#121](https://github.com/marcelorodrigo/development-crew/issues/121)) ([8f8014e](https://github.com/marcelorodrigo/development-crew/commit/8f8014ef1f6827307bb6b9c4609c5c515f1ce625))
+
 ## [0.11.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.10.0...opencode-development-crew-v0.11.0) (2026-06-16)
 
 
