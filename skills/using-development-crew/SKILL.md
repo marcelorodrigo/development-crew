@@ -134,3 +134,22 @@ The `architect`, `implementer`, and `code-reviewer` skills all load the `shared-
 Load the `shared-principles` skill explicitly if you need these principles without loading a full specialist.
 
 </EXTREMELY_IMPORTANT>
+
+## Using the Question Tool
+
+All skills in this pipeline use the `question` tool to gather user input. This is the canonical format:
+
+```json
+{
+  "questions": [{
+    "question": "Ask a clear, specific question to the user",
+    "header": "Short title for the question",
+    "options": [
+      { "label": "Option 1", "description": "Brief description of this choice" },
+      { "label": "Option 2", "description": "Brief description of this choice" }
+    ]
+  }]
+}
+```
+
+Other skills reference this format and provide their own header, question, and options for each workflow step.
