@@ -27,5 +27,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/marcelorodrigo/development-crew.git"
+  },
+  "omp": {
+    "skills": "./skills/",
+    "hooks": "./hooks/"
   }
 }

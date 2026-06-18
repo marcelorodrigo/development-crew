@@ -2,6 +2,7 @@
 name: shared-principles
 description: Shared design principles for all technical agents. Load these when you need cross-cutting design standards without loading a full specialist (Architect, Implementer, or Code Reviewer).
 license: MIT
+hide: true
 metadata:
   role: design-principles
 ---

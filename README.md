@@ -9,7 +9,7 @@ A **skills-first** development workflow — four specialist skills that coordina
 
 ## Quickstart
 
-Give your agent Development Crew: [Claude Code](#claude-code), [Codex CLI](#codex-cli), [Codex App](#codex-app), [OpenCode](#opencode), [Cursor](#cursor), [Gemini CLI](#gemini-cli), [GitHub Copilot CLI](#github-copilot-cli).
+Give your agent Development Crew: [Claude Code](#claude-code), [Codex CLI](#codex-cli), [Codex App](#codex-app), [OpenCode](#opencode), [Cursor](#cursor), [Gemini CLI](#gemini-cli), [GitHub Copilot CLI](#github-copilot-cli), [oh-my-pi](#oh-my-pi).
 
 ## How it works
 
@@ -101,6 +101,26 @@ gemini extensions install https://github.com/marcelorodrigo/development-crew
   copilot plugin install development-crew@development-crew-plugin
   ```
 
+### oh-my-pi
+
+- Add the marketplace:
+
+  ```bash
+  omp plugin marketplace add marcelorodrigo/development-crew
+  ```
+
+- Install the plugin:
+
+  ```bash
+  omp plugin install development-crew@development-crew-plugin
+  ```
+
+- Verify:
+
+  ```bash
+  /skill rubber-duck
+  ```
+
 ## The Pipeline
 
 Use OpenCode's native `skill` tool (or `skill: name` in any harness):
@@ -151,6 +171,7 @@ Use OpenCode's native `skill` tool (or `skill: name` in any harness):
 - **Claude Code:** `claude plugin update development-crew@development-crew-plugin`
 - **GitHub Copilot:** `copilot plugin update development-crew@development-crew-plugin`
 - **Gemini:** `gemini extensions update https://github.com/marcelorodrigo/development-crew`
+- **oh-my-pi:** `omp plugin upgrade development-crew@development-crew-plugin`
 
 - **OpenCode (latest):** Restart OpenCode — it fetches the latest from `master` automatically.
 - **OpenCode (pinned):** Bump the git tag in your `opencode.json`:
