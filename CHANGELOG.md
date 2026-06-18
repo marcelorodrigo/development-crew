@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.12.0...opencode-development-crew-v0.12.1) (2026-06-18)
+
+
+### Bug Fixes
+
+* inline skill reference templates into SKILL.md files ([#124](https://github.com/marcelorodrigo/development-crew/issues/124)) ([96ec41b](https://github.com/marcelorodrigo/development-crew/commit/96ec41b154c38f56989d5cd2eddaa100e200a3c7))
+
 ## [0.12.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.11.0...opencode-development-crew-v0.12.0) (2026-06-17)
 
 
