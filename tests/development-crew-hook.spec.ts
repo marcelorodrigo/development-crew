@@ -5,7 +5,7 @@ import developmentCrewHook, {
   getBootstrapContent,
   isBootstrapInjected,
   __resetBootstrapCache,
-} from '../hooks/development-crew.ts';
+} from '../hooks/omp-session-start.ts';
 
 describe('extractAndStripFrontmatter', () => {
   it('returns body only when frontmatter is present', () => {
