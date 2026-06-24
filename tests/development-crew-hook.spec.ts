@@ -184,4 +184,15 @@ describe('DevelopmentCrewHook', () => {
     expect(pi.sendMessage).toHaveBeenCalledTimes(1);
     expect(pi.appendEntry).not.toHaveBeenCalled();
   });
+
+  it('does not append entry when sendMessage is not available', async () => {
+    const pi = mockHookAPI();
+    delete (pi as any).sendMessage;
+
+    developmentCrewHook(pi);
+
+    await pi._emit('session_start', {}, mockContext([]));
+
+    expect(pi.appendEntry).not.toHaveBeenCalled();
+  });
 });

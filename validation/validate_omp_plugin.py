@@ -28,6 +28,9 @@ def validate_marketplace_json():
         errors.append("marketplace.json: 'owner' field is missing")
 
     metadata = market.get("metadata", {})
+    if not isinstance(metadata, dict):
+        errors.append("marketplace.json: 'metadata' must be an object")
+        metadata = {}
     if not metadata.get("version"):
         errors.append("marketplace.json: 'metadata.version' is missing or empty")
 
@@ -36,6 +39,9 @@ def validate_marketplace_json():
         errors.append("marketplace.json: 'plugins' array is missing or empty")
     else:
         for i, entry in enumerate(plugins):
+            if not isinstance(entry, dict):
+                errors.append(f"marketplace.json: plugins[{i}] must be an object")
+                continue
             for field in ("name", "version", "source"):
                 if not entry.get(field):
                     errors.append(f"marketplace.json: plugins[{i}].'{field}' is missing or empty")

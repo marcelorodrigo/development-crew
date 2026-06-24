@@ -77,11 +77,13 @@ export default function developmentCrewHook(pi: any): void {
 
     const text = bootstrap + '\n\n<!-- development-crew-bootstrap -->';
 
+    let delivered = false;
     if (typeof pi.sendMessage === 'function') {
       await pi.sendMessage(text, { deliverAs: 'nextTurn' });
+      delivered = true;
     }
 
-    if (typeof pi.appendEntry === 'function') {
+    if (delivered && typeof pi.appendEntry === 'function') {
       pi.appendEntry('development-crew-bootstrap', { injected: true });
     }
   });
