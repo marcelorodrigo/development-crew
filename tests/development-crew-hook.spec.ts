@@ -40,6 +40,13 @@ describe('extractAndStripFrontmatter', () => {
     expect(result.frontmatter.name).toBe('single-quoted');
     expect(result.content).toBe('Body here.');
   });
+
+  it('handles frontmatter with CRLF line endings', () => {
+    const content = '---\r\nname: test\r\ndescription: test desc\r\n---\r\nbody content';
+    const result = extractAndStripFrontmatter(content);
+    expect(result.frontmatter).toEqual({ name: 'test', description: 'test desc' });
+    expect(result.content).toBe('body content');
+  });
 });
 
 describe('getBootstrapContent', () => {
@@ -164,5 +171,17 @@ describe('DevelopmentCrewHook', () => {
 
     const sentText = pi.sendMessage.mock.calls[0][0];
     expect(sentText).toContain('<!-- development-crew-bootstrap -->');
+  });
+
+  it('does not append entry when sendMessage fails', async () => {
+    const pi = mockHookAPI();
+    pi.sendMessage = vi.fn().mockRejectedValue(new Error('send failed'));
+
+    developmentCrewHook(pi);
+
+    await expect(pi._emit('session_start', {}, mockContext([]))).rejects.toThrow('send failed');
+
+    expect(pi.sendMessage).toHaveBeenCalledTimes(1);
+    expect(pi.appendEntry).not.toHaveBeenCalled();
   });
 });

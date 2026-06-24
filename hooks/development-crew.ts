@@ -12,14 +12,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const skillsDir = path.resolve(__dirname, '../skills');
 
 export function extractAndStripFrontmatter(content: string): { frontmatter: Record<string, string>; content: string } {
-  const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
   if (!match) return { frontmatter: {}, content };
 
   const frontmatterStr = match[1];
   const body = match[2];
   const frontmatter: Record<string, string> = {};
 
-  for (const line of frontmatterStr.split('\n')) {
+  for (const line of frontmatterStr.split(/\r?\n/)) {
     const colonIdx = line.indexOf(':');
     if (colonIdx > 0) {
       const key = line.slice(0, colonIdx).trim();
@@ -78,7 +78,7 @@ export default function developmentCrewHook(pi: any): void {
     const text = bootstrap + '\n\n<!-- development-crew-bootstrap -->';
 
     if (typeof pi.sendMessage === 'function') {
-      pi.sendMessage(text, { deliverAs: 'nextTurn' });
+      await pi.sendMessage(text, { deliverAs: 'nextTurn' });
     }
 
     if (typeof pi.appendEntry === 'function') {
