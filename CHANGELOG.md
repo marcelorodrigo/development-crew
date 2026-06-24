@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.12.1...opencode-development-crew-v0.13.0) (2026-06-24)
+
+
+### Features
+
+* **oh-my-pi:** Add oh-my-pi platform support ([#126](https://github.com/marcelorodrigo/development-crew/issues/126)) ([46e6c6b](https://github.com/marcelorodrigo/development-crew/commit/46e6c6b858ceb20c8148f467bbd8e219eeb77111))
+
 ## [0.12.1](https://github.com/marcelorodrigo/development-crew/compare/opencode-development-crew-v0.12.0...opencode-development-crew-v0.12.1) (2026-06-18)
 
 
