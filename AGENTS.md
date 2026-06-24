@@ -18,6 +18,23 @@ pnpm run test                    # vitest run
 
 There are no manual tests — vitest tests (`pnpm run test`) cover plugin hooks. The verification step is `node scripts/validate-skills.mjs` which checks that every `skills/*/SKILL.md` has valid frontmatter.
 
+### Testing oh-my-pi changes locally
+
+Link the local repo as an oh-my-pi plugin, then run the doctor to verify:
+
+```bash
+omp plugin link .
+omp plugin doctor @marcelorodrigo/opencode-development-crew
+```
+
+When done testing, uninstall the local link:
+
+```bash
+omp plugin uninstall @marcelorodrigo/opencode-development-crew
+```
+
+This resolves the repo's `package.json` `omp` field (which points `./skills/` and `./hooks/`) and lets you test the TypeScript hook and skill loading end-to-end without publishing.
+
 ## Project structure
 
 ```text
@@ -38,11 +55,15 @@ There are no manual tests — vitest tests (`pnpm run test`) cover plugin hooks.
   plugin.json                    # OpenCode plugin metadata
   marketplace.json               # OpenCode marketplace listing
 
-hooks/                           # SessionStart hooks for Claude Code / Cursor / Copilot CLI
+.omp-plugin/                     # oh-my-pi (OMP) plugin marketplace
+  marketplace.json               # OMP marketplace listing
+
+hooks/                           # SessionStart hooks for Claude Code / Cursor / Copilot CLI / oh-my-pi
   hooks.json                     # Claude Code hook config
   hooks-cursor.json              # Cursor hook config
   session-start                  # Bash script: reads bootstrap SKILL.md, strips frontmatter, outputs JSON
   run-hook.cmd                   # Cross-platform polyglot wrapper (Windows + Unix)
+  development-crew.ts            # oh-my-pi TypeScript hook: injects bootstrap on session_start
 
 skills/                          # Skill prompt definitions
   using-development-crew/SKILL.md  # Bootstrap skill: injected into every session
@@ -69,6 +90,7 @@ The plugin has **no build step**. The entry point is `.opencode/plugins/developm
 - **Config hook** registers the `skills/` directory in `opencodeConfig.skills.paths` so OpenCode discovers all skill files when invoked via the `skill` tool.
 - **Messages transform hook** strips frontmatter from the bootstrap SKILL.md and prepends the body to the first user message in every new session.
 - **SessionStart hooks** (for Claude Code, Cursor, Copilot CLI) are bash scripts that inject the same bootstrap content via `additionalContext` JSON output.
+- **oh-my-pi hook** (`hooks/development-crew.ts`) is a TypeScript module registered via `package.json` `omp.hooks` that injects the bootstrap on `session_start`. oh-my-pi runs on Bun and executes TypeScript natively — no build step needed.
 
 Idempotency: uses `<!-- development-crew-bootstrap -->` marker to avoid double injection.
 
@@ -94,14 +116,14 @@ Version is managed by Release Please. It lives in multiple files that must stay 
 - `.release-please-manifest.json`
 - `.github/plugin/plugin.json` + `marketplace.json`
 - `.claude-plugin/plugin.json` + `marketplace.json`
+- `.omp-plugin/marketplace.json`
 
 Release Please `extra-files` in `release-please-config.json` handles syncing automatically. Do not bump versions manually.
 
 ## CI workflows
 
 - **build-opencode.yml** -- Validates skills + runs tests on push/PR
-- **release-please.yml** -- Creates release PR on push to `master` (no npm publish)
-- **validate-plugin.yml** -- Validates plugin/marketplace JSON files and cross-file version consistency
+- **validate-plugin.yml** -- Validates plugin/marketplace JSON files and cross-file version consistency across GitHub, Claude, and OMP manifests
 - **validate-pr-title.yml** -- Enforces conventional commit format on PR titles
 
 ## Conventions
@@ -109,5 +131,5 @@ Release Please `extra-files` in `release-please-config.json` handles syncing aut
 - **Package manager**: Always use `pnpm`, never `npm` or `yarn`
 - **Commit messages**: Conventional commits (see `release-please-config.json` for accepted types: `feat`, `fix`, `perf`, `deps`, `docs`, `chore`, `ci`, `refactor`, `test`, `build`, `style`, `revert`)
 - **Default branch**: `master` (not `main`)
-- **Plugin manifests**: Four sets exist -- `.github/plugin/` (OpenCode), `.claude-plugin/` (Claude Code), `.codex-plugin/` (Codex CLI), `.cursor-plugin/` (Cursor). All must be kept in sync
+- **Plugin manifests**: Five sets exist -- `.github/plugin/` (OpenCode), `.claude-plugin/` (Claude Code), `.codex-plugin/` (Codex CLI), `.cursor-plugin/` (Cursor), `.omp-plugin/` (oh-my-pi). All must be kept in sync
 - **Tests**: `pnpm run test` (vitest). Verification is `validate-skills.mjs` + `test`
