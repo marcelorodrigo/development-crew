@@ -35,6 +35,9 @@ jobs:
       - name: Validate .claude-plugin/marketplace.json
         run: python3 validation/validate_claude_plugin.py marketplace
 
+      - name: Validate .omp-plugin/marketplace.json
+        run: python3 validation/validate_omp_plugin.py
+
       - name: Validate version consistency
         run: python3 validation/validate_versions.py
 

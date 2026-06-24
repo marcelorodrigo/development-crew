@@ -47,6 +47,17 @@ def main():
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"ERROR: Failed to read .claude-plugin files: {e}")
         sys.exit(1)
+    # Load OMP plugin versions
+    try:
+        with open(".omp-plugin/marketplace.json") as f:
+            market = json.load(f)
+            version_sources[".omp-plugin/marketplace.json $.metadata.version"] = market.get("metadata", {}).get("version", "")
+            plugins = market.get("plugins", [])
+            for i, plugin in enumerate(plugins):
+                version_sources[f".omp-plugin/marketplace.json $.plugins[{i}].version"] = plugin.get("version", "")
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"ERROR: Failed to read .omp-plugin/marketplace.json: {e}")
+        sys.exit(1)
     
     # Check version consistency
     mismatches = []
