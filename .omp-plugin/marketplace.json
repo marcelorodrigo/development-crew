@@ -1,0 +1,40 @@
+{
+  "name": "development-crew-plugin",
+  "owner": {
+    "name": "Marcelo Rodrigo",
+    "url": "https://github.com/marcelorodrigo"
+  },
+  "metadata": {
+    "description": "A skills-first development workflow: four specialist skills for brainstorming, architecture design, implementation, and code review. Load on-demand and chain into a pipeline.",
+    "version": "0.12.1"
+  },
+  "plugins": [
+    {
+      "name": "development-crew",
+      "description": "A skills-first development workflow: four specialist skills for brainstorming (Rubber Duck), architecture design (Architect), implementation (Implementer), and code review (Code Reviewer). Load skills on-demand and chain them together in a pipeline or use them independently.",
+      "version": "0.12.1",
+      "source": ".",
+      "author": {
+        "name": "Marcelo Rodrigo",
+        "url": "https://github.com/marcelorodrigo"
+      },
+      "contributors": [
+        {
+          "name": "Marcelo Botega Fontana",
+          "url": "https://github.com/marcelobotega"
+        }
+      ],
+      "homepage": "https://github.com/marcelorodrigo/development-crew",
+      "repository": "https://github.com/marcelorodrigo/development-crew",
+      "license": "MIT",
+      "category": "development",
+      "keywords": [
+        "development",
+        "skills",
+        "code-review",
+        "architecture",
+        "brainstorming"
+      ]
+    }
+  ]
+}

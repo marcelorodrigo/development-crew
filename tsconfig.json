@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["ES2022"]
+  },
+  "include": ["hooks/**/*.ts", "tests/**/*.ts", "scripts/**/*.mjs", "scripts/**/*.ts", "vitest.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}

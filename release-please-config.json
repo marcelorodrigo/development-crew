@@ -60,6 +60,16 @@
           "type": "json",
           "path": ".cursor-plugin/plugin.json",
           "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": ".omp-plugin/marketplace.json",
+          "jsonpath": "$.metadata.version"
+        },
+        {
+          "type": "json",
+          "path": ".omp-plugin/marketplace.json",
+          "jsonpath": "$.plugins[0].version"
         }
       ]
     }
