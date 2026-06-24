@@ -24,13 +24,13 @@ Link the local repo as an oh-my-pi plugin, then run the doctor to verify:
 
 ```bash
 omp plugin link .
-omp plugin doctor @marcelorodrigo/opencode-development-crew
+omp plugin doctor @marcelorodrigo/development-crew
 ```
 
 When done testing, uninstall the local link:
 
 ```bash
-omp plugin uninstall @marcelorodrigo/opencode-development-crew
+omp plugin uninstall @marcelorodrigo/development-crew
 ```
 
 This resolves the repo's `package.json` `omp` field (which points `./skills/` and `./hooks/`) and lets you test the TypeScript hook and skill loading end-to-end without publishing.
