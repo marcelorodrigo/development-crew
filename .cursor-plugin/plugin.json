@@ -2,7 +2,7 @@
   "name": "development-crew",
   "displayName": "Development Crew",
   "description": "A skills-first development workflow: four specialist skills for brainstorming, architecture design, implementation, and code review.",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "author": {
     "name": "Marcelo Rodrigo",
     "url": "https://github.com/marcelorodrigo"

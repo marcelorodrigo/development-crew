@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.1](https://github.com/marcelorodrigo/development-crew/compare/development-crew-v0.14.0...development-crew-v0.14.1) (2026-06-27)
+
+
+### Bug Fixes
+
+* **omp:** use GitHub repo as source in OMP marketplace manifest ([#131](https://github.com/marcelorodrigo/development-crew/issues/131)) ([ecd8bdb](https://github.com/marcelorodrigo/development-crew/commit/ecd8bdb42fe66e55826988dd9c4cc9aac3ec0d3a))
+
 ## [0.14.0](https://github.com/marcelorodrigo/development-crew/compare/development-crew-v0.13.0...development-crew-v0.14.0) (2026-06-24)
 
 
