@@ -45,8 +45,17 @@ Installation differs by harness. If you use more than one, install Development C
 
 ### Codex CLI
 
+Add the repository as a plugin marketplace, then install Development Crew:
+
 ```bash
-codex plugin install https://github.com/marcelorodrigo/development-crew
+codex plugin marketplace add marcelorodrigo/development-crew
+codex plugin add development-crew@development-crew-plugin
+```
+
+Start a new Codex session, then verify the installation with `/skills` or invoke a skill directly:
+
+```text
+$rubber-duck
 ```
 
 ### Codex App
