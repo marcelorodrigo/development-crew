@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.2](https://github.com/marcelorodrigo/development-crew/compare/development-crew-v0.14.1...development-crew-v0.14.2) (2026-07-30)
+
+
+### Bug Fixes
+
+* **codex:** Repair SessionStart hook execution ([#139](https://github.com/marcelorodrigo/development-crew/issues/139)) ([62dd923](https://github.com/marcelorodrigo/development-crew/commit/62dd923c542aef65ac5a04624e33948506c3b9d7))
+
 ## [0.14.1](https://github.com/marcelorodrigo/development-crew/compare/development-crew-v0.14.0...development-crew-v0.14.1) (2026-06-27)
 
 
