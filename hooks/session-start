@@ -16,15 +16,34 @@ body=$(echo "$skill_content" | sed '1{/^---$/!q;};1,/^---$/d')
 # Escape for JSON embedding
 escape_for_json() {
     local s="$1"
+    local code
+    local octal
+    local control_character
+    local unicode_escape
+
     s="${s//\\/\\\\}"
     s="${s//\"/\\\"}"
     s="${s//$'\n'/\\n}"
     s="${s//$'\r'/\\r}"
     s="${s//$'\t'/\\t}"
+    s="${s//$'\b'/\\b}"
+    s="${s//$'\f'/\\f}"
+
+    for code in {1..31}; do
+        case "$code" in
+            8|9|10|12|13)
+                continue
+                ;;
+        esac
+
+        printf -v octal '%03o' "$code"
+        printf -v control_character "\\${octal}"
+        printf -v unicode_escape '\\u%04x' "$code"
+        s="${s//${control_character}/${unicode_escape}}"
+    done
+
     printf '%s' "$s"
 }
-
-body_escaped=$(escape_for_json "$body")
 
 session_context="<SUBAGENT-STOP>
 If you were dispatched as a subagent to execute a specific task, skip this skill — your dispatch instructions override it.
@@ -36,16 +55,18 @@ You have access to the **Development Crew** skill pipeline: four specialist skil
 
 **IMPORTANT: This content is ALREADY LOADED. You are currently following it. Do NOT use the \`skill\` tool to load \`using-development-crew\` again — that would be redundant.**
 
-${body_escaped}
+${body}
 
 </EXTREMELY_IMPORTANT>"
 
+session_context_escaped=$(escape_for_json "$session_context")
+
 if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
-  printf '{\n  "additional_context": "%s"\n}\n' "$session_context"
+  printf '{\n  "additional_context": "%s"\n}\n' "$session_context_escaped"
 elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
-  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$session_context"
+  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$session_context_escaped"
 else
-  printf '{\n  "additionalContext": "%s"\n}\n' "$session_context"
+  printf '{\n  "additionalContext": "%s"\n}\n' "$session_context_escaped"
 fi
 
 exit 0
