@@ -16,11 +16,32 @@ body=$(echo "$skill_content" | sed '1{/^---$/!q;};1,/^---$/d')
 # Escape for JSON embedding
 escape_for_json() {
     local s="$1"
+    local code
+    local octal
+    local control_character
+    local unicode_escape
+
     s="${s//\\/\\\\}"
     s="${s//\"/\\\"}"
     s="${s//$'\n'/\\n}"
     s="${s//$'\r'/\\r}"
     s="${s//$'\t'/\\t}"
+    s="${s//$'\b'/\\b}"
+    s="${s//$'\f'/\\f}"
+
+    for code in {1..31}; do
+        case "$code" in
+            8|9|10|12|13)
+                continue
+                ;;
+        esac
+
+        printf -v octal '%03o' "$code"
+        printf -v control_character "\\${octal}"
+        printf -v unicode_escape '\\u%04x' "$code"
+        s="${s//${control_character}/${unicode_escape}}"
+    done
+
     printf '%s' "$s"
 }
 
