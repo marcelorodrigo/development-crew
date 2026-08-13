@@ -64,21 +64,25 @@ $rubber-duck
 - Search for "Development Crew" in the marketplace.
 - Click Install.
 
-### OpenCode
+### OpenCode 2
 
 Add to your `opencode.json` (global or project-level):
 
 ```json
 {
-  "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git"]
+  "plugins": [
+    "@marcelorodrigo/opencode-development-crew@git+https://github.com/marcelorodrigo/development-crew.git#opencode-v2"
+  ]
 }
 ```
 
 Or fetch install instructions:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/marcelorodrigo/development-crew/master/.opencode/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/marcelorodrigo/development-crew/opencode-v2/.opencode/INSTALL.md
 ```
+
+For OpenCode 1, use the `master` branch and the `plugin` array.
 
 ### Cursor
 
@@ -182,12 +186,14 @@ Use OpenCode's native `skill` tool (or `skill: name` in any harness):
 - **Gemini:** `gemini extensions update https://github.com/marcelorodrigo/development-crew`
 - **oh-my-pi:** `omp plugin upgrade development-crew@development-crew-plugin`
 
-- **OpenCode (latest):** Restart OpenCode — it fetches the latest from `master` automatically.
-- **OpenCode (pinned):** Bump the git tag in your `opencode.json`:
+- **OpenCode 2 (latest):** Restart OpenCode — it fetches the latest from `opencode-v2` automatically.
+- **OpenCode 2 (pinned):** Bump the git tag or branch in your `opencode.json`:
 
   ```json
   {
-    "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git#v0.11.0"]
+    "plugins": [
+      "@marcelorodrigo/opencode-development-crew@git+https://github.com/marcelorodrigo/development-crew.git#opencode-v2"
+    ]
   }
   ```
 
