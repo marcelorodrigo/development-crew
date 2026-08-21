@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0](https://github.com/marcelorodrigo/development-crew/compare/development-crew-v0.14.2...development-crew-v0.15.0) (2026-08-21)
+
+
+### Features
+
+* **implementer:** require task list before implementation ([#144](https://github.com/marcelorodrigo/development-crew/issues/144)) ([3db5f31](https://github.com/marcelorodrigo/development-crew/commit/3db5f314b16a0126204c1bcec2b1b59e5e6d17b3))
+
 ## [0.14.2](https://github.com/marcelorodrigo/development-crew/compare/development-crew-v0.14.1...development-crew-v0.14.2) (2026-07-30)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@marcelorodrigo/development-crew",
-  "version": "0.14.2",
+  "version": "0.15.0",
   "description": "Development Crew skills: a skills-first pipeline with Rubber Duck, Architect, Implementer, and Code Reviewer",
   "type": "module",
   "main": ".opencode/plugins/development-crew.js",
