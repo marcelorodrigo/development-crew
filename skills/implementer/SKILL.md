@@ -57,6 +57,14 @@ Read the Architecture Spec thoroughly. Before writing any code:
 
 ## Step 1.5 - Plan the Implementation Order
 
+Before writing code, create a task list using the environment's task-management tool (`todowrite` in OpenCode). Create tasks for each meaningful implementation component from the Architecture Spec, followed by tests, validation. Keep tasks at the component or deliverable level; do not create one task per file.
+
+Update the task list as implementation progresses:
+
+- Mark a task complete when its work and relevant checks are complete.
+- Add tasks when implementation reveals work missing from the original plan.
+- Keep blocked or incomplete tasks visible and flag them in the Implementation Summary.
+
 Map out which files you need to create and in what order. The default order is:
 
 1. Data structures (types, models, entities)
