@@ -1,16 +1,18 @@
-# Installing Development Crew for OpenCode
+# Installing Development Crew for OpenCode 2
 
 ## Prerequisites
 
-- [OpenCode.ai](https://opencode.ai) installed
+- [OpenCode 2](https://opencode.ai) installed (`opencode2`)
 
 ## Installation
 
-Add development-crew to the `plugin` array in your `opencode.json` (global or project-level):
+Add Development Crew to the `plugins` array in your `opencode.json` (global or project-level):
 
 ```json
 {
-  "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git"]
+  "plugins": [
+    "@marcelorodrigo/opencode-development-crew@git+https://github.com/marcelorodrigo/development-crew.git#opencode-v2"
+  ]
 }
 ```
 
@@ -31,11 +33,13 @@ skill: code-reviewer
 
 ## Updating
 
-Update the git tag in your `opencode.json` to pin a specific version:
+Update the git tag or branch in your `opencode.json` to pin a specific version:
 
 ```json
 {
-  "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git#v1.0.0"]
+  "plugins": [
+    "@marcelorodrigo/opencode-development-crew@git+https://github.com/marcelorodrigo/development-crew.git#opencode-v2"
+  ]
 }
 ```
 
@@ -44,24 +48,8 @@ Update the git tag in your `opencode.json` to pin a specific version:
 ### Skills not found
 
 1. Use the `skill` tool to list what's discovered
-2. Check that the plugin is loading (see logs: `opencode run --print-logs "hello" 2>&1 | grep -i development-crew`)
-3. Make sure you're running a recent version of OpenCode
-
-### Windows install issues
-
-Some Windows OpenCode builds have upstream installer issues with git-backed plugin specs, including cache paths for `git+https` URLs and Bun not finding `git.exe` even when it works in a normal terminal. If OpenCode cannot install the plugin, try installing with system npm and pointing OpenCode at the local package:
-
-```powershell
-npm install development-crew@git+https://github.com/marcelorodrigo/development-crew.git --prefix "$HOME\.config\opencode"
-```
-
-Then use the installed package path in `opencode.json`:
-
-```json
-{
-  "plugin": ["~/.config/opencode/node_modules/development-crew"]
-}
-```
+2. Check that the plugin is loading (see logs: `opencode2 run --print-logs "hello" 2>&1 | grep -i development-crew`)
+3. Make sure you're running OpenCode 2
 
 ### Tool mapping
 

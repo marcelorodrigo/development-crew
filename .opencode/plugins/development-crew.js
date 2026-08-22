@@ -1,26 +1,26 @@
 /**
- * Development Crew plugin for OpenCode.ai
+ * Development Crew plugin for OpenCode 2
  *
- * Registers skills directory via config hook.
- * Injects bootstrap context via messages transform hook.
+ * Registers skills and injects bootstrap context via the V2 plugin API.
  */
 
 import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { Plugin } from '@opencode-ai/plugin';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const skillsDir = path.resolve(__dirname, '../../skills');
 
 function extractAndStripFrontmatter(content) {
-  const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
   if (!match) return { frontmatter: {}, content };
 
   const frontmatterStr = match[1];
   const body = match[2];
   const frontmatter = {};
 
-  for (const line of frontmatterStr.split('\n')) {
+  for (const line of frontmatterStr.split(/\r?\n/)) {
     const colonIdx = line.indexOf(':');
     if (colonIdx > 0) {
       const key = line.slice(0, colonIdx).trim();
@@ -34,51 +34,70 @@ function extractAndStripFrontmatter(content) {
 
 let _bootstrapCache = undefined;
 
-const DevelopmentCrewPlugin = async (_ctx) => {
-  const getBootstrapContent = () => {
-    if (_bootstrapCache !== undefined) return _bootstrapCache;
+function getBootstrapContent() {
+  if (_bootstrapCache !== undefined) return _bootstrapCache;
 
-    const skillPath = path.join(skillsDir, 'using-development-crew', 'SKILL.md');
-    if (!fs.existsSync(skillPath)) {
-      _bootstrapCache = null;
-      return null;
-    }
+  const skillPath = path.join(skillsDir, 'using-development-crew', 'SKILL.md');
+  if (!fs.existsSync(skillPath)) {
+    _bootstrapCache = null;
+    return null;
+  }
 
-    const fullContent = fs.readFileSync(skillPath, 'utf8');
-    const { content } = extractAndStripFrontmatter(fullContent);
-    _bootstrapCache = content;
-    return _bootstrapCache;
-  };
+  const fullContent = fs.readFileSync(skillPath, 'utf8');
+  const { content } = extractAndStripFrontmatter(fullContent);
+  _bootstrapCache = content;
+  return _bootstrapCache;
+}
 
-  return {
-    name: 'development-crew',
+function discoverSkills() {
+  const skills = [];
 
-    config: async (config) => {
-      config.skills = config.skills || {};
-      config.skills.paths = config.skills.paths || [];
-      if (!config.skills.paths.includes(skillsDir)) {
-        config.skills.paths.push(skillsDir);
+  for (const dirName of fs.readdirSync(skillsDir)) {
+    const skillPath = path.join(skillsDir, dirName, 'SKILL.md');
+    if (!fs.existsSync(skillPath)) continue;
+
+    const raw = fs.readFileSync(skillPath, 'utf8');
+    const { frontmatter, content } = extractAndStripFrontmatter(raw);
+
+    skills.push({
+      id: frontmatter.name || dirName,
+      name: frontmatter.name || dirName,
+      description: frontmatter.description || '',
+      location: skillPath,
+      content,
+    });
+  }
+
+  return skills;
+}
+
+const BOOTSTRAP_MARKER = '<!-- development-crew-bootstrap -->';
+
+export default Plugin.define({
+  id: 'development-crew',
+
+  setup: async (ctx) => {
+    const skills = discoverSkills();
+
+    await ctx.skill.transform((draft) => {
+      for (const skill of skills) {
+        draft.add(skill);
       }
-    },
+    });
 
-    'experimental.chat.messages.transform': async (_input, output) => {
+    await ctx.session.hook('context', (event) => {
       const bootstrap = getBootstrapContent();
-      if (!bootstrap || !output.messages.length) return;
+      if (!bootstrap) return;
 
-      const firstUser = output.messages.find((m) => m.info.role === 'user');
-      if (!firstUser || !firstUser.parts.length) return;
-
-      const alreadyInjected = firstUser.parts.some(
-        (p) => p.type === 'text' && p.text?.includes('<!-- development-crew-bootstrap -->'),
+      const alreadyInjected = event.system.some(
+        (part) => part.type === 'text' && part.text?.includes(BOOTSTRAP_MARKER),
       );
       if (alreadyInjected) return;
 
-      const text = bootstrap + '\n\n<!-- development-crew-bootstrap -->';
-
-      const ref = firstUser.parts[0];
-      firstUser.parts.unshift({ ...ref, type: 'text', text });
-    },
-  };
-};
-
-export default DevelopmentCrewPlugin;
+      event.system.unshift({
+        type: 'text',
+        text: `${bootstrap}\n\n${BOOTSTRAP_MARKER}`,
+      });
+    });
+  },
+});

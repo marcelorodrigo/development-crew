@@ -31,5 +31,8 @@
   "omp": {
     "skills": "./skills/",
     "hooks": "./hooks/"
+  },
+  "dependencies": {
+    "@opencode-ai/plugin": "0.0.0-next-17403"
   }
 }
