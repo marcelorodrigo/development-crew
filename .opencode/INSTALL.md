@@ -6,11 +6,12 @@
 
 ## Installation
 
-Add development-crew to the `plugin` array in your `opencode.json` (global or project-level):
+Add the published npm package to the `plugin` array in your `opencode.json`
+(global or project-level):
 
 ```json
 {
-  "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git"]
+  "plugin": ["@marcelorodrigo/opencode-development-crew"]
 }
 ```
 
@@ -31,7 +32,20 @@ skill: code-reviewer
 
 ## Updating
 
-Update the git tag in your `opencode.json` to pin a specific version:
+The unpinned npm installation checks npm for a newer release in the background.
+If the installation is an eligible OpenCode npm cache wrapper, the wrapper is
+refreshed and a toast asks you to restart OpenCode. Exact npm versions, Git
+specifications, and local paths are not changed.
+
+To pin a specific npm version:
+
+```json
+{
+  "plugin": ["@marcelorodrigo/opencode-development-crew@0.15.0"]
+}
+```
+
+To use a Git tag instead:
 
 ```json
 {
@@ -49,17 +63,20 @@ Update the git tag in your `opencode.json` to pin a specific version:
 
 ### Windows install issues
 
-Some Windows OpenCode builds have upstream installer issues with git-backed plugin specs, including cache paths for `git+https` URLs and Bun not finding `git.exe` even when it works in a normal terminal. If OpenCode cannot install the plugin, try installing with system npm and pointing OpenCode at the local package:
+Some Windows OpenCode builds have upstream installer issues with Git-backed
+plugin specs. Prefer the published npm package. If OpenCode cannot install the
+package directly, install it with system npm and point OpenCode at the local
+package:
 
 ```powershell
-npm install development-crew@git+https://github.com/marcelorodrigo/development-crew.git --prefix "$HOME\.config\opencode"
+npm install @marcelorodrigo/opencode-development-crew --prefix "$HOME\.config\opencode"
 ```
 
 Then use the installed package path in `opencode.json`:
 
 ```json
 {
-  "plugin": ["~/.config/opencode/node_modules/development-crew"]
+  "plugin": ["~/.config/opencode/node_modules/@marcelorodrigo/opencode-development-crew"]
 }
 ```
 

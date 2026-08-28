@@ -12,6 +12,7 @@ on:
       - 'package.json'
       - 'pnpm-lock.yaml'
       - '.github/workflows/build-opencode.yml'
+      - '.github/workflows/publish.yml'
       - 'vitest.config.ts'
   pull_request:
     paths:
@@ -23,6 +24,7 @@ on:
       - 'package.json'
       - 'pnpm-lock.yaml'
       - '.github/workflows/build-opencode.yml'
+      - '.github/workflows/publish.yml'
       - 'vitest.config.ts'
   workflow_dispatch:
 

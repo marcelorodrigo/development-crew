@@ -8,6 +8,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { startAutoUpdate } from './update.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const skillsDir = path.resolve(__dirname, '../../skills');
@@ -34,7 +35,9 @@ function extractAndStripFrontmatter(content) {
 
 let _bootstrapCache = undefined;
 
-const DevelopmentCrewPlugin = async (_ctx) => {
+export const createDevelopmentCrewPlugin = (startUpdate = startAutoUpdate) => async (ctx) => {
+  startUpdate(ctx);
+
   const getBootstrapContent = () => {
     if (_bootstrapCache !== undefined) return _bootstrapCache;
 
@@ -80,5 +83,7 @@ const DevelopmentCrewPlugin = async (_ctx) => {
     },
   };
 };
+
+const DevelopmentCrewPlugin = createDevelopmentCrewPlugin();
 
 export default DevelopmentCrewPlugin;
