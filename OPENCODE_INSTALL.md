@@ -6,12 +6,19 @@
 
 ## Installation
 
-Add the published npm package to the `plugin` array in your `opencode.json`
-(global or project-level):
+Install the latest release in your global OpenCode configuration:
+
+```bash
+opencode plugin @marcelorodrigo/opencode-development-crew@latest --global
+```
+
+For a project-level installation, omit `--global`. You can also add the
+published npm package to the `plugin` array in your global or project-level
+`opencode.json`:
 
 ```json
 {
-  "plugin": ["@marcelorodrigo/opencode-development-crew"]
+  "plugin": ["@marcelorodrigo/opencode-development-crew@latest"]
 }
 ```
 
@@ -32,10 +39,10 @@ skill: code-reviewer
 
 ## Updating
 
-The unversioned npm installation resolves the latest published release and
-checks npm for newer releases in the background. If the installation is an
-eligible OpenCode npm cache wrapper, the wrapper is refreshed and a toast asks
-you to restart OpenCode.
+The `@latest` npm installation resolves the latest published release and checks
+npm for newer releases in the background. If the installation is an eligible
+OpenCode npm cache wrapper, the wrapper is refreshed and a toast asks you to
+restart OpenCode.
 
 To use the repository directly instead of npm:
 
@@ -61,7 +68,7 @@ package directly, install it with system npm and point OpenCode at the local
 package:
 
 ```powershell
-npm install @marcelorodrigo/opencode-development-crew --prefix "$HOME\.config\opencode"
+npm install @marcelorodrigo/opencode-development-crew@latest --prefix "$HOME\.config\opencode"
 ```
 
 Then use the installed package path in `opencode.json`:

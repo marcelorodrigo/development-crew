@@ -66,19 +66,28 @@ $rubber-duck
 
 ### OpenCode
 
+Install the latest release globally:
+
+```bash
+opencode plugin @marcelorodrigo/opencode-development-crew@latest --global
+```
+
+Or add the package to the `plugin` array in your global or project-level
+`opencode.json`:
+
 ```json
 {
-  "plugin": ["@marcelorodrigo/opencode-development-crew"]
+  "plugin": ["@marcelorodrigo/opencode-development-crew@latest"]
 }
 ```
 
 OpenCode installs the published npm package from this entry. Restart OpenCode
 after adding or changing the plugin configuration.
 
-OpenCode resolves this unversioned npm plugin entry to the latest published
-release. The plugin also performs a best-effort update check in the background.
-When a newer release is found, OpenCode's eligible npm cache wrapper is removed
-and a toast asks you to restart.
+The `@latest` tag resolves to the latest published release. The plugin also
+performs a best-effort update check in the background. When a newer release is
+found, OpenCode's eligible npm cache wrapper is removed and a toast asks you to
+restart.
 
 To use the repository directly instead of npm:
 
@@ -196,7 +205,7 @@ Use OpenCode's native `skill` tool (or `skill: name` in any harness):
 - **Gemini:** `gemini extensions update https://github.com/marcelorodrigo/development-crew`
 - **oh-my-pi:** `omp plugin upgrade development-crew@development-crew-plugin`
 
-- **OpenCode:** Restart OpenCode. The unversioned npm plugin entry resolves the latest published package; if an update is detected, the plugin asks you to restart again after refreshing its cache.
+- **OpenCode:** Restart OpenCode. The `@latest` npm plugin entry resolves the latest published package; if an update is detected, the plugin asks you to restart again after refreshing its cache.
 
 ## License
 
