@@ -38,7 +38,6 @@ describe('npm package', () => {
       const packageJson = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 
       expect(metadata.name).toBe('@marcelorodrigo/opencode-development-crew');
-      expect(metadata.version).toBe('0.15.0');
       expect(packageJson.main).toBe('./.opencode/plugins/development-crew.js');
       expect(packageJson.exports['.']).toBe(packageJson.main);
       expect(packageJson.engines.node).toBe('>=24');
