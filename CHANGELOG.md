@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.16.0](https://github.com/marcelorodrigo/development-crew/compare/v0.15.0...v0.16.0) (2026-08-28)
+
+
+### Features
+
+* **opencode:** publish plugin package and auto-update ([#147](https://github.com/marcelorodrigo/development-crew/issues/147)) ([a10faaf](https://github.com/marcelorodrigo/development-crew/commit/a10faafd8579726540d8189672c2c92c28d0cec8))
+
+
+### Bug Fixes
+
+* remove fixed package version assertion ([#149](https://github.com/marcelorodrigo/development-crew/issues/149)) ([d6e0648](https://github.com/marcelorodrigo/development-crew/commit/d6e06481b3faa578aec5af0df18d67110bd94936))
+
 ## [0.15.0](https://github.com/marcelorodrigo/development-crew/compare/development-crew-v0.14.2...development-crew-v0.15.0) (2026-08-21)
 
 
