@@ -13,13 +13,15 @@ settings page:
 3. Add **GitHub Actions** as the publisher.
 4. Set **Organization or user** to `marcelorodrigo`.
 5. Set **Repository** to `development-crew`.
-6. Set **Workflow filename** to `.github/workflows/publish.yml`.
-7. Leave **Environment** blank because this workflow does not use a GitHub environment.
-8. Save the trusted publisher configuration.
+6. Set **Workflow filename** to `publish.yml`.
+7. Leave **Environment name** blank because this workflow does not use a GitHub environment.
+8. Select **npm publish** as the allowed action.
+9. Save the trusted publisher configuration.
 
-The workflow filename must match the path exactly. Authorize `publish.yml`,
-not `release-please.yml`: `publish.yml` checks out the published `vX.Y.Z`
-release and runs `npm publish --access public`.
+Enter only the workflow filename, not the `.github/workflows/` directory. The
+filename must include the `.yml` extension. Authorize `publish.yml`, not
+`release-please.yml`: `publish.yml` checks out the published `vX.Y.Z` release
+and runs `npm publish --access public`.
 
 The workflow requests `id-token: write`, which allows npm to verify the GitHub
 Actions OIDC identity and generate provenance for the published package.
