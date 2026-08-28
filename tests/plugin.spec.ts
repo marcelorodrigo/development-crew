@@ -1,5 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import DevelopmentCrewPlugin from '../.opencode/plugins/development-crew.js';
+import { describe, expect, it, vi } from 'vitest';
+import { createDevelopmentCrewPlugin } from '../.opencode/plugins/development-crew.js';
+
+const DevelopmentCrewPlugin = createDevelopmentCrewPlugin(() => {});
 
 function mockPluginInput() {
   return {
@@ -28,6 +30,15 @@ function makeAssistantMessage(text: string): Message {
 }
 
 describe('DevelopmentCrewPlugin', () => {
+  it('starts the updater once during plugin initialization', async () => {
+    const startUpdate = vi.fn();
+    const plugin = createDevelopmentCrewPlugin(startUpdate);
+
+    await plugin(mockPluginInput());
+
+    expect(startUpdate).toHaveBeenCalledOnce();
+  });
+
   it('returns name development-crew', async () => {
     const hooks = await DevelopmentCrewPlugin(mockPluginInput());
     expect(hooks.name).toBe('development-crew');

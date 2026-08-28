@@ -2,6 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "release-type": "node",
   "bump-minor-pre-major": true,
+  "bootstrap-sha": "e334a6b6cf59ef5e8bba1b1cbbbfbcc5ccb83246",
+  "include-component-in-tag": false,
   "include-v-in-tag": true,
   "changelog-sections": [
     { "type": "feat", "section": "Features" },

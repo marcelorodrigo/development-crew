@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      semver:
+        specifier: ^7.8.5
+        version: 7.8.5
     devDependencies:
       vitest:
         specifier: ^4.1.11
@@ -484,6 +488,11 @@ packages:
   rolldown@1.0.3:
     resolution: {integrity: sha512-i00lAJ2ks1BYr7rjNjKC7BcqAS7nVfiT3QX1SI5aY+AFHblCmaUf9OE9dbdzDvW6dJxbi2ZCZiy9v3CcwOiX3g==}
     engines: {node: ^20.19.0 || >=22.12.0}
+    hasBin: true
+
+  semver@7.8.5:
+    resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
+    engines: {node: '>=10'}
     hasBin: true
 
   siginfo@2.0.0:
@@ -976,6 +985,8 @@ snapshots:
       '@rolldown/binding-wasm32-wasi': 1.0.3
       '@rolldown/binding-win32-arm64-msvc': 1.0.3
       '@rolldown/binding-win32-x64-msvc': 1.0.3
+
+  semver@7.8.5: {}
 
   siginfo@2.0.0: {}
 

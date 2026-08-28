@@ -24,13 +24,13 @@ Link the local repo as an oh-my-pi plugin, then run the doctor to verify:
 
 ```bash
 omp plugin link .
-omp plugin doctor @marcelorodrigo/development-crew
+omp plugin doctor @marcelorodrigo/opencode-development-crew
 ```
 
 When done testing, uninstall the local link:
 
 ```bash
-omp plugin uninstall @marcelorodrigo/development-crew
+omp plugin uninstall @marcelorodrigo/opencode-development-crew
 ```
 
 This resolves the repo's `package.json` `omp` field (which points `./skills/` and `./hooks/`) and lets you test the TypeScript hook and skill loading end-to-end without publishing.
@@ -123,6 +123,7 @@ Release Please `extra-files` in `release-please-config.json` handles syncing aut
 ## CI workflows
 
 - **build-opencode.yml** -- Validates skills + runs tests on push/PR
+- **publish.yml** -- Publishes the npm package after a published `vX.Y.Z` release using OIDC
 - **validate-plugin.yml** -- Validates plugin/marketplace JSON files and cross-file version consistency across GitHub, Claude, and OMP manifests
 - **validate-pr-title.yml** -- Enforces conventional commit format on PR titles
 
@@ -133,3 +134,11 @@ Release Please `extra-files` in `release-please-config.json` handles syncing aut
 - **Default branch**: `master` (not `main`)
 - **Plugin manifests**: Five sets exist -- `.github/plugin/` (OpenCode), `.claude-plugin/` (Claude Code), `.codex-plugin/` (Codex CLI), `.cursor-plugin/` (Cursor), `.omp-plugin/` (oh-my-pi). All must be kept in sync
 - **Tests**: `pnpm run test` (vitest). Verification is `validate-skills.mjs` + `test`
+
+## npm publication
+
+One-time npm trusted-publisher setup is documented in `NPM_PUBLISHING.md`.
+Authorize the GitHub Actions workflow `.github/workflows/publish.yml` for
+`@marcelorodrigo/opencode-development-crew`; do not authorize
+`.github/workflows/release-please.yml`, because only `publish.yml` runs
+`npm publish --access public` with OIDC.
