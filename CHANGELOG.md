@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.1](https://github.com/marcelorodrigo/development-crew/compare/v0.16.0...v0.16.1) (2026-08-28)
+
+
+### Bug Fixes
+
+* **opencode:** move plugin source out of auto-discovery ([#150](https://github.com/marcelorodrigo/development-crew/issues/150)) ([ec730ad](https://github.com/marcelorodrigo/development-crew/commit/ec730ade442a4b2b7a8b906c334bc2d81310172f))
+
 ## [0.16.0](https://github.com/marcelorodrigo/development-crew/compare/v0.15.0...v0.16.0) (2026-08-28)
 
 
