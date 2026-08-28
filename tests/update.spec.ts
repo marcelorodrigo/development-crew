@@ -5,7 +5,7 @@ import {
   isVersionNewer,
   startAutoUpdate,
   updateRemoveDirectory,
-} from '../.opencode/plugins/update.js';
+} from '../lib/update.js';
 
 const packageName = '@marcelorodrigo/opencode-development-crew';
 

@@ -2,7 +2,7 @@
 
 ## What this repo is
 
-An OpenCode plugin (`development-crew`) that ships a **skills-first** development workflow. Four specialist skills (Rubber Duck, Architect, Implementer, Code Reviewer) are registered as on-demand skills and a bootstrap skill (`using-development-crew`) is injected into every session to orient the model. It is **not** a web app or service -- it is raw JavaScript loaded from `.opencode/plugins/development-crew.js` with no build step.
+An OpenCode plugin (`development-crew`) that ships a **skills-first** development workflow. Four specialist skills (Rubber Duck, Architect, Implementer, Code Reviewer) are registered as on-demand skills and a bootstrap skill (`using-development-crew`) is injected into every session to orient the model. It is **not** a web app or service -- it is raw JavaScript loaded from `index.js` with no build step.
 
 ## Prerequisites
 
@@ -38,8 +38,11 @@ This resolves the repo's `package.json` `omp` field (which points `./skills/` an
 ## Project structure
 
 ```text
-.opencode/plugins/               # OpenCode plugin entry point (plain JS, no build)
+index.js                         # OpenCode package entry point (default export only)
+OPENCODE_INSTALL.md              # Standalone OpenCode installation guide
+lib/                             # OpenCode runtime implementation (plain JS, no build)
   development-crew.js            # Plugin factory with config + messages.transform hooks
+  update.js                      # Optional package auto-update support
 
 .claude-plugin/                  # Claude Code plugin manifests
   plugin.json                    # Claude Code plugin metadata
@@ -84,7 +87,7 @@ validation/
 
 ## How the plugin works
 
-The plugin has **no build step**. The entry point is `.opencode/plugins/development-crew.js` — raw JavaScript checked into the repo.
+The plugin has **no build step**. The package entry point is `index.js` — raw JavaScript checked into the repo. Runtime implementation and testable named exports live under `lib/`; do not place plugin source under `.opencode/plugins/`, because OpenCode auto-loads every JavaScript file and export there as a project-local plugin.
 
 - **Bootstrap skill** (`skills/using-development-crew/SKILL.md`) is read at runtime via `fs.readFileSync` with a module-level cache (`_bootstrapCache`) to avoid repeated disk reads per agent step.
 - **Config hook** registers the `skills/` directory in `opencodeConfig.skills.paths` so OpenCode discovers all skill files when invoked via the `skill` tool.

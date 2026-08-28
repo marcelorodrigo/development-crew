@@ -7,14 +7,15 @@ import { describe, expect, it } from 'vitest';
 
 const root = join(import.meta.dirname, '..');
 const expectedFiles = [
-  '.opencode/plugins/development-crew.js',
-  '.opencode/plugins/update.js',
   'hooks/hooks-cursor.json',
   'hooks/hooks.json',
   'hooks/omp-session-start.ts',
   'hooks/run-hook.cmd',
   'hooks/session-start',
+  'index.js',
   'LICENSE',
+  'lib/development-crew.js',
+  'lib/update.js',
   'package.json',
   'README.md',
   'skills/architect/SKILL.md',
@@ -38,18 +39,21 @@ describe('npm package', () => {
       const packageJson = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 
       expect(metadata.name).toBe('@marcelorodrigo/opencode-development-crew');
-      expect(packageJson.main).toBe('./.opencode/plugins/development-crew.js');
+      expect(packageJson.main).toBe('./index.js');
       expect(packageJson.exports['.']).toBe(packageJson.main);
       expect(packageJson.engines.node).toBe('>=24');
       expect(metadata.files.map(({ path }: { path: string }) => path).sort()).toEqual([...expectedFiles].sort());
 
       const extractDirectory = join(directory, 'extract');
       execFileSync('tar', ['-xzf', metadata.filename, '-C', directory]);
-      const installedEntry = join(directory, 'package', '.opencode/plugins/development-crew.js');
+      const installedEntry = join(directory, 'package', 'index.js');
       expect(existsSync(installedEntry)).toBe(true);
 
       const packaged = await import(pathToFileURL(installedEntry).href);
-      const plugin = packaged.createDevelopmentCrewPlugin(() => {});
+      expect(Object.keys(packaged)).toEqual(['default']);
+
+      const implementation = await import(pathToFileURL(join(directory, 'package', 'lib/development-crew.js')).href);
+      const plugin = implementation.createDevelopmentCrewPlugin(() => {});
       const hooks = await plugin({});
       const config: Record<string, unknown> = {};
       await hooks.config(config);

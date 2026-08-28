@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createDevelopmentCrewPlugin } from '../.opencode/plugins/development-crew.js';
+import { createDevelopmentCrewPlugin } from '../lib/development-crew.js';
 
 const DevelopmentCrewPlugin = createDevelopmentCrewPlugin(() => {});
 
