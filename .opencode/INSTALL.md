@@ -32,24 +32,16 @@ skill: code-reviewer
 
 ## Updating
 
-The unpinned npm installation checks npm for a newer release in the background.
-If the installation is an eligible OpenCode npm cache wrapper, the wrapper is
-refreshed and a toast asks you to restart OpenCode. Exact npm versions, Git
-specifications, and local paths are not changed.
+The unversioned npm installation resolves the latest published release and
+checks npm for newer releases in the background. If the installation is an
+eligible OpenCode npm cache wrapper, the wrapper is refreshed and a toast asks
+you to restart OpenCode.
 
-To pin a specific npm version:
-
-```json
-{
-  "plugin": ["@marcelorodrigo/opencode-development-crew@0.15.0"]
-}
-```
-
-To use a Git tag instead:
+To use the repository directly instead of npm:
 
 ```json
 {
-  "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git#v1.0.0"]
+  "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git"]
 }
 ```
 

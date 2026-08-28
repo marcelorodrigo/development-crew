@@ -75,18 +75,10 @@ $rubber-duck
 OpenCode installs the published npm package from this entry. Restart OpenCode
 after adding or changing the plugin configuration.
 
-For a pinned npm release, use an exact version:
-
-```json
-{
-  "plugin": ["@marcelorodrigo/opencode-development-crew@0.15.0"]
-}
-```
-
-Unpinned and range-based npm installations can receive the best-effort
-Development Crew update check. When a newer release is found, OpenCode's
-eligible npm cache wrapper is removed and a toast asks you to restart. Exact
-versions, Git installations, and local installations are never changed.
+OpenCode resolves this unversioned npm plugin entry to the latest published
+release. The plugin also performs a best-effort update check in the background.
+When a newer release is found, OpenCode's eligible npm cache wrapper is removed
+and a toast asks you to restart.
 
 To use the repository directly instead of npm:
 
@@ -204,22 +196,7 @@ Use OpenCode's native `skill` tool (or `skill: name` in any harness):
 - **Gemini:** `gemini extensions update https://github.com/marcelorodrigo/development-crew`
 - **oh-my-pi:** `omp plugin upgrade development-crew@development-crew-plugin`
 
-- **OpenCode (latest):** Restart OpenCode. An unpinned npm installation resolves the latest published package; if an update is detected, the plugin asks you to restart again after refreshing its cache.
-- **OpenCode (pinned npm):** Change the exact package version in your `opencode.json`:
-
-  ```json
-  {
-    "plugin": ["@marcelorodrigo/opencode-development-crew@0.15.0"]
-  }
-  ```
-
-- **OpenCode (pinned Git):** Bump the git tag in your `opencode.json`:
-
-  ```json
-  {
-    "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git#v0.11.0"]
-  }
-  ```
+- **OpenCode:** Restart OpenCode. The unversioned npm plugin entry resolves the latest published package; if an update is detected, the plugin asks you to restart again after refreshing its cache.
 
 ## License
 
