@@ -3,12 +3,13 @@
   "version": "0.16.0",
   "description": "Development Crew skills: a skills-first pipeline with Rubber Duck, Architect, Implementer, and Code Reviewer",
   "type": "module",
-  "main": "./.opencode/plugins/development-crew.js",
+  "main": "./index.js",
   "exports": {
-    ".": "./.opencode/plugins/development-crew.js"
+    ".": "./index.js"
   },
   "files": [
-    ".opencode/plugins",
+    "index.js",
+    "lib",
     "hooks",
     "skills",
     "README.md",

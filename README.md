@@ -91,7 +91,7 @@ To use the repository directly instead of npm:
 Or fetch install instructions:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/marcelorodrigo/development-crew/master/.opencode/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/marcelorodrigo/development-crew/master/OPENCODE_INSTALL.md
 ```
 
 ### Cursor
