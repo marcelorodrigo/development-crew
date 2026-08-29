@@ -65,6 +65,11 @@
         },
         {
           "type": "json",
+          "path": "gemini-extension.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
           "path": ".omp-plugin/marketplace.json",
           "jsonpath": "$.metadata.version"
         },

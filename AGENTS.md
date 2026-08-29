@@ -77,12 +77,15 @@ skills/                          # Skill prompt definitions
   shared-principles/SKILL.md       # Shared design principles
 
 GEMINI.md                        # Gemini context file (uses @-includes for skill files)
+gemini-extension.json            # Gemini CLI extension manifest
 
 scripts/
   validate-skills.mjs            # CI: validates all SKILL.md frontmatter (name + description)
 
 validation/
   validate_skills.py             # Validates skills/*.*/SKILL.md frontmatter (name + description)
+  validate_gemini_extension.py   # Validates Gemini extension manifest and context file
+  validate_versions.py            # Validates versions across package manifests
 ```
 
 ## How the plugin works
@@ -119,6 +122,7 @@ Version is managed by Release Please. It lives in multiple files that must stay 
 - `.release-please-manifest.json`
 - `.github/plugin/plugin.json` + `marketplace.json`
 - `.claude-plugin/plugin.json` + `marketplace.json`
+- `gemini-extension.json`
 - `.omp-plugin/marketplace.json`
 
 Release Please `extra-files` in `release-please-config.json` handles syncing automatically. Do not bump versions manually.
@@ -127,7 +131,7 @@ Release Please `extra-files` in `release-please-config.json` handles syncing aut
 
 - **build-opencode.yml** -- Validates skills + runs tests on push/PR
 - **publish.yml** -- Publishes the npm package after a published `vX.Y.Z` release using OIDC
-- **validate-plugin.yml** -- Validates plugin/marketplace JSON files and cross-file version consistency across GitHub, Claude, and OMP manifests
+- **validate-plugin.yml** -- Validates plugin/marketplace JSON files, the Gemini extension, and cross-file version consistency
 - **validate-pr-title.yml** -- Enforces conventional commit format on PR titles
 
 ## Conventions

@@ -59,6 +59,14 @@ def main():
         print(f"ERROR: Failed to read Codex or Cursor plugin files: {e}")
         sys.exit(1)
 
+    # Load Gemini extension version
+    try:
+        with open("gemini-extension.json") as f:
+            version_sources["gemini-extension.json $.version"] = json.load(f).get("version", "")
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"ERROR: Failed to read gemini-extension.json: {e}")
+        sys.exit(1)
+
     # Load OMP plugin versions
     try:
         with open(".omp-plugin/marketplace.json") as f:
