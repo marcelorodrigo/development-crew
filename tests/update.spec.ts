@@ -51,12 +51,12 @@ describe('updateRemoveDirectory', () => {
     await expect(updateRemoveDirectory(outside, packageName, cacheDirectory)).resolves.toBeUndefined();
   });
 
-  it('rejects a project packages directory when no OpenCode root is supplied', async () => {
+  it('rejects a project packages directory when the supplied root does not match', async () => {
     const projectWrapper = `/tmp/project/packages/@marcelorodrigo/opencode-development-crew@latest/node_modules/${packageName}`;
     const opencodeShapedProjectWrapper = `/tmp/project/opencode/packages/@marcelorodrigo/opencode-development-crew@latest/node_modules/${packageName}`;
 
-    await expect(updateRemoveDirectory(projectWrapper, packageName)).resolves.toBeUndefined();
-    await expect(updateRemoveDirectory(opencodeShapedProjectWrapper, packageName)).resolves.toBeUndefined();
+    await expect(updateRemoveDirectory(projectWrapper, packageName, cacheDirectory)).resolves.toBeUndefined();
+    await expect(updateRemoveDirectory(opencodeShapedProjectWrapper, packageName, cacheDirectory)).resolves.toBeUndefined();
   });
 });
 
