@@ -1,6 +1,6 @@
 {
   "name": "development-crew",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "description": "A skills-first development workflow: four specialist skills for brainstorming (Rubber Duck), architecture design (Architect), implementation (Implementer), and code review (Code Reviewer).",
   "author": {
     "name": "Marcelo Rodrigo",
