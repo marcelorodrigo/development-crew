@@ -38,6 +38,9 @@ jobs:
       - name: Validate .omp-plugin/marketplace.json
         run: python3 validation/validate_omp_plugin.py
 
+      - name: Validate gemini-extension.json
+        run: python3 validation/validate_gemini_extension.py
+
       - name: Validate version consistency
         run: python3 validation/validate_versions.py
 

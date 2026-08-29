@@ -40,7 +40,7 @@ Installation differs by harness. If you use more than one, install Development C
 - Verify:
 
   ```bash
-  /skill rubber-duck
+  /development-crew:rubber-duck
   ```
 
 ### Codex CLI
@@ -150,12 +150,25 @@ gemini extensions install https://github.com/marcelorodrigo/development-crew
 - Verify:
 
   ```bash
-  /skill rubber-duck
+  /skill:rubber-duck
   ```
 
 ## The Pipeline
 
-Use OpenCode's native `skill` tool (or `skill: name` in any harness):
+Use OpenCode's native `skill` tool. In current OpenCode versions, discovered
+skills are also exposed as slash entries when no existing command has the same
+name:
+
+```text
+/rubber-duck
+/architect
+/implementer
+/code-reviewer
+```
+
+The slash entries come from OpenCode's skill discovery; this plugin does not
+register custom commands. If a slash entry is unavailable, use the native
+`skill` tool:
 
 1. **rubber-duck** - Activates before writing code. Challenges assumptions, explores alternatives, asks the questions nobody else will. Produces a structured **Brainstorm Brief**.
 
