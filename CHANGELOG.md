@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.3](https://github.com/marcelorodrigo/development-crew/compare/v0.16.2...v0.16.3) (2026-08-29)
+
+
+### Bug Fixes
+
+* **opencode:** replace destructive auto-update with safe reification ([#155](https://github.com/marcelorodrigo/development-crew/issues/155)) ([00c8ec2](https://github.com/marcelorodrigo/development-crew/commit/00c8ec23e1752965b7398501406f81ae640255ae))
+
 ## [0.16.2](https://github.com/marcelorodrigo/development-crew/compare/v0.16.1...v0.16.2) (2026-08-29)
 
 
