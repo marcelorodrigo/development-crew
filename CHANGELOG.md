@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.2](https://github.com/marcelorodrigo/development-crew/compare/v0.16.1...v0.16.2) (2026-08-29)
+
+
+### Bug Fixes
+
+* document native skill invocation ([#153](https://github.com/marcelorodrigo/development-crew/issues/153)) ([9881d65](https://github.com/marcelorodrigo/development-crew/commit/9881d651883b29828165e6aba497591554131248))
+
 ## [0.16.1](https://github.com/marcelorodrigo/development-crew/compare/v0.16.0...v0.16.1) (2026-08-28)
 
 
