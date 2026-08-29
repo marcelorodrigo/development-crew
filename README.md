@@ -85,9 +85,29 @@ OpenCode installs the published npm package from this entry. Restart OpenCode
 after adding or changing the plugin configuration.
 
 The `@latest` tag resolves to the latest published release. The plugin also
-performs a best-effort update check in the background. When a newer release is
-found, OpenCode's eligible npm cache wrapper is removed and a toast asks you to
-restart.
+performs a best-effort update check in the background. For an eligible floating
+npm wrapper, it checks npm, installs and reifies the exact newer release, and
+then shows a toast asking you to restart OpenCode. Before updating, the plugin
+snapshots the skills outside the mutable package wrapper so OpenCode can still
+discover and read `SKILL.md` files safely.
+
+Exact-pinned, local, and Git installs are not auto-updated. Restart OpenCode to
+activate newly installed code. Update failures are non-fatal and do not prevent
+the plugin from starting.
+
+If an older destructive updater left a stale `@latest` wrapper, install the
+fixed release explicitly through OpenCode's plugin manager, using the same
+scope as the original entry, then restart OpenCode:
+
+```bash
+opencode plugin @marcelorodrigo/opencode-development-crew@<fixed-version> --global --force
+```
+
+Replace `<fixed-version>` with the first release containing this updater fix.
+For a project-level entry, omit `--global` and run the command from that
+project. This temporarily pins the plugin; change its config entry back to
+`@latest` afterward if you want future automatic updates. Do not remove
+arbitrary cache or package paths manually.
 
 To use the repository directly instead of npm:
 
@@ -218,7 +238,12 @@ register custom commands. If a slash entry is unavailable, use the native
 - **Gemini:** `gemini extensions update https://github.com/marcelorodrigo/development-crew`
 - **oh-my-pi:** `omp plugin upgrade development-crew@development-crew-plugin`
 
-- **OpenCode:** Restart OpenCode. The `@latest` npm plugin entry resolves the latest published package; if an update is detected, the plugin asks you to restart again after refreshing its cache.
+- **OpenCode:** The `@latest` npm plugin entry checks npm in the background and
+  installs the exact newer release into the eligible floating wrapper. Skills
+  are snapshotted outside the mutable wrapper before the update. Restart
+  OpenCode after the notification to activate the new code. Exact-pinned,
+  local, and Git installs are not auto-updated, and update failures are
+  non-fatal.
 
 ## License
 

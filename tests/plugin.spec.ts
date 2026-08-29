@@ -39,6 +39,44 @@ describe('DevelopmentCrewPlugin', () => {
     expect(startUpdate).toHaveBeenCalledOnce();
   });
 
+  it('prepares runtime assets before starting the updater', async () => {
+    const events: string[] = [];
+    const prepareAssets = vi.fn(async () => {
+      events.push('prepare');
+      return { skillsDir: '/tmp/runtime-skills', bootstrapContent: '---\nname: test\n---\nBootstrap' };
+    });
+    const startUpdate = vi.fn(() => events.push('update'));
+
+    await createDevelopmentCrewPlugin(startUpdate, prepareAssets)(mockPluginInput());
+
+    expect(events).toEqual(['prepare', 'update']);
+  });
+
+  it('registers the prepared skills snapshot', async () => {
+    const plugin = createDevelopmentCrewPlugin(() => {}, async () => ({
+      skillsDir: '/tmp/runtime-skills',
+      bootstrapContent: '---\nname: test\n---\nBootstrap',
+    }));
+    const hooks = await plugin(mockPluginInput());
+    const cfg = {} as Record<string, unknown>;
+
+    await hooks.config!(cfg);
+
+    expect((cfg.skills as { paths: string[] }).paths).toEqual(['/tmp/runtime-skills']);
+  });
+
+  it('keeps startup non-fatal and skips the updater when preparation fails', async () => {
+    const startUpdate = vi.fn();
+    const plugin = createDevelopmentCrewPlugin(startUpdate, async () => {
+      throw new Error('copy failed');
+    });
+
+    const hooks = await plugin(mockPluginInput());
+
+    expect(hooks.name).toBe('development-crew');
+    expect(startUpdate).not.toHaveBeenCalled();
+  });
+
   it('returns name development-crew', async () => {
     const hooks = await DevelopmentCrewPlugin(mockPluginInput());
     expect(hooks.name).toBe('development-crew');
@@ -140,6 +178,24 @@ describe('experimental.chat.messages.transform hook', () => {
     expect(parts[0].text).toBeTruthy();
     expect(parts[0].text).toContain('Development Crew');
     expect(parts[1].text).toBe('do something');
+  });
+
+  it('uses the prepared bootstrap content', async () => {
+    const hooks = await createDevelopmentCrewPlugin(
+      () => {},
+      async () => ({
+        skillsDir: '/tmp/runtime-skills',
+        bootstrapContent: '---\nname: test\n---\nSnapshot bootstrap',
+      }),
+    )(mockPluginInput());
+    const transform = (hooks as Record<string, unknown>)[
+      'experimental.chat.messages.transform'
+    ] as (input: unknown, output: TransformOutput) => Promise<void>;
+    const output: TransformOutput = { messages: [makeUserMessage('do something')] };
+
+    await transform(null, output);
+
+    expect(output.messages[0].parts[0].text).toContain('Snapshot bootstrap');
   });
 
   it('does not inject bootstrap a second time (idempotency)', async () => {

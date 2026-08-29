@@ -51,9 +51,29 @@ skill: code-reviewer
 ## Updating
 
 The `@latest` npm installation resolves the latest published release and checks
-npm for newer releases in the background. If the installation is an eligible
-OpenCode npm cache wrapper, the wrapper is refreshed and a toast asks you to
-restart OpenCode.
+npm for newer releases in the background. For an eligible floating OpenCode npm
+wrapper, the plugin installs and reifies the exact newer release, then shows a
+toast asking you to restart OpenCode. Before updating, it snapshots the skills
+outside the mutable package wrapper so `SKILL.md` discovery and reads remain
+safe.
+
+Exact-pinned, local, and Git installs are not auto-updated. Restart OpenCode to
+activate newly installed code. Update failures are non-fatal and do not prevent
+the plugin from starting.
+
+If an older destructive updater left a stale `@latest` wrapper, install the
+fixed release explicitly through OpenCode's plugin manager, using the same
+scope as the original entry, then restart OpenCode:
+
+```bash
+opencode plugin @marcelorodrigo/opencode-development-crew@<fixed-version> --global --force
+```
+
+Replace `<fixed-version>` with the first release containing this updater fix.
+For a project-level entry, omit `--global` and run the command from that
+project. This temporarily pins the plugin; change its config entry back to
+`@latest` afterward if you want future automatic updates. Do not remove
+arbitrary cache or package paths manually.
 
 To use the repository directly instead of npm:
 

@@ -15,6 +15,7 @@ const expectedFiles = [
   'index.js',
   'LICENSE',
   'lib/development-crew.js',
+  'lib/runtime-assets.js',
   'lib/update.js',
   'package.json',
   'README.md',
@@ -58,6 +59,9 @@ describe('npm package', () => {
       const config: Record<string, unknown> = {};
       await hooks.config(config);
       expect(config.skills).toBeDefined();
+      const configuredSkillsDir = (config.skills as { paths: string[] }).paths[0];
+      expect(configuredSkillsDir).not.toBe(join(directory, 'package', 'skills'));
+      expect(existsSync(join(configuredSkillsDir, 'using-development-crew', 'SKILL.md'))).toBe(true);
       expect(existsSync(join(directory, 'package', 'skills', 'using-development-crew', 'SKILL.md'))).toBe(true);
       rmSync(extractDirectory, { force: true, recursive: true });
     } finally {

@@ -97,6 +97,7 @@ The plugin has **no build step**. The package entry point is `index.js` — raw 
 - **Messages transform hook** strips frontmatter from the bootstrap SKILL.md and prepends the body to the first user message in every new session.
 - **SessionStart hooks** (for Claude Code, Cursor, Copilot CLI) are bash scripts that inject the same bootstrap content via `additionalContext` JSON output.
 - **oh-my-pi hook** (`hooks/omp-session-start.ts`) is a TypeScript module registered via `package.json` `omp.hooks` that injects the bootstrap on `session_start`. oh-my-pi runs on Bun and executes TypeScript natively — no build step needed.
+- **OpenCode auto-update** checks npm in the background for eligible floating npm installs. When a newer release exists, it snapshots the skills outside the mutable package wrapper, installs and reifies the exact release into that wrapper, and notifies the user to restart. Exact-pinned, local, and Git installs are not auto-updated. Restart is required to activate newly installed code, and update failures are non-fatal.
 
 Idempotency: uses `<!-- development-crew-bootstrap -->` marker to avoid double injection.
 
