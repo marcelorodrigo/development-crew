@@ -1,9 +1,10 @@
-import { mkdir, mkdtemp, readFile, rm, stat, utimes } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, stat, utimes, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import {
   acquireLock,
+  breakStaleLock,
   checkAutoUpdate,
   isAutoUpdatableSpecification,
   isVersionNewer,
@@ -151,9 +152,10 @@ describe('acquireLock', () => {
     const lock = `${wrapper}.development-crew-update.lock`;
 
     try {
-      await mkdir(lock);
+      await mkdir(join(lock, 'old-generation'), { recursive: true });
+      await writeFile(join(lock, 'old-generation', 'heartbeat'), '');
       const stale = new Date(Date.now() - 120_000);
-      await utimes(lock, stale, stale);
+      await utimes(join(lock, 'old-generation', 'heartbeat'), stale, stale);
 
       const release = await acquireLock(wrapper);
       await expect(stat(lock)).resolves.toBeDefined();
@@ -164,21 +166,71 @@ describe('acquireLock', () => {
     }
   });
 
-  it('does not let an old owner release a replacement lock', async () => {
+  it('does not let an old owner release a replacement generation during cleanup', async () => {
     const root = await mkdtemp(join(tmpdir(), 'development-crew-lock-'));
     const wrapper = join(root, 'wrapper');
     const lock = `${wrapper}.development-crew-update.lock`;
 
     try {
-      const releaseOld = await acquireLock(wrapper);
-      const stale = new Date(Date.now() - 120_000);
-      await utimes(join(lock, 'heartbeat'), stale, stale);
-      const releaseNew = await acquireLock(wrapper);
+      let oldGeneration;
+      const fileSystem = {
+        mkdir,
+        readdir,
+        readFile,
+        rmdir: async () => {},
+        stat,
+        utimes,
+        writeFile,
+        rm: async (path: string, options?: Parameters<typeof rm>[1]) => {
+          if (path === join(lock, oldGeneration)) {
+            await mkdir(join(lock, 'replacement-generation'));
+            await writeFile(join(lock, 'replacement-generation', 'owner'), 'replacement-owner');
+          }
+          return rm(path, options);
+        },
+      };
+      const releaseOld = await acquireLock(wrapper, fileSystem);
+      [oldGeneration] = await readdir(lock);
 
       await releaseOld();
-      await expect(readFile(join(lock, 'owner'), 'utf8')).resolves.toHaveLength(36);
-      await releaseNew();
-      await expect(stat(lock)).rejects.toMatchObject({ code: 'ENOENT' });
+      await expect(readFile(join(lock, 'replacement-generation', 'owner'), 'utf8')).resolves.toBe('replacement-owner');
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('does not let a stale breaker remove a replacement generation', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'development-crew-lock-'));
+    const wrapper = join(root, 'wrapper');
+    const lock = `${wrapper}.development-crew-update.lock`;
+    const breaker = `${lock}.breaker`;
+
+    try {
+      await mkdir(join(lock, 'old-generation'), { recursive: true });
+      await writeFile(join(lock, 'old-generation', 'heartbeat'), '');
+      const stale = new Date(Date.now() - 120_000);
+      await utimes(join(lock, 'old-generation', 'heartbeat'), stale, stale);
+
+      const fileSystem = {
+        mkdir,
+        readdir,
+        readFile,
+        rmdir: async () => {},
+        stat,
+        utimes,
+        writeFile,
+        rm: async (path: string, options?: Parameters<typeof rm>[1]) => {
+          if (path === join(lock, 'old-generation')) {
+            await mkdir(join(lock, 'replacement-generation'));
+            await writeFile(join(lock, 'replacement-generation', 'heartbeat'), '');
+          }
+          return rm(path, options);
+        },
+      };
+
+      await expect(breakStaleLock(lock, breaker, fileSystem)).resolves.toBe(true);
+      await expect(stat(join(lock, 'replacement-generation', 'heartbeat'))).resolves.toBeDefined();
+      await expect(stat(join(lock, 'old-generation'))).rejects.toMatchObject({ code: 'ENOENT' });
     } finally {
       await rm(root, { recursive: true, force: true });
     }
