@@ -25,6 +25,7 @@ const expectedFiles = [
   'skills/rubber-duck/SKILL.md',
   'skills/shared-principles/SKILL.md',
   'skills/using-development-crew/SKILL.md',
+  'tui/index.js',
 ];
 
 describe('npm package', () => {
