@@ -5,11 +5,14 @@
   "type": "module",
   "main": "./index.js",
   "exports": {
-    ".": "./index.js"
+    ".": "./index.js",
+    "./server": "./index.js",
+    "./tui": "./tui/index.js"
   },
   "files": [
     "index.js",
     "lib",
+    "tui",
     "hooks",
     "skills",
     "README.md",
