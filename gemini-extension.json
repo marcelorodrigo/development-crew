@@ -1,6 +1,6 @@
 {
   "name": "development-crew",
-  "version": "0.16.3",
+  "version": "0.17.0",
   "description": "A skills-first development workflow with Rubber Duck, Architect, Implementer, and Code Reviewer skills.",
   "contextFileName": "GEMINI.md"
 }
