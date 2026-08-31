@@ -43,7 +43,7 @@
     "vitest": "^4.1.11"
   },
   "dependencies": {
-    "@npmcli/arborist": "9.4.0",
+    "@npmcli/arborist": "10.0.2",
     "semver": "^7.8.5"
   },
   "repository": {
