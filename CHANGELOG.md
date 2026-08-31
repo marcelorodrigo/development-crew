@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/marcelorodrigo/development-crew/compare/v0.16.3...v0.17.0) (2026-08-31)
+
+
+### Features
+
+* **tui:** expose TUI module so plugin appears in /plugins manager ([#158](https://github.com/marcelorodrigo/development-crew/issues/158)) ([2dd1586](https://github.com/marcelorodrigo/development-crew/commit/2dd15867e6b1c868b83ff4d0ddba267d5ee02b75))
+
 ## [0.16.3](https://github.com/marcelorodrigo/development-crew/compare/v0.16.2...v0.16.3) (2026-08-29)
 
 
