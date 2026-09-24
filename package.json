@@ -43,7 +43,7 @@
   "license": "MIT",
   "homepage": "https://github.com/marcelorodrigo/development-crew",
   "devDependencies": {
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.0"
   },
   "dependencies": {
     "@npmcli/arborist": "10.0.2",
