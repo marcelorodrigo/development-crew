@@ -15,6 +15,7 @@ const expectedFiles = [
   'LICENSE',
   'lib/development-crew.js',
   'lib/skills.js',
+  'lib/update.js',
   'package.json',
   'OPENCODE_INSTALL.md',
   'README.md',
@@ -65,6 +66,7 @@ describe('npm package', () => {
         const skills = [];
         const hooks = [];
         await entry.default.setup({
+          options: { autoUpdate: false },
           skill: { transform: async (callback) => callback({ add: (skill) => skills.push(skill) }) },
           session: { hook: async (name, callback) => hooks.push([name, callback]) },
         });

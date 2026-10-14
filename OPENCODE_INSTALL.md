@@ -61,7 +61,40 @@ Development Crew does not register custom commands.
 
 ## Updating
 
-OpenCode v2 owns plugin installation and updates:
+Development Crew automatically checks for and installs npm updates in the
+background after plugin activation. It delegates installation to OpenCode v2's
+native updater rather than modifying OpenCode's package cache itself.
+
+Automatic updates apply only to this package's unpinned npm entries: the bare
+package name, `@latest`, `@*`, or a semver range. Local checkouts, exact versions,
+Git sources, other tags, and unrelated plugins are not automatically updated.
+The configured target is preserved, so a range is not replaced with `@latest`.
+
+Update attempts do not block startup. In-process activations share an in-flight
+attempt, and a persisted one-hour cooldown prevents repeated attempts after a
+reload, including when an update fails. Another attempt requires a later plugin
+activation after the cooldown; there is no periodic polling timer. Optional
+update failures do not disable skills or bootstrap instructions.
+
+The OpenCode CLI must be available on the background service's `PATH`. The
+command has a bounded runtime and is cancelled if this plugin instance unloads.
+Development Crew does not force a service restart or display a custom update
+toast.
+
+To turn off automatic installation and manage updates manually:
+
+```json
+{
+  "plugins": [
+    {
+      "package": "@marcelorodrigo/opencode-development-crew@latest",
+      "options": { "autoUpdate": false }
+    }
+  ]
+}
+```
+
+You can still check or update explicitly:
 
 ```bash
 opencode plugin check
@@ -69,11 +102,16 @@ opencode plugin update @marcelorodrigo/opencode-development-crew@latest
 ```
 
 Use the configured package target if your entry uses a different tag or range.
-Local plugins and exact package revisions are skipped. Development Crew no
-longer rewrites OpenCode's package cache or runs its own background updater.
+OpenCode skips local plugins and exact package revisions.
 
-OpenCode reloads changes under watched configuration directories automatically.
-If an updated plugin remains inactive, restart OpenCode or its server:
+Prompts ship inside the npm package and are read once during plugin setup. When
+the updated plugin loads, it registers the updated skills and bootstrap.
+Previously loaded skill text in session history is not rewritten. Hot reload
+alone does not download newer releases or reread captured prompt contents.
+
+OpenCode reloads changes under watched configuration directories automatically;
+unwatched dependencies may still require a restart. If an updated plugin remains
+inactive, restart OpenCode or its server:
 
 ```bash
 opencode service restart

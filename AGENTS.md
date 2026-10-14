@@ -43,6 +43,7 @@ OPENCODE_INSTALL.md              # Standalone OpenCode installation guide
 lib/                             # OpenCode runtime implementation (plain JS, no build)
   development-crew.js            # V2 setup with skill transform + session context hook
   skills.js                      # Packaged skill loading and metadata validation
+  update.js                      # Best-effort background updates through the V2 CLI
 
 .claude-plugin/                  # Claude Code plugin manifests
   plugin.json                    # Claude Code plugin metadata
@@ -97,7 +98,7 @@ The plugin has **no build step**. The package entry point is `index.js` — raw 
 - **Session context hook** adds bootstrap instructions as a system text part for each outgoing agent model request. It leaves saved user messages unchanged and reinjects instructions into rebuilt context after compaction.
 - **SessionStart hooks** (for Claude Code, Cursor, Copilot CLI) are bash scripts that inject the same bootstrap content via `additionalContext` JSON output.
 - **oh-my-pi hook** (`hooks/omp-session-start.ts`) is a TypeScript module registered via `package.json` `omp.hooks` that injects the bootstrap on `session_start`. oh-my-pi runs on Bun and executes TypeScript natively — no build step needed.
-- **OpenCode updates** are managed by OpenCode v2 through `opencode plugin check` and `opencode plugin update`. The plugin has no custom updater, temporary skill snapshots, or placeholder TUI entry point. Hook and transform registrations are disposed automatically on unload.
+- **OpenCode updates** run automatically after activation for eligible unpinned npm installs, using the targeted `opencode plugin update` command. `options.autoUpdate: false` opts out. Local checkouts and exact pins are skipped. In-flight coalescing and a persisted one-hour cooldown guard against reload loops. The plugin does not rewrite the package cache, force service restarts, or register a placeholder TUI entry point. Cleanup cancels update work on unload; hook and transform registrations are disposed automatically.
 
 Idempotency: uses `<!-- development-crew-bootstrap -->` marker to avoid double injection.
 

@@ -4,6 +4,8 @@ import { createDevelopmentCrewSetup } from '../lib/development-crew.js';
 
 function mockContext() {
   return {
+    options: {},
+    plugin: { list: vi.fn(async () => ({ data: [{ id: 'development-crew', source: { type: 'local', path: '/checkout/index.js' } }] })) },
     skill: { transform: vi.fn(async (_callback: any) => {}) },
     session: { hook: vi.fn(async (_name: string, _callback: any) => {}) },
   };
@@ -58,6 +60,36 @@ describe('OpenCode v2 plugin', () => {
       .rejects.toThrow('Unreadable skill');
     expect(ctx.skill.transform).not.toHaveBeenCalled();
     expect(ctx.session.hook).not.toHaveBeenCalled();
+  });
+
+  it('starts optional updates after registration and returns their cleanup', async () => {
+    const ctx = mockContext();
+    const cleanup = vi.fn();
+    const startUpdate = vi.fn(() => {
+      expect(ctx.skill.transform).toHaveBeenCalledOnce();
+      expect(ctx.session.hook).toHaveBeenCalledOnce();
+      return cleanup;
+    });
+    expect(await createDevelopmentCrewSetup(undefined, startUpdate)(ctx)).toBe(cleanup);
+    expect(startUpdate).toHaveBeenCalledExactlyOnceWith(ctx);
+  });
+
+  it('does not start updates when skill loading fails', async () => {
+    const ctx = mockContext();
+    const startUpdate = vi.fn();
+    await expect(createDevelopmentCrewSetup(async () => { throw new Error('Unreadable skill'); }, startUpdate)(ctx))
+      .rejects.toThrow('Unreadable skill');
+    expect(startUpdate).not.toHaveBeenCalled();
+  });
+
+  it('keeps skills and bootstrap active if optional update scheduling fails', async () => {
+    const ctx = mockContext();
+    await expect(createDevelopmentCrewSetup(undefined, () => { throw new Error('Cannot schedule'); })(ctx))
+      .resolves.toBeUndefined();
+    expect(ctx.skill.transform).toHaveBeenCalledOnce();
+    const event = { system: [] };
+    await ctx.session.hook.mock.calls[0][1](event);
+    expect(event.system[0].text).toContain('Development Crew');
   });
 });
 

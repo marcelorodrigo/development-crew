@@ -86,9 +86,11 @@ OpenCode installs the package, registers all six skills, and adds the bootstrap
 instructions to each agent model request. Restart OpenCode after installation
 to verify the new plugin is active.
 
-Use `opencode plugin list` to find the `development-crew` ID. OpenCode manages
-updates through `opencode plugin check` and `opencode plugin update`; see the
-[installation guide](OPENCODE_INSTALL.md) for migration and update instructions.
+Use `opencode plugin list` to find the `development-crew` ID. Development Crew
+automatically updates eligible npm installs in the background through OpenCode's
+native updater. Local checkouts and pinned versions are left unchanged. See the
+[installation guide](OPENCODE_INSTALL.md) for update behavior, the opt-out, and
+manual update commands.
 
 To use the repository directly instead of npm:
 
@@ -220,9 +222,11 @@ register custom commands. If a slash entry is unavailable, use the native
 - **Gemini:** `gemini extensions update https://github.com/marcelorodrigo/development-crew`
 - **oh-my-pi:** `omp plugin upgrade development-crew@development-crew-plugin`
 
-- **OpenCode v2:** `opencode plugin update @marcelorodrigo/opencode-development-crew@latest`.
-  Use `opencode plugin check` to check for updates. Local plugins and exact
-  package revisions are skipped.
+- **OpenCode v2:** Eligible npm installs update automatically after plugin
+  activation. Set `options.autoUpdate` to `false` to opt out. For a manual update,
+  run `opencode plugin update @marcelorodrigo/opencode-development-crew@latest`.
+  Use your configured target for another tag or range. Local plugins and exact
+  package revisions are skipped. See [Updating](OPENCODE_INSTALL.md#updating).
 
 ## License
 
