@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/marcelorodrigo/development-crew/compare/v0.17.0...v1.0.0) (2026-10-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate opencode plugin to v2 ([#167](https://github.com/marcelorodrigo/development-crew/issues/167))
+
+### Features
+
+* migrate opencode plugin to v2 ([#167](https://github.com/marcelorodrigo/development-crew/issues/167)) ([d40f1bc](https://github.com/marcelorodrigo/development-crew/commit/d40f1bc9fe5b4448fec2741809aa4db399636780))
+
 ## [0.17.0](https://github.com/marcelorodrigo/development-crew/compare/v0.16.3...v0.17.0) (2026-08-31)
 
 
