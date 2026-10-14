@@ -87,14 +87,40 @@ describe('bootstrap context hook', () => {
     expect(rebuilt.system).toEqual(first.system);
   });
 
-  it('deduplicates by marker rather than the Development Crew name', async () => {
+  it('does not mistake the Development Crew name for injected instructions', async () => {
     const hook = await getContextHook();
     const event = { system: [{ type: 'text', text: 'Use Development Crew' }] };
     await hook(event);
     expect(event.system).toHaveLength(2);
-    const marked = { system: [{ type: 'text', text: '<!-- development-crew-bootstrap -->' }] };
-    await hook(marked);
-    expect(marked.system).toHaveLength(1);
+  });
+
+  it.each([
+    '<!-- development-crew-bootstrap -->',
+    'Idempotency: uses `<!-- development-crew-bootstrap -->` marker to avoid double injection.',
+    'The bootstrap marker is:\n\n<!-- development-crew-bootstrap -->',
+  ])('injects when instructions only mention the bootstrap marker: %s', async (text) => {
+    const hook = await getContextHook();
+    const original = { type: 'text', text };
+    const event = { system: [original] };
+    await hook(event);
+    await hook(event);
+
+    expect(event.system).toHaveLength(2);
+    expect(event.system[0]).toBe(original);
+    expect(event.system[1].text).toContain('Development Crew');
+    expect(event.system[1].text).toContain('<!-- development-crew-bootstrap -->');
+  });
+
+  it('recognizes a complete bootstrap block in a separate context', async () => {
+    const hook = await getContextHook();
+    const first = { system: [] };
+    await hook(first);
+
+    const existing = { ...first.system[0] };
+    const next = { system: [existing] };
+    await hook(next);
+    expect(next.system).toEqual([existing]);
+    expect(next.system[0]).toBe(existing);
   });
 
   it.each([
