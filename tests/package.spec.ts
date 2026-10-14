@@ -16,6 +16,7 @@ const expectedFiles = [
   'lib/development-crew.js',
   'lib/skills.js',
   'package.json',
+  'OPENCODE_INSTALL.md',
   'README.md',
   'skills/architect/SKILL.md',
   'skills/code-reviewer/SKILL.md',
