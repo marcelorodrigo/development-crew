@@ -1,303 +1,306 @@
-import { mkdir, mkdtemp, readFile, readdir, rm, stat, utimes, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { describe, expect, it, vi } from 'vitest';
-import {
-  acquireLock,
-  breakStaleLock,
-  checkAutoUpdate,
-  isAutoUpdatableSpecification,
-  isVersionNewer,
-  startAutoUpdate,
-  updateRemoveDirectory,
-} from '../lib/update.js';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createAutoUpdater, getUpdateTarget, runNativeUpdate } from '../lib/update.js';
 
 const packageName = '@marcelorodrigo/opencode-development-crew';
+const target = `${packageName}@latest`;
+const cooldown = 60 * 60 * 1000;
 
-describe('isVersionNewer', () => {
-  it('compares release versions and prereleases', () => {
-    expect(isVersionNewer('0.16.0', '0.15.0')).toBe(true);
-    expect(isVersionNewer('0.15.0', '0.15.0')).toBe(false);
-    expect(isVersionNewer('0.15.0', '0.16.0')).toBe(false);
-    expect(isVersionNewer('0.15.0', '0.15.0-beta.1')).toBe(true);
-    expect(isVersionNewer('not-a-version', '0.15.0')).toBe(false);
+function mockContext(source: any = { type: 'package', target }, stored = new Map<string, any>()) {
+  return {
+    options: {} as { autoUpdate?: boolean },
+    location: { directory: '/workspace/project' },
+    plugin: {
+      list: vi.fn(async () => ({ data: [
+        { id: 'another-plugin', source: { type: 'package', target: 'another-plugin@latest' } },
+        { id: 'development-crew', source },
+      ] })),
+    },
+    storage: {
+      get: vi.fn(async (key: string) => stored.get(key)),
+      set: vi.fn(async (key: string, value: any) => { stored.set(key, value); }),
+    },
+  };
+}
+
+describe('automatic update eligibility', () => {
+  it.each(['', '@latest', '@*', '@^1.0.0', '@~1.2.0', '@>=1.0.0 <2.0.0', '@1.x'])(
+    'accepts the configured npm target %s', (suffix) => {
+      expect(getUpdateTarget({ id: 'development-crew', source: { type: 'package', target: `${packageName}${suffix}` } }))
+        .toBe(`${packageName}${suffix}`);
+    },
+  );
+
+  it.each([
+    '@1.2.3', '@v1.2.3', '@=1.2.3', '@1.2.3-beta.1', '@beta', '@', '@ ',
+    '@npm:another-plugin', '@latest; echo unsafe',
+  ])('skips exact pins and unsupported specifications: %s', (suffix) => {
+    expect(getUpdateTarget({ id: 'development-crew', source: { type: 'package', target: `${packageName}${suffix}` } }))
+      .toBeUndefined();
+  });
+
+  it.each([
+    { id: 'development-crew', source: { type: 'local', path: '/checkout/index.js' } },
+    { id: 'development-crew', source: { type: 'builtin' } },
+    { id: 'another-plugin', source: { type: 'package', target } },
+    { id: 'development-crew', source: { type: 'package', target: 'another-plugin@latest' } },
+    { id: 'development-crew', source: { type: 'package', target: `${packageName}-other@latest` } },
+    { id: 'development-crew', source: { type: 'package', target: 'github:marcelorodrigo/development-crew' } },
+    { id: 'development-crew' },
+  ])('does not update local, Git, or unrelated installations', (plugin) => {
+    expect(getUpdateTarget(plugin)).toBeUndefined();
   });
 });
 
-describe('isAutoUpdatableSpecification', () => {
-  it.each(['latest', '*', '^0.15.0', '~0.15.0', '>=0.15.0', '0.x'])('%s is eligible', (specification) => {
-    expect(isAutoUpdatableSpecification(specification)).toBe(true);
-  });
+describe('background updater lifecycle', () => {
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
 
-  it.each(['0.15.0', 'file:../plugin', 'github:owner/plugin', '', 'not a range', null])('%s is not eligible', (specification) => {
-    expect(isAutoUpdatableSpecification(specification)).toBe(false);
-  });
-});
+  it('schedules only its configured package without delaying the caller', async () => {
+    const runUpdate = vi.fn(async () => {});
+    const ctx = mockContext();
+    const cleanup = createAutoUpdater({ runUpdate })(ctx);
 
-describe('updateRemoveDirectory', () => {
-  const cacheDirectory = '/tmp/opencode-cache/opencode/packages';
-
-  it('selects a scoped floating-version OpenCode wrapper', async () => {
-    const wrapper = `${cacheDirectory}/@marcelorodrigo/opencode-development-crew@latest`;
-    const packageDirectory = `${wrapper}/node_modules/${packageName}`;
-
-    await expect(updateRemoveDirectory(packageDirectory, packageName, cacheDirectory)).resolves.toBe(wrapper);
-  });
-
-  it('rejects pinned and outside-cache wrappers', async () => {
-    const pinned = `${cacheDirectory}/@marcelorodrigo/opencode-development-crew@0.15.0/node_modules/${packageName}`;
-    const outside = `/tmp/opencode-development-crew@latest/node_modules/${packageName}`;
-
-    await expect(updateRemoveDirectory(pinned, packageName, cacheDirectory)).resolves.toBeUndefined();
-    await expect(updateRemoveDirectory(outside, packageName, cacheDirectory)).resolves.toBeUndefined();
-  });
-
-  it('rejects a project packages directory when the supplied root does not match', async () => {
-    const projectWrapper = `/tmp/project/packages/@marcelorodrigo/opencode-development-crew@latest/node_modules/${packageName}`;
-    const opencodeShapedProjectWrapper = `/tmp/project/opencode/packages/@marcelorodrigo/opencode-development-crew@latest/node_modules/${packageName}`;
-
-    await expect(updateRemoveDirectory(projectWrapper, packageName, cacheDirectory)).resolves.toBeUndefined();
-    await expect(updateRemoveDirectory(opencodeShapedProjectWrapper, packageName, cacheDirectory)).resolves.toBeUndefined();
-  });
-});
-
-describe('checkAutoUpdate', () => {
-  it('reifies an eligible wrapper when npm has a newer version', async () => {
-    const reifyPackage = vi.fn();
-    const readPackageJson = vi.fn()
-      .mockResolvedValueOnce({ name: packageName, version: '0.15.0' })
-      .mockResolvedValueOnce({ name: packageName, version: '0.15.0' })
-      .mockResolvedValueOnce({ name: packageName, version: '0.16.0' });
-    const wrapper = '/cache/@marcelorodrigo/opencode-development-crew@latest';
-    const result = await checkAutoUpdate(new AbortController().signal, {
-      findPackageDirectory: vi.fn().mockResolvedValue(`${wrapper}/node_modules/${packageName}`),
-      readPackageJson,
-      fetchLatestVersion: vi.fn().mockResolvedValue('0.16.0'),
-      updateRemoveDirectory: vi.fn().mockResolvedValue(wrapper),
-      reifyPackage,
-      acquireLock: vi.fn().mockResolvedValue(vi.fn()),
+    expect(typeof cleanup).toBe('function');
+    expect(ctx.plugin.list).not.toHaveBeenCalled();
+    expect(runUpdate).not.toHaveBeenCalled();
+    await vi.runOnlyPendingTimersAsync();
+    expect(runUpdate).toHaveBeenCalledExactlyOnceWith(target, {
+      cwd: '/workspace/project', signal: expect.any(AbortSignal),
     });
-
-    expect(result).toEqual({ updated: true, name: packageName, current: '0.15.0', latest: '0.16.0' });
-    expect(reifyPackage).toHaveBeenCalledWith(wrapper, packageName, '0.16.0');
+    expect(ctx.storage.set).toHaveBeenCalledBefore(runUpdate);
+    cleanup();
   });
 
-  it('does not reify the wrapper when the installed version is current', async () => {
-    const reifyPackage = vi.fn();
-    const result = await checkAutoUpdate(new AbortController().signal, {
-      findPackageDirectory: vi.fn().mockResolvedValue('/cache/package'),
-      readPackageJson: vi.fn().mockResolvedValue({ name: packageName, version: '0.15.0' }),
-      fetchLatestVersion: vi.fn().mockResolvedValue('0.15.0'),
-      updateRemoveDirectory: vi.fn(),
-      reifyPackage,
-      acquireLock: vi.fn(),
-    });
-
-    expect(result).toEqual({ updated: false });
-    expect(reifyPackage).not.toHaveBeenCalled();
+  it('does no work when automatic updates are disabled', async () => {
+    const runUpdate = vi.fn(async () => {});
+    const ctx = mockContext();
+    ctx.options.autoUpdate = false;
+    createAutoUpdater({ runUpdate })(ctx);
+    await vi.runOnlyPendingTimersAsync();
+    expect(ctx.plugin.list).not.toHaveBeenCalled();
+    expect(runUpdate).not.toHaveBeenCalled();
   });
 
-  it('reports reification failures without claiming an update', async () => {
-    const result = await checkAutoUpdate(new AbortController().signal, {
-      findPackageDirectory: vi.fn().mockResolvedValue('/cache/package'),
-      readPackageJson: vi.fn().mockResolvedValue({ name: packageName, version: '0.15.0' }),
-      fetchLatestVersion: vi.fn().mockResolvedValue('0.16.0'),
-      updateRemoveDirectory: vi.fn().mockResolvedValue('/cache/wrapper'),
-      reifyPackage: vi.fn().mockRejectedValue(new Error('permission denied')),
-      acquireLock: vi.fn().mockResolvedValue(vi.fn()),
-    });
-
-    expect(result).toEqual({
-      updated: false,
-      error: 'reify_failed',
-      name: packageName,
-      current: '0.15.0',
-      latest: '0.16.0',
-    });
+  it('preserves a configured version range instead of switching it to latest', async () => {
+    const range = `${packageName}@^1.0.0`;
+    const runUpdate = vi.fn(async () => {});
+    createAutoUpdater({ runUpdate })(mockContext({ type: 'package', target: range }));
+    await vi.runOnlyPendingTimersAsync();
+    expect(runUpdate).toHaveBeenCalledExactlyOnceWith(range, expect.any(Object));
   });
 
-  it('deduplicates concurrent updates and releases the lock', async () => {
-    let verify;
-    const release = vi.fn();
-    const reifyPackage = vi.fn().mockImplementation(() => new Promise((resolve) => { verify = resolve; }));
-    const readPackageJson = vi.fn()
-      .mockResolvedValueOnce({ name: packageName, version: '0.15.0' })
-      .mockResolvedValueOnce({ name: packageName, version: '0.15.0' })
-      .mockResolvedValueOnce({ name: packageName, version: '0.15.0' })
-      .mockResolvedValue({ name: packageName, version: '0.16.0' });
-    const dependencies = {
-      findPackageDirectory: vi.fn().mockResolvedValue('/cache/wrapper/node_modules/@marcelorodrigo/opencode-development-crew'),
-      readPackageJson,
-      fetchLatestVersion: vi.fn().mockResolvedValue('0.16.0'),
-      updateRemoveDirectory: vi.fn().mockResolvedValue('/cache/wrapper'),
-      reifyPackage,
-      acquireLock: vi.fn().mockResolvedValue(release),
-    };
-    const first = checkAutoUpdate(new AbortController().signal, dependencies);
-    const second = checkAutoUpdate(new AbortController().signal, dependencies);
-    await vi.waitFor(() => expect(reifyPackage).toHaveBeenCalledOnce());
-    verify();
-    await expect(Promise.all([first, second])).resolves.toEqual([
-      { updated: true, name: packageName, current: '0.15.0', latest: '0.16.0' },
-      { updated: true, name: packageName, current: '0.15.0', latest: '0.16.0' },
-    ]);
-    expect(release).toHaveBeenCalledOnce();
+  it.each([
+    { type: 'local', path: '/checkout/index.js' },
+    { type: 'package', target: `${packageName}@1.2.3` },
+  ])('never invokes the updater for local or pinned installations', async (source) => {
+    const runUpdate = vi.fn(async () => {});
+    const ctx = mockContext(source);
+    createAutoUpdater({ runUpdate })(ctx);
+    await vi.runOnlyPendingTimersAsync();
+    expect(ctx.storage.set).not.toHaveBeenCalled();
+    expect(runUpdate).not.toHaveBeenCalled();
   });
-});
 
-describe('acquireLock', () => {
-  it('recovers a stale lock created before its heartbeat', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'development-crew-lock-'));
-    const wrapper = join(root, 'wrapper');
-    const lock = `${wrapper}.development-crew-update.lock`;
+  it('persists the cooldown across new updater instances and reloads', async () => {
+    const stored = new Map();
+    let now = 5_000_000;
+    const runUpdate = vi.fn(async () => {});
+    createAutoUpdater({ runUpdate, now: () => now })(mockContext(undefined, stored));
+    await vi.runOnlyPendingTimersAsync();
+    createAutoUpdater({ runUpdate, now: () => now })(mockContext(undefined, stored));
+    await vi.runOnlyPendingTimersAsync();
+    expect(runUpdate).toHaveBeenCalledOnce();
+
+    now += cooldown;
+    createAutoUpdater({ runUpdate, now: () => now })(mockContext(undefined, stored));
+    await vi.runOnlyPendingTimersAsync();
+    expect(runUpdate).toHaveBeenCalledTimes(2);
+  });
+
+  it('coalesces overlapping activations for the same package target', async () => {
+    const pending = Promise.withResolvers<void>();
+    const runUpdate = vi.fn(() => pending.promise);
+    const start = createAutoUpdater({ runUpdate });
+    start(mockContext());
+    start(mockContext());
+    await vi.runOnlyPendingTimersAsync();
+    expect(runUpdate).toHaveBeenCalledOnce();
+    pending.resolve();
+    await vi.runOnlyPendingTimersAsync();
+  });
+
+  it.each(['get', 'set'])('coalesces separate updater instances while storage.%s is pending', async (boundary) => {
+    const stored = new Map();
+    const first = mockContext(undefined, stored);
+    const second = mockContext(undefined, stored);
+    const pendingStorage = Promise.withResolvers<any>();
+    const pendingUpdate = Promise.withResolvers<void>();
+    first.storage[boundary as 'get' | 'set'].mockReturnValueOnce(pendingStorage.promise);
+    const runUpdate = vi.fn(() => pendingUpdate.promise);
+    const cleanups = [
+      createAutoUpdater({ runUpdate })(first),
+      createAutoUpdater({ runUpdate })(second),
+    ];
 
     try {
-      await mkdir(join(lock, 'old-generation'), { recursive: true });
-      await writeFile(join(lock, 'old-generation', 'heartbeat'), '');
-      const stale = new Date(Date.now() - 120_000);
-      await utimes(join(lock, 'old-generation', 'heartbeat'), stale, stale);
+      await vi.runOnlyPendingTimersAsync();
+      expect(second.storage.get).not.toHaveBeenCalled();
+      expect(runUpdate).not.toHaveBeenCalled();
 
-      const release = await acquireLock(wrapper);
-      await expect(stat(lock)).resolves.toBeDefined();
-      await release();
-      await expect(stat(lock)).rejects.toMatchObject({ code: 'ENOENT' });
+      pendingStorage.resolve(undefined);
+      await vi.runOnlyPendingTimersAsync();
+      expect(runUpdate).toHaveBeenCalledOnce();
+      expect(first.storage.set).toHaveBeenCalledOnce();
+      expect(second.storage.set).not.toHaveBeenCalled();
     } finally {
-      await rm(root, { recursive: true, force: true });
+      pendingStorage.resolve(undefined);
+      pendingUpdate.resolve();
+      for (const cleanup of cleanups) cleanup();
+      await vi.runOnlyPendingTimersAsync();
     }
   });
 
-  it('does not let an old owner release a replacement generation during cleanup', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'development-crew-lock-'));
-    const wrapper = join(root, 'wrapper');
-    const lock = `${wrapper}.development-crew-update.lock`;
+  it('allows separate flight maps for isolated updater instances', async () => {
+    const pending = Promise.withResolvers<void>();
+    const runUpdate = vi.fn(() => pending.promise);
+    const cleanups = [
+      createAutoUpdater({ runUpdate, flights: new Map() })(mockContext()),
+      createAutoUpdater({ runUpdate, flights: new Map() })(mockContext()),
+    ];
 
     try {
-      let oldGeneration;
-      const fileSystem = {
-        mkdir,
-        readdir,
-        readFile,
-        rmdir: async () => {},
-        stat,
-        utimes,
-        writeFile,
-        rm: async (path: string, options?: Parameters<typeof rm>[1]) => {
-          if (path === join(lock, oldGeneration)) {
-            await mkdir(join(lock, 'replacement-generation'));
-            await writeFile(join(lock, 'replacement-generation', 'owner'), 'replacement-owner');
-          }
-          return rm(path, options);
-        },
-      };
-      const releaseOld = await acquireLock(wrapper, fileSystem);
-      [oldGeneration] = await readdir(lock);
-
-      await releaseOld();
-      await expect(readFile(join(lock, 'replacement-generation', 'owner'), 'utf8')).resolves.toBe('replacement-owner');
+      await vi.runOnlyPendingTimersAsync();
+      expect(runUpdate).toHaveBeenCalledTimes(2);
     } finally {
-      await rm(root, { recursive: true, force: true });
+      pending.resolve();
+      for (const cleanup of cleanups) cleanup();
+      await vi.runOnlyPendingTimersAsync();
     }
   });
 
-  it('does not let a stale breaker remove a replacement generation', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'development-crew-lock-'));
-    const wrapper = join(root, 'wrapper');
-    const lock = `${wrapper}.development-crew-update.lock`;
-    const breaker = `${lock}.breaker`;
+  it('records failed attempts so reloads do not repeatedly retry a broken installation', async () => {
+    const stored = new Map();
+    const runUpdate = vi.fn(async () => { throw new Error('Registry unavailable'); });
+    createAutoUpdater({ runUpdate })(mockContext(undefined, stored));
+    await vi.runOnlyPendingTimersAsync();
+    createAutoUpdater({ runUpdate })(mockContext(undefined, stored));
+    await vi.runOnlyPendingTimersAsync();
+    expect(runUpdate).toHaveBeenCalledOnce();
+  });
 
-    try {
-      await mkdir(join(lock, 'old-generation'), { recursive: true });
-      await writeFile(join(lock, 'old-generation', 'heartbeat'), '');
-      const stale = new Date(Date.now() - 120_000);
-      await utimes(join(lock, 'old-generation', 'heartbeat'), stale, stale);
+  it.each(['list', 'get', 'set'])('isolates %s failures from activation', async (boundary) => {
+    const ctx = mockContext();
+    const runUpdate = vi.fn(async () => {});
+    const method = boundary === 'list' ? ctx.plugin.list : ctx.storage[boundary as 'get' | 'set'];
+    method.mockRejectedValueOnce(new Error('Optional update failed'));
+    expect(() => createAutoUpdater({ runUpdate })(ctx)).not.toThrow();
+    await vi.runOnlyPendingTimersAsync();
+    expect(runUpdate).not.toHaveBeenCalled();
+  });
 
-      const fileSystem = {
-        mkdir,
-        readdir,
-        readFile,
-        rmdir: async () => {},
-        stat,
-        utimes,
-        writeFile,
-        rm: async (path: string, options?: Parameters<typeof rm>[1]) => {
-          if (path === join(lock, 'old-generation')) {
-            await mkdir(join(lock, 'replacement-generation'));
-            await writeFile(join(lock, 'replacement-generation', 'heartbeat'), '');
-          }
-          return rm(path, options);
-        },
-      };
-
-      await expect(breakStaleLock(lock, breaker, fileSystem)).resolves.toBe(true);
-      await expect(stat(join(lock, 'replacement-generation', 'heartbeat'))).resolves.toBeDefined();
-      await expect(stat(join(lock, 'old-generation'))).rejects.toMatchObject({ code: 'ENOENT' });
-    } finally {
-      await rm(root, { recursive: true, force: true });
+  it('recovers from invalid persisted timestamps and a backwards clock change', async () => {
+    const runUpdate = vi.fn(async () => {});
+    const now = 5_000_000;
+    const start = createAutoUpdater({ runUpdate, now: () => now });
+    for (const value of ['invalid', { time: now }, now + cooldown]) {
+      const ctx = mockContext();
+      ctx.storage.get.mockResolvedValueOnce(value);
+      start(ctx);
+      await vi.runOnlyPendingTimersAsync();
     }
+    expect(runUpdate).toHaveBeenCalledTimes(3);
+  });
+
+  it('cancels scheduled work on unload', async () => {
+    const ctx = mockContext();
+    const runUpdate = vi.fn(async () => {});
+    const cleanup = createAutoUpdater({ runUpdate })(ctx);
+    cleanup();
+    cleanup();
+    await vi.runOnlyPendingTimersAsync();
+    expect(ctx.plugin.list).not.toHaveBeenCalled();
+    expect(runUpdate).not.toHaveBeenCalled();
+  });
+
+  it('does not start an update after unloading during discovery', async () => {
+    const ctx = mockContext();
+    const listed = await ctx.plugin.list();
+    const pending = Promise.withResolvers<typeof listed>();
+    ctx.plugin.list.mockReturnValueOnce(pending.promise);
+    const runUpdate = vi.fn(async () => {});
+    const cleanup = createAutoUpdater({ runUpdate })(ctx);
+    await vi.runOnlyPendingTimersAsync();
+    cleanup();
+    pending.resolve(listed);
+    await vi.runOnlyPendingTimersAsync();
+    expect(ctx.storage.set).not.toHaveBeenCalled();
+    expect(runUpdate).not.toHaveBeenCalled();
+  });
+
+  it('aborts an in-flight native command on unload', async () => {
+    const ctx = mockContext();
+    let signal: AbortSignal | undefined;
+    const runUpdate = vi.fn((_target: string, options: { signal: AbortSignal }) => {
+      signal = options.signal;
+      return new Promise<void>((_resolve, reject) => {
+        signal!.addEventListener('abort', () => reject(new Error('Aborted')), { once: true });
+      });
+    });
+    const cleanup = createAutoUpdater({ runUpdate })(ctx);
+    await vi.runOnlyPendingTimersAsync();
+    expect(signal?.aborted).toBe(false);
+    cleanup();
+    await vi.runOnlyPendingTimersAsync();
+    expect(signal?.aborted).toBe(true);
+  });
+
+  it.each(['get', 'set'])('does not install after unloading during storage.%s', async (boundary) => {
+    const ctx = mockContext();
+    const pending = Promise.withResolvers<any>();
+    ctx.storage[boundary as 'get' | 'set'].mockReturnValueOnce(pending.promise);
+    const runUpdate = vi.fn(async () => {});
+    const cleanup = createAutoUpdater({ runUpdate })(ctx);
+    await vi.runOnlyPendingTimersAsync();
+    cleanup();
+    pending.resolve(undefined);
+    await vi.runOnlyPendingTimersAsync();
+    expect(runUpdate).not.toHaveBeenCalled();
   });
 });
 
-describe('startAutoUpdate', () => {
-  it('aborts after ten seconds and shows a delayed update toast', async () => {
-    const scheduled: Array<{ callback: () => void; delay: number }> = [];
-    const showToast = vi.fn();
-    const input = { client: { tui: { showToast } } };
-
-    startAutoUpdate(input, {
-      check: vi.fn().mockResolvedValue({ updated: true, name: packageName, current: '0.15.0', latest: '0.16.0' }),
-      schedule: (callback, delay) => {
-        scheduled.push({ callback, delay });
-        return scheduled.length;
-      },
-      cancel: vi.fn(),
-    });
-
-    await vi.waitFor(() => expect(scheduled).toHaveLength(2));
-
-    expect(scheduled.map(({ delay }) => delay)).toEqual([10_000, 5_000]);
-    expect(showToast).not.toHaveBeenCalled();
-
-    scheduled[1].callback();
-
-    expect(showToast).toHaveBeenCalledWith({
-      body: {
-        title: 'Development Crew update ready',
-        message: `Installed ${packageName} 0.16.0 (from 0.15.0). Restart OpenCode to finish.`,
-        variant: 'info',
-        duration: 7000,
-      },
+describe('native update command', () => {
+  it('uses an argument array, a bounded runtime, and the plugin location', async () => {
+    const execute = vi.fn(async () => ({ stdout: '', stderr: '' }));
+    const signal = new AbortController().signal;
+    await runNativeUpdate(target, { cwd: '/workspace/project', signal }, execute);
+    expect(execute).toHaveBeenCalledExactlyOnceWith('opencode', ['plugin', 'update', target], {
+      cwd: '/workspace/project', signal, timeout: 60_000, maxBuffer: 64 * 1024, windowsHide: true,
     });
   });
 
-  it('suppresses notification failures', async () => {
-    const schedule = vi.fn((callback: () => void) => {
-      if (schedule.mock.calls.length === 2) callback();
-      return 1;
-    });
-
-    expect(() => startAutoUpdate({ client: { tui: { showToast: () => { throw new Error('closed'); } } } }, {
-      check: vi.fn().mockResolvedValue({ updated: true, name: packageName, current: '0.15.0', latest: '0.16.0' }),
-      schedule,
-      cancel: vi.fn(),
-    })).not.toThrow();
-
-    await Promise.resolve();
-    await Promise.resolve();
+  it('passes native arguments intact through a real child process', async () => {
+    const execute = promisify(execFile);
+    const result = await runNativeUpdate(target, { cwd: process.cwd() }, (_command, args, options) => execute(
+      process.execPath, ['-e', 'process.stdout.write(JSON.stringify(process.argv.slice(1)))', ...args], options,
+    ));
+    expect(JSON.parse(result.stdout)).toEqual(['plugin', 'update', target]);
   });
 
-  it('suppresses synchronous updater failures', async () => {
-    const cancel = vi.fn();
+  it('propagates command failures to the background coordinator', async () => {
+    const execute = vi.fn(async () => { throw new Error('CLI unavailable'); });
+    await expect(runNativeUpdate(target, { cwd: process.cwd() }, execute)).rejects.toThrow('CLI unavailable');
+  });
 
-    expect(() => startAutoUpdate({}, {
-      check: () => {
-        throw new Error('unexpected failure');
-      },
-      schedule: vi.fn(() => 1),
-      cancel,
-    })).not.toThrow();
-
-    await vi.waitFor(() => expect(cancel).toHaveBeenCalledOnce());
-
-    expect(cancel).toHaveBeenCalledOnce();
+  it('can cancel a real child process without requiring a service restart', async () => {
+    const execute = promisify(execFile);
+    const controller = new AbortController();
+    const pending = runNativeUpdate(target, { cwd: process.cwd(), signal: controller.signal }, (_command, _args, options) => execute(
+      process.execPath, ['-e', 'setInterval(() => {}, 1000)'], options,
+    ));
+    const rejected = expect(pending).rejects.toMatchObject({ code: 'ABORT_ERR' });
+    controller.abort();
+    await rejected;
   });
 });

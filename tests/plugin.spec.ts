@@ -1,241 +1,167 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createDevelopmentCrewPlugin } from '../lib/development-crew.js';
+import plugin from '../index.js';
+import { createDevelopmentCrewSetup } from '../lib/development-crew.js';
 
-const DevelopmentCrewPlugin = createDevelopmentCrewPlugin(() => {});
-
-function mockPluginInput() {
+function mockContext() {
   return {
-    client: {},
-    project: { id: 'test', name: 'test-project' },
-    directory: '/tmp/test',
-    worktree: '/tmp/test',
-    serverUrl: new URL('http://localhost:3000'),
-    $: {},
-    experimental_workspace: {
-      register: () => {},
-    },
+    options: {},
+    plugin: { list: vi.fn(async () => ({ data: [{ id: 'development-crew', source: { type: 'local', path: '/checkout/index.js' } }] })) },
+    skill: { transform: vi.fn(async (_callback: any) => {}) },
+    session: { hook: vi.fn(async (_name: string, _callback: any) => {}) },
   };
 }
 
-type MessagePart = { type: string; text?: string };
-type Message = { info: { role: string }; parts: MessagePart[] };
-type TransformOutput = { messages: Message[] };
-
-function makeUserMessage(text: string): Message {
-  return { info: { role: 'user' }, parts: [{ type: 'text', text }] };
+async function getContextHook(load?: () => Promise<any[]>) {
+  const ctx = mockContext();
+  await createDevelopmentCrewSetup(load)(ctx);
+  return ctx.session.hook.mock.calls[0][1];
 }
 
-function makeAssistantMessage(text: string): Message {
-  return { info: { role: 'assistant' }, parts: [{ type: 'text', text }] };
-}
-
-describe('DevelopmentCrewPlugin', () => {
-  it('starts the updater once during plugin initialization', async () => {
-    const startUpdate = vi.fn();
-    const plugin = createDevelopmentCrewPlugin(startUpdate);
-
-    await plugin(mockPluginInput());
-
-    expect(startUpdate).toHaveBeenCalledOnce();
+describe('OpenCode v2 plugin', () => {
+  it('exports a native definition with a stable ID and setup', () => {
+    expect(plugin.id).toBe('development-crew');
+    expect(typeof plugin.setup).toBe('function');
+    expect(plugin).not.toHaveProperty('server');
   });
 
-  it('prepares runtime assets before starting the updater', async () => {
-    const events: string[] = [];
-    const prepareAssets = vi.fn(async () => {
-      events.push('prepare');
-      return { skillsDir: '/tmp/runtime-skills', bootstrapContent: '---\nname: test\n---\nBootstrap' };
+  it('registers all packaged skills with file paths and stripped bodies', async () => {
+    const ctx = mockContext();
+    await plugin.setup(ctx);
+    const add = vi.fn();
+    ctx.skill.transform.mock.calls[0][0]({ add });
+
+    expect(add.mock.calls.map(([skill]) => skill.id).sort()).toEqual([
+      'architect', 'code-reviewer', 'implementer', 'rubber-duck', 'shared-principles', 'using-development-crew',
+    ]);
+    for (const [skill] of add.mock.calls) {
+      expect(skill.path).toMatch(/\/skills\/[^/]+\/SKILL\.md$/);
+      expect(skill.description).toBeTruthy();
+      expect(skill.content).not.toMatch(/^---\n/);
+    }
+    expect(ctx.session.hook).toHaveBeenCalledWith('context', expect.any(Function));
+  });
+
+  it('loads once and replays registration without leaking editor mutations', async () => {
+    const load = vi.fn(async () => [{ id: 'test', name: 'test', content: 'Original' }]);
+    const ctx = mockContext();
+    await createDevelopmentCrewSetup(load)(ctx);
+    const transform = ctx.skill.transform.mock.calls[0][0];
+    transform({ add: (skill: any) => { skill.content = 'Changed'; } });
+    const add = vi.fn();
+    transform({ add });
+
+    expect(load).toHaveBeenCalledOnce();
+    expect(add).toHaveBeenCalledWith(expect.objectContaining({ content: 'Original' }));
+  });
+
+  it('fails activation before registering hooks when assets cannot load', async () => {
+    const ctx = mockContext();
+    await expect(createDevelopmentCrewSetup(async () => { throw new Error('Unreadable skill'); })(ctx))
+      .rejects.toThrow('Unreadable skill');
+    expect(ctx.skill.transform).not.toHaveBeenCalled();
+    expect(ctx.session.hook).not.toHaveBeenCalled();
+  });
+
+  it('starts optional updates after registration and returns their cleanup', async () => {
+    const ctx = mockContext();
+    const cleanup = vi.fn();
+    const startUpdate = vi.fn(() => {
+      expect(ctx.skill.transform).toHaveBeenCalledOnce();
+      expect(ctx.session.hook).toHaveBeenCalledOnce();
+      return cleanup;
     });
-    const startUpdate = vi.fn(() => events.push('update'));
-
-    await createDevelopmentCrewPlugin(startUpdate, prepareAssets)(mockPluginInput());
-
-    expect(events).toEqual(['prepare', 'update']);
+    expect(await createDevelopmentCrewSetup(undefined, startUpdate)(ctx)).toBe(cleanup);
+    expect(startUpdate).toHaveBeenCalledExactlyOnceWith(ctx);
   });
 
-  it('registers the prepared skills snapshot', async () => {
-    const plugin = createDevelopmentCrewPlugin(() => {}, async () => ({
-      skillsDir: '/tmp/runtime-skills',
-      bootstrapContent: '---\nname: test\n---\nBootstrap',
-    }));
-    const hooks = await plugin(mockPluginInput());
-    const cfg = {} as Record<string, unknown>;
-
-    await hooks.config!(cfg);
-
-    expect((cfg.skills as { paths: string[] }).paths).toEqual(['/tmp/runtime-skills']);
-  });
-
-  it('keeps startup non-fatal and skips the updater when preparation fails', async () => {
+  it('does not start updates when skill loading fails', async () => {
+    const ctx = mockContext();
     const startUpdate = vi.fn();
-    const plugin = createDevelopmentCrewPlugin(startUpdate, async () => {
-      throw new Error('copy failed');
-    });
-
-    const hooks = await plugin(mockPluginInput());
-
-    expect(hooks.name).toBe('development-crew');
+    await expect(createDevelopmentCrewSetup(async () => { throw new Error('Unreadable skill'); }, startUpdate)(ctx))
+      .rejects.toThrow('Unreadable skill');
     expect(startUpdate).not.toHaveBeenCalled();
   });
 
-  it('returns name development-crew', async () => {
-    const hooks = await DevelopmentCrewPlugin(mockPluginInput());
-    expect(hooks.name).toBe('development-crew');
-  });
-
-  it('has a config function', async () => {
-    const hooks = await DevelopmentCrewPlugin(mockPluginInput());
-    expect(typeof hooks.config).toBe('function');
-  });
-
-  it('has an experimental.chat.messages.transform function', async () => {
-    const hooks = await DevelopmentCrewPlugin(mockPluginInput());
-    expect(typeof (hooks as Record<string, unknown>)['experimental.chat.messages.transform']).toBe('function');
-  });
-
-  it('does NOT have an agent key', async () => {
-    const hooks = await DevelopmentCrewPlugin(mockPluginInput());
-    expect((hooks as Record<string, unknown>)['agent']).toBeUndefined();
+  it('keeps skills and bootstrap active if optional update scheduling fails', async () => {
+    const ctx = mockContext();
+    await expect(createDevelopmentCrewSetup(undefined, () => { throw new Error('Cannot schedule'); })(ctx))
+      .resolves.toBeUndefined();
+    expect(ctx.skill.transform).toHaveBeenCalledOnce();
+    const event = { system: [] };
+    await ctx.session.hook.mock.calls[0][1](event);
+    expect(event.system[0].text).toContain('Development Crew');
   });
 });
 
-describe('config hook', () => {
-  it('initializes skills.paths when absent', async () => {
-    const hooks = await DevelopmentCrewPlugin(mockPluginInput());
-    const cfg = {} as Record<string, unknown>;
+describe('bootstrap context hook', () => {
+  it('adds system instructions without changing messages or existing instructions', async () => {
+    const hook = await getContextHook();
+    const original = { type: 'text', text: 'Project instructions' };
+    const messages = [{ role: 'user', content: [{ type: 'text', text: 'Help me' }] }];
+    const event = { system: [original], messages };
+    await hook(event);
+    await hook(event);
 
-    await hooks.config!(cfg);
-
-    const skills = cfg.skills as { paths: string[] };
-    expect(skills).toBeDefined();
-    expect(Array.isArray(skills.paths)).toBe(true);
-    expect(skills.paths.length).toBe(1);
+    expect(event.system).toHaveLength(2);
+    expect(event.system[0]).toBe(original);
+    expect(event.system[1].text).toContain('Development Crew');
+    expect(event.system[1].text).toContain('<!-- development-crew-bootstrap -->');
+    expect(event.messages).toEqual([{ role: 'user', content: [{ type: 'text', text: 'Help me' }] }]);
   });
 
-  it('appends skills dir to existing paths', async () => {
-    const hooks = await DevelopmentCrewPlugin(mockPluginInput());
-    const cfg = { skills: { paths: ['/some/other/skills'] } } as Record<string, unknown>;
-
-    await hooks.config!(cfg);
-
-    const skills = cfg.skills as { paths: string[] };
-    expect(skills.paths.length).toBe(2);
-    expect(skills.paths[0]).toBe('/some/other/skills');
-    expect(skills.paths[1]).toContain('skills');
+  it('injects again into fresh context after continuations or compaction', async () => {
+    const hook = await getContextHook();
+    const first = { system: [], messages: [] };
+    const rebuilt = { system: [], messages: [{ role: 'assistant', content: [] }] };
+    await hook(first);
+    await hook(rebuilt);
+    expect(first.system).toHaveLength(1);
+    expect(rebuilt.system).toEqual(first.system);
   });
 
-  it('does not add duplicate paths on double-call', async () => {
-    const hooks = await DevelopmentCrewPlugin(mockPluginInput());
-    const cfg = {} as Record<string, unknown>;
-
-    await hooks.config!(cfg);
-    await hooks.config!(cfg);
-
-    const skills = cfg.skills as { paths: string[] };
-    expect(skills.paths.length).toBe(1);
-  });
-});
-
-describe('experimental.chat.messages.transform hook', () => {
-  async function getTransformHook() {
-    const hooks = await DevelopmentCrewPlugin(mockPluginInput());
-    return (hooks as Record<string, unknown>)['experimental.chat.messages.transform'] as (
-      input: unknown,
-      output: TransformOutput,
-    ) => Promise<void>;
-  }
-
-  it('is a no-op when messages array is empty', async () => {
-    const transform = await getTransformHook();
-    const output: TransformOutput = { messages: [] };
-
-    await transform(null, output);
-
-    expect(output.messages).toHaveLength(0);
+  it('does not mistake the Development Crew name for injected instructions', async () => {
+    const hook = await getContextHook();
+    const event = { system: [{ type: 'text', text: 'Use Development Crew' }] };
+    await hook(event);
+    expect(event.system).toHaveLength(2);
   });
 
-  it('is a no-op when there is no user message', async () => {
-    const transform = await getTransformHook();
-    const output: TransformOutput = {
-      messages: [makeAssistantMessage('hello')],
-    };
+  it.each([
+    '<!-- development-crew-bootstrap -->',
+    'Idempotency: uses `<!-- development-crew-bootstrap -->` marker to avoid double injection.',
+    'The bootstrap marker is:\n\n<!-- development-crew-bootstrap -->',
+  ])('injects when instructions only mention the bootstrap marker: %s', async (text) => {
+    const hook = await getContextHook();
+    const original = { type: 'text', text };
+    const event = { system: [original] };
+    await hook(event);
+    await hook(event);
 
-    await transform(null, output);
-
-    expect(output.messages[0].parts).toHaveLength(1);
+    expect(event.system).toHaveLength(2);
+    expect(event.system[0]).toBe(original);
+    expect(event.system[1].text).toContain('Development Crew');
+    expect(event.system[1].text).toContain('<!-- development-crew-bootstrap -->');
   });
 
-  it('prepends bootstrap content to the first user message', async () => {
-    const transform = await getTransformHook();
-    const output: TransformOutput = {
-      messages: [makeUserMessage('do something')],
-    };
+  it('recognizes a complete bootstrap block in a separate context', async () => {
+    const hook = await getContextHook();
+    const first = { system: [] };
+    await hook(first);
 
-    await transform(null, output);
-
-    const parts = output.messages[0].parts;
-    expect(parts).toHaveLength(2);
-    expect(parts[0].type).toBe('text');
-    expect(parts[0].text).toBeTruthy();
-    expect(parts[0].text).toContain('Development Crew');
-    expect(parts[1].text).toBe('do something');
+    const existing = { ...first.system[0] };
+    const next = { system: [existing] };
+    await hook(next);
+    expect(next.system).toEqual([existing]);
+    expect(next.system[0]).toBe(existing);
   });
 
-  it('uses the prepared bootstrap content', async () => {
-    const hooks = await createDevelopmentCrewPlugin(
-      () => {},
-      async () => ({
-        skillsDir: '/tmp/runtime-skills',
-        bootstrapContent: '---\nname: test\n---\nSnapshot bootstrap',
-      }),
-    )(mockPluginInput());
-    const transform = (hooks as Record<string, unknown>)[
-      'experimental.chat.messages.transform'
-    ] as (input: unknown, output: TransformOutput) => Promise<void>;
-    const output: TransformOutput = { messages: [makeUserMessage('do something')] };
-
-    await transform(null, output);
-
-    expect(output.messages[0].parts[0].text).toContain('Snapshot bootstrap');
-  });
-
-  it('does not inject bootstrap a second time (idempotency)', async () => {
-    const transform = await getTransformHook();
-    const output: TransformOutput = {
-      messages: [makeUserMessage('do something')],
-    };
-
-    await transform(null, output);
-    await transform(null, output);
-
-    expect(output.messages[0].parts).toHaveLength(2);
-  });
-
-  it('injects bootstrap even if user message already contains "Development Crew" (marker-based idempotency)', async () => {
-    const transform = await getTransformHook();
-    const output: TransformOutput = {
-      messages: [makeUserMessage('I want to use Development Crew for this task')],
-    };
-
-    await transform(null, output);
-
-    const parts = output.messages[0].parts;
-    expect(parts).toHaveLength(2);
-    expect(parts[0].text).toContain('Development Crew');
-    expect(parts[1].text).toBe('I want to use Development Crew for this task');
-  });
-
-  it('does not mutate assistant messages', async () => {
-    const transform = await getTransformHook();
-    const output: TransformOutput = {
-      messages: [
-        makeAssistantMessage('initial assistant'),
-        makeUserMessage('user question'),
-      ],
-    };
-
-    await transform(null, output);
-
-    expect(output.messages[0].parts).toHaveLength(1);
-    expect(output.messages[0].parts[0].text).toBe('initial assistant');
+  it.each([
+    { skills: [] },
+    { skills: [{ id: 'using-development-crew', content: '  ' }] },
+  ])('skips injection when bootstrap instructions are absent or empty', async ({ skills }) => {
+    const hook = await getContextHook(async () => skills);
+    const event = { system: [] };
+    await hook(event);
+    expect(event.system).toEqual([]);
   });
 });
