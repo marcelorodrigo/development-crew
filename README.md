@@ -66,7 +66,19 @@ $rubber-duck
 
 ### OpenCode
 
-Requires OpenCode v2. Install the latest release globally:
+Use the Development Crew version that matches your OpenCode version:
+
+| OpenCode | Development Crew |
+|----------|------------------|
+| v1 | 0.x, pin the last compatible release at `0.17.0` |
+| v2 | 1.x, starting with `1.0.0` |
+
+> **Staying on OpenCode v1?** Pin the exact package version
+> `@marcelorodrigo/opencode-development-crew@0.17.0`.
+> The legacy updater follows npm's `latest` tag and can otherwise install an
+> incompatible release. Do not leave a bare package entry or `@latest` configured.
+
+For OpenCode v2, install the latest release globally:
 
 ```bash
 opencode plugin add @marcelorodrigo/opencode-development-crew@latest
@@ -89,7 +101,7 @@ to verify the new plugin is active.
 Use `opencode plugin list` to find the `development-crew` ID. Development Crew
 automatically updates eligible npm installs in the background through OpenCode's
 native updater. Local checkouts and pinned versions are left unchanged. See the
-[installation guide](OPENCODE_INSTALL.md) for update behavior, the opt-out, and
+[installation guide](https://github.com/marcelorodrigo/development-crew/blob/master/OPENCODE_INSTALL.md) for update behavior, the opt-out, and
 manual update commands.
 
 To use the repository directly instead of npm:
@@ -226,7 +238,7 @@ register custom commands. If a slash entry is unavailable, use the native
   activation. Set `options.autoUpdate` to `false` to opt out. For a manual update,
   run `opencode plugin update @marcelorodrigo/opencode-development-crew@latest`.
   Use your configured target for another tag or range. Local plugins and exact
-  package revisions are skipped. See [Updating](OPENCODE_INSTALL.md#updating).
+  package revisions are skipped. See [Updating](https://github.com/marcelorodrigo/development-crew/blob/master/OPENCODE_INSTALL.md#updating).
 
 ## License
 

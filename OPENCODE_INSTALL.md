@@ -5,8 +5,36 @@
 - [OpenCode v2](https://opencode.ai/v2/docs) installed
 - Node >=24 for local package installation and development
 
-This implementation uses the v2 plugin API. For OpenCode v1, keep the previous
-v1-compatible release pinned at `@marcelorodrigo/opencode-development-crew@0.17.0`.
+## Version compatibility
+
+Use the package version that matches your OpenCode installation:
+
+| OpenCode | Development Crew | Installation target |
+|----------|------------------|---------------------|
+| v1 | 0.x, last compatible release `0.17.0` | `@marcelorodrigo/opencode-development-crew@0.17.0` |
+| v2 | 1.x, starting with `1.0.0` | `@marcelorodrigo/opencode-development-crew@latest` |
+
+Development Crew 1.x uses the OpenCode v2 plugin API and does not support
+OpenCode v1.
+
+### Staying on OpenCode v1
+
+Pin the exact compatible release in your existing v1 `opencode.json`:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["@marcelorodrigo/opencode-development-crew@0.17.0"]
+}
+```
+
+Replace any existing floating entry rather than adding a second copy, then
+restart OpenCode. The legacy updater follows npm's `latest` tag and can otherwise
+install an incompatible 1.x release automatically. A major version boundary alone
+does not protect users who leave a floating entry configured.
+
+The [v0.17.0 installation guide](https://github.com/marcelorodrigo/development-crew/blob/v0.17.0/OPENCODE_INSTALL.md)
+documents the legacy implementation.
 
 ## Installation
 
@@ -36,8 +64,9 @@ Rename the `plugin` configuration key to `plugins`. If your entry uses a
 package-and-options tuple, replace it with an object containing `package` and
 `options`, as described in the [v2 migration guide](https://opencode.ai/v2/docs/build/plugins/migrate-v1).
 
-Install the v2-compatible Development Crew release. Changing the configuration
-key alone does not make an older v1 plugin implementation work in v2.
+Install Development Crew `1.0.0` or a later compatible 1.x release after upgrading
+OpenCode to v2. Changing the configuration key alone does not make the legacy
+`0.17.0` plugin implementation work in v2.
 
 The v2 implementation registers skills through `ctx.skill.transform` and adds
 bootstrap instructions through the session `context` hook. Instructions affect

@@ -17,7 +17,6 @@ const expectedFiles = [
   'lib/skills.js',
   'lib/update.js',
   'package.json',
-  'OPENCODE_INSTALL.md',
   'README.md',
   'skills/architect/SKILL.md',
   'skills/code-reviewer/SKILL.md',
@@ -28,6 +27,13 @@ const expectedFiles = [
 ];
 
 describe('npm package', () => {
+  it('uses major releases for breaking changes before version 1.0.0', () => {
+    const config = JSON.parse(readFileSync(join(root, 'release-please-config.json'), 'utf8'));
+
+    expect(config['bump-minor-pre-major']).toBe(false);
+    expect(config.packages['.']['bump-minor-pre-major']).not.toBe(true);
+  });
+
   it('contains the complete runtime artifact and no development files', async () => {
     const directory = mkdtempSync(join(tmpdir(), 'development-crew-package-'));
 
@@ -50,6 +56,12 @@ describe('npm package', () => {
       expect(existsSync(installedEntry)).toBe(true);
 
       const installedDirectory = join(directory, 'package');
+      const readme = readFileSync(join(installedDirectory, 'README.md'), 'utf8');
+      const guide = 'https://github.com/marcelorodrigo/development-crew/blob/master/OPENCODE_INSTALL.md';
+      expect(readme).toContain(`](${guide})`);
+      expect(readme).toContain(`](${guide}#updating)`);
+      expect(readme).not.toMatch(/\]\(OPENCODE_INSTALL\.md(?:#[^)]*)?\)/);
+
       copyFileSync(join(root, 'pnpm-lock.yaml'), join(installedDirectory, 'pnpm-lock.yaml'));
       copyFileSync(join(root, 'pnpm-workspace.yaml'), join(installedDirectory, 'pnpm-workspace.yaml'));
       execFileSync('pnpm', ['install', '--frozen-lockfile', '--offline', '--prod', '--ignore-scripts'], {
