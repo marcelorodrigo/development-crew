@@ -131,6 +131,55 @@ describe('background updater lifecycle', () => {
     await vi.runOnlyPendingTimersAsync();
   });
 
+  it.each(['get', 'set'])('coalesces separate updater instances while storage.%s is pending', async (boundary) => {
+    const stored = new Map();
+    const first = mockContext(undefined, stored);
+    const second = mockContext(undefined, stored);
+    const pendingStorage = Promise.withResolvers<any>();
+    const pendingUpdate = Promise.withResolvers<void>();
+    first.storage[boundary as 'get' | 'set'].mockReturnValueOnce(pendingStorage.promise);
+    const runUpdate = vi.fn(() => pendingUpdate.promise);
+    const cleanups = [
+      createAutoUpdater({ runUpdate })(first),
+      createAutoUpdater({ runUpdate })(second),
+    ];
+
+    try {
+      await vi.runOnlyPendingTimersAsync();
+      expect(second.storage.get).not.toHaveBeenCalled();
+      expect(runUpdate).not.toHaveBeenCalled();
+
+      pendingStorage.resolve(undefined);
+      await vi.runOnlyPendingTimersAsync();
+      expect(runUpdate).toHaveBeenCalledOnce();
+      expect(first.storage.set).toHaveBeenCalledOnce();
+      expect(second.storage.set).not.toHaveBeenCalled();
+    } finally {
+      pendingStorage.resolve(undefined);
+      pendingUpdate.resolve();
+      for (const cleanup of cleanups) cleanup();
+      await vi.runOnlyPendingTimersAsync();
+    }
+  });
+
+  it('allows separate flight maps for isolated updater instances', async () => {
+    const pending = Promise.withResolvers<void>();
+    const runUpdate = vi.fn(() => pending.promise);
+    const cleanups = [
+      createAutoUpdater({ runUpdate, flights: new Map() })(mockContext()),
+      createAutoUpdater({ runUpdate, flights: new Map() })(mockContext()),
+    ];
+
+    try {
+      await vi.runOnlyPendingTimersAsync();
+      expect(runUpdate).toHaveBeenCalledTimes(2);
+    } finally {
+      pending.resolve();
+      for (const cleanup of cleanups) cleanup();
+      await vi.runOnlyPendingTimersAsync();
+    }
+  });
+
   it('records failed attempts so reloads do not repeatedly retry a broken installation', async () => {
     const stored = new Map();
     const runUpdate = vi.fn(async () => { throw new Error('Registry unavailable'); });
