@@ -1,8 +1,7 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 const root = join(import.meta.dirname, '..');
@@ -15,8 +14,7 @@ const expectedFiles = [
   'index.js',
   'LICENSE',
   'lib/development-crew.js',
-  'lib/runtime-assets.js',
-  'lib/update.js',
+  'lib/skills.js',
   'package.json',
   'README.md',
   'skills/architect/SKILL.md',
@@ -25,7 +23,6 @@ const expectedFiles = [
   'skills/rubber-duck/SKILL.md',
   'skills/shared-principles/SKILL.md',
   'skills/using-development-crew/SKILL.md',
-  'tui/index.js',
 ];
 
 describe('npm package', () => {
@@ -46,27 +43,45 @@ describe('npm package', () => {
       expect(packageJson.engines.node).toBe('>=24');
       expect(metadata.files.map(({ path }: { path: string }) => path).sort()).toEqual([...expectedFiles].sort());
 
-      const extractDirectory = join(directory, 'extract');
       execFileSync('tar', ['-xzf', metadata.filename, '-C', directory]);
       const installedEntry = join(directory, 'package', 'index.js');
       expect(existsSync(installedEntry)).toBe(true);
 
-      const packaged = await import(pathToFileURL(installedEntry).href);
-      expect(Object.keys(packaged)).toEqual(['default']);
-
-      const implementation = await import(pathToFileURL(join(directory, 'package', 'lib/development-crew.js')).href);
-      const plugin = implementation.createDevelopmentCrewPlugin(() => {});
-      const hooks = await plugin({});
-      const config: Record<string, unknown> = {};
-      await hooks.config(config);
-      expect(config.skills).toBeDefined();
-      const configuredSkillsDir = (config.skills as { paths: string[] }).paths[0];
-      expect(configuredSkillsDir).not.toBe(join(directory, 'package', 'skills'));
-      expect(existsSync(join(configuredSkillsDir, 'using-development-crew', 'SKILL.md'))).toBe(true);
-      expect(existsSync(join(directory, 'package', 'skills', 'using-development-crew', 'SKILL.md'))).toBe(true);
-      rmSync(extractDirectory, { force: true, recursive: true });
+      const installedDirectory = join(directory, 'package');
+      copyFileSync(join(root, 'pnpm-lock.yaml'), join(installedDirectory, 'pnpm-lock.yaml'));
+      copyFileSync(join(root, 'pnpm-workspace.yaml'), join(installedDirectory, 'pnpm-workspace.yaml'));
+      execFileSync('pnpm', ['install', '--frozen-lockfile', '--offline', '--prod', '--ignore-scripts'], {
+        cwd: installedDirectory,
+        stdio: 'inherit',
+      });
+      const result = execFileSync(process.execPath, ['--input-type=module', '-e', `
+        import assert from 'node:assert/strict';
+        import { existsSync } from 'node:fs';
+        import { Skill } from '@opencode/plugin';
+        const entry = await import('./index.js');
+        assert.deepEqual(Object.keys(entry), ['default']);
+        assert.equal(entry.default.id, 'development-crew');
+        const skills = [];
+        const hooks = [];
+        await entry.default.setup({
+          skill: { transform: async (callback) => callback({ add: (skill) => skills.push(skill) }) },
+          session: { hook: async (name, callback) => hooks.push([name, callback]) },
+        });
+        assert.equal(skills.length, 6);
+        for (const skill of skills) {
+          assert.ok(Skill.Info.make(skill));
+          assert.ok(existsSync(skill.path));
+          assert.ok(skill.path.startsWith(process.cwd()));
+        }
+        assert.equal(hooks[0][0], 'context');
+        const event = { system: [], messages: [] };
+        await hooks[0][1](event);
+        assert.ok(event.system[0].text.includes('<!-- development-crew-bootstrap -->'));
+        console.log('Packaged v2 plugin verified');
+      `], { cwd: installedDirectory, encoding: 'utf8' });
+      expect(result).toContain('Packaged v2 plugin verified');
     } finally {
       rmSync(directory, { force: true, recursive: true });
     }
-  });
+  }, 30_000);
 });

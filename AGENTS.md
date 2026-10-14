@@ -41,8 +41,8 @@ This resolves the repo's `package.json` `omp` field (which points `./skills/` an
 index.js                         # OpenCode package entry point (default export only)
 OPENCODE_INSTALL.md              # Standalone OpenCode installation guide
 lib/                             # OpenCode runtime implementation (plain JS, no build)
-  development-crew.js            # Plugin factory with config + messages.transform hooks
-  update.js                      # Optional package auto-update support
+  development-crew.js            # V2 setup with skill transform + session context hook
+  skills.js                      # Packaged skill loading and metadata validation
 
 .claude-plugin/                  # Claude Code plugin manifests
   plugin.json                    # Claude Code plugin metadata
@@ -92,12 +92,12 @@ validation/
 
 The plugin has **no build step**. The package entry point is `index.js` — raw JavaScript checked into the repo. Runtime implementation and testable named exports live under `lib/`; do not place plugin source under `.opencode/plugins/`, because OpenCode auto-loads every JavaScript file and export there as a project-local plugin.
 
-- **Bootstrap skill** (`skills/using-development-crew/SKILL.md`) is read at runtime via `fs.readFileSync` with a module-level cache (`_bootstrapCache`) to avoid repeated disk reads per agent step.
-- **Config hook** registers the `skills/` directory in `opencodeConfig.skills.paths` so OpenCode discovers all skill files when invoked via the `skill` tool.
-- **Messages transform hook** strips frontmatter from the bootstrap SKILL.md and prepends the body to the first user message in every new session.
+- **OpenCode v2 entry point** uses `Plugin.define` from `@opencode/plugin` with the stable ID `development-crew` and a `setup(ctx)` function. OpenCode v1 is no longer supported by this implementation.
+- **Skill transform** loads all packaged `SKILL.md` files once during setup, validates their names and descriptions, strips frontmatter, and registers captured records through synchronous `ctx.skill.transform` callbacks. Transform replay performs no filesystem work.
+- **Session context hook** adds bootstrap instructions as a system text part for each outgoing agent model request. It leaves saved user messages unchanged and reinjects instructions into rebuilt context after compaction.
 - **SessionStart hooks** (for Claude Code, Cursor, Copilot CLI) are bash scripts that inject the same bootstrap content via `additionalContext` JSON output.
 - **oh-my-pi hook** (`hooks/omp-session-start.ts`) is a TypeScript module registered via `package.json` `omp.hooks` that injects the bootstrap on `session_start`. oh-my-pi runs on Bun and executes TypeScript natively — no build step needed.
-- **OpenCode auto-update** checks npm in the background for eligible floating npm installs. When a newer release exists, it snapshots the skills outside the mutable package wrapper, installs and reifies the exact release into that wrapper, and notifies the user to restart. Exact-pinned, local, and Git installs are not auto-updated. Restart is required to activate newly installed code, and update failures are non-fatal.
+- **OpenCode updates** are managed by OpenCode v2 through `opencode plugin check` and `opencode plugin update`. The plugin has no custom updater, temporary skill snapshots, or placeholder TUI entry point. Hook and transform registrations are disposed automatically on unload.
 
 Idempotency: uses `<!-- development-crew-bootstrap -->` marker to avoid double injection.
 

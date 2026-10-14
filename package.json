@@ -6,13 +6,11 @@
   "main": "./index.js",
   "exports": {
     ".": "./index.js",
-    "./server": "./index.js",
-    "./tui": "./tui/index.js"
+    "./server": "./index.js"
   },
   "files": [
     "index.js",
     "lib",
-    "tui",
     "hooks",
     "skills",
     "README.md",
@@ -46,8 +44,7 @@
     "vitest": "^5.0.0"
   },
   "dependencies": {
-    "@npmcli/arborist": "10.0.3",
-    "semver": "^7.8.5"
+    "@opencode/plugin": "2.0.28"
   },
   "repository": {
     "type": "git",

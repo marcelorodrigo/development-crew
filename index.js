@@ -1,3 +1,7 @@
-import { createDevelopmentCrewPlugin } from './lib/development-crew.js';
+import { Plugin } from '@opencode/plugin';
+import { createDevelopmentCrewSetup } from './lib/development-crew.js';
 
-export default createDevelopmentCrewPlugin();
+export default Plugin.define({
+  id: 'development-crew',
+  setup: createDevelopmentCrewSetup(),
+});

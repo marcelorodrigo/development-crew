@@ -66,54 +66,36 @@ $rubber-duck
 
 ### OpenCode
 
-Install the latest release globally:
+Requires OpenCode v2. Install the latest release globally:
 
 ```bash
-opencode plugin @marcelorodrigo/opencode-development-crew@latest --global
+opencode plugin add @marcelorodrigo/opencode-development-crew@latest
 ```
 
-Or add the package to the `plugin` array in your global or project-level
+Or add the package to the `plugins` array in your global or project-level
 `opencode.json`:
 
 ```json
 {
-  "plugin": ["@marcelorodrigo/opencode-development-crew@latest"]
+  "$schema": "https://opencode.ai/config.json",
+  "plugins": ["@marcelorodrigo/opencode-development-crew@latest"]
 }
 ```
 
-OpenCode installs the published npm package from this entry. Restart OpenCode
-after adding or changing the plugin configuration.
+OpenCode installs the package, registers all six skills, and adds the bootstrap
+instructions to each agent model request. Restart OpenCode after installation
+to verify the new plugin is active.
 
-The `@latest` tag resolves to the latest published release. The plugin also
-performs a best-effort update check in the background. For an eligible floating
-npm wrapper, it checks npm, installs and reifies the exact newer release, and
-then shows a toast asking you to restart OpenCode. Before updating, the plugin
-snapshots the skills outside the mutable package wrapper so OpenCode can still
-discover and read `SKILL.md` files safely.
-
-Exact-pinned, local, and Git installs are not auto-updated. Restart OpenCode to
-activate newly installed code. Update failures are non-fatal and do not prevent
-the plugin from starting.
-
-If an older destructive updater left a stale `@latest` wrapper, install the
-fixed release explicitly through OpenCode's plugin manager, using the same
-scope as the original entry, then restart OpenCode:
-
-```bash
-opencode plugin @marcelorodrigo/opencode-development-crew@<fixed-version> --global --force
-```
-
-Replace `<fixed-version>` with the first release containing this updater fix.
-For a project-level entry, omit `--global` and run the command from that
-project. This temporarily pins the plugin; change its config entry back to
-`@latest` afterward if you want future automatic updates. Do not remove
-arbitrary cache or package paths manually.
+Use `opencode plugin list` to find the `development-crew` ID. OpenCode manages
+updates through `opencode plugin check` and `opencode plugin update`; see the
+[installation guide](OPENCODE_INSTALL.md) for migration and update instructions.
 
 To use the repository directly instead of npm:
 
 ```json
 {
-  "plugin": ["development-crew@git+https://github.com/marcelorodrigo/development-crew.git"]
+  "$schema": "https://opencode.ai/config.json",
+  "plugins": ["git+https://github.com/marcelorodrigo/development-crew.git"]
 }
 ```
 
@@ -238,12 +220,9 @@ register custom commands. If a slash entry is unavailable, use the native
 - **Gemini:** `gemini extensions update https://github.com/marcelorodrigo/development-crew`
 - **oh-my-pi:** `omp plugin upgrade development-crew@development-crew-plugin`
 
-- **OpenCode:** The `@latest` npm plugin entry checks npm in the background and
-  installs the exact newer release into the eligible floating wrapper. Skills
-  are snapshotted outside the mutable wrapper before the update. Restart
-  OpenCode after the notification to activate the new code. Exact-pinned,
-  local, and Git installs are not auto-updated, and update failures are
-  non-fatal.
+- **OpenCode v2:** `opencode plugin update @marcelorodrigo/opencode-development-crew@latest`.
+  Use `opencode plugin check` to check for updates. Local plugins and exact
+  package revisions are skipped.
 
 ## License
 
