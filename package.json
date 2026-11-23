@@ -44,7 +44,7 @@
     "vitest": "^5.0.0"
   },
   "dependencies": {
-    "@opencode/plugin": "2.3.0",
+    "@opencode/plugin": "2.3.2",
     "semver": "^7.8.5"
   },
   "repository": {
